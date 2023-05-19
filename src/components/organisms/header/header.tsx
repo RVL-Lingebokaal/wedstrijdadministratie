@@ -4,6 +4,7 @@ import { HeaderBar, HeaderLink, HeaderNav } from "./header.styles";
 import { useRouter } from "next/router";
 
 const navLinks = [
+  { title: "Home", target: "/" },
   { title: "Instellingen", target: "/settings" },
   { title: "Upload", target: "/upload" },
   { title: "Data", target: "/data" },
