@@ -35,19 +35,3 @@ export default function InputBar<T extends FieldValues>({
     </FormInputLabel>
   );
 }
-
-// <>
-//     <FormInputControl>
-//         <LabelContainer>
-//             <FormName>
-//                 {label}
-//                 {required && <RequiredStar />}
-//             </FormName>
-//             {explanation && <FormHelperText>{explanation}</FormHelperText>}
-//         </LabelContainer>
-//         <InputContainer>{render(field)}</InputContainer>
-//     </FormInputControl>
-//     {field.fieldState.error?.message && (
-//         <ErrorLabel>{field.fieldState.error.message}</ErrorLabel>
-//     )}
-// </>
