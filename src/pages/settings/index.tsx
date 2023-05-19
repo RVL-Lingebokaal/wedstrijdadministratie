@@ -1,9 +1,4 @@
-import {
-  Controller,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { AGE_CODE, BOAT_CODE, STRATEGY } from "../../enums";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { settingsSchema } from "../../yup/SettingsSchema";
