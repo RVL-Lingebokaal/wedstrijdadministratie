@@ -16,7 +16,7 @@ export function Page({
         <title>Lingebokaal administratie</title>
         <meta name="description" content="Lingebokaal administratie" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.webp" />
       </Head>
       <Header />
       <Main>{children}</Main>
