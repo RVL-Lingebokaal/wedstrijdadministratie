@@ -4,7 +4,7 @@ import {
   ThemeProvider as MuiThemeProvider,
   StyledEngineProvider,
 } from "@mui/material";
-import { Page } from "../components/molecules/page/Page";
+import { Page } from "../components/organisms/page/Page";
 import { ThemeProvider } from "styled-components";
 import Head from "next/head";
 import { Nunito } from "next/font/google";

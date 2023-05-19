@@ -1,4 +1,4 @@
-import { Header } from "../../organisms/header/header";
+import { Header } from "../header/header";
 import React from "react";
 import Head from "next/head";
 import { Main } from "./Page.styles";
