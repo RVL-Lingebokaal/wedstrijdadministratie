@@ -1,3 +1,4 @@
+import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { Page } from "../components/organisms/page/Page";
 import Head from "next/head";
