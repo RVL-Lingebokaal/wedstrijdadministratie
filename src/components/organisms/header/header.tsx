@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { HeaderBar, HeaderLink, HeaderNav } from "./header.styles";
 import { useRouter } from "next/router";
 
 const navLinks = [
@@ -11,16 +10,17 @@ const navLinks = [
 
 export function Header() {
   const { pathname } = useRouter();
+  console.log(pathname);
 
   return (
-    <HeaderBar position="static">
-      <HeaderNav>
+    <div>
+      <nav>
         {navLinks.map(({ title, target }) => (
           <Link key={target} href={target} passHref>
-            <HeaderLink active={pathname === target}>{title}</HeaderLink>
+            <div>{title}</div>
           </Link>
         ))}
-      </HeaderNav>
-    </HeaderBar>
+      </nav>
+    </div>
   );
 }

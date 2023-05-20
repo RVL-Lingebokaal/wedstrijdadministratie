@@ -1,7 +1,6 @@
 import { Header } from "../header/header";
 import React from "react";
 import Head from "next/head";
-import { Main } from "./Page.styles";
 
 export function Page({
   className,
@@ -19,7 +18,7 @@ export function Page({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <Main>{children}</Main>
+      <main>{children}</main>
     </div>
   );
 }
