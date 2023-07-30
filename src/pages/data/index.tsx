@@ -24,9 +24,9 @@ export default function Data() {
       <h1>Data</h1>
 
       <h2>Ploegen</h2>
-      {ploegen.map(({ name }) => (
-        <div key={name}>
-          <p>{name}</p>
+      {ploegen.map((ploeg) => (
+        <div key={ploeg.naam}>
+          <p>{ploeg.naam}</p>
         </div>
       ))}
     </div>

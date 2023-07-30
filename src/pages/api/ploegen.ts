@@ -9,6 +9,6 @@ export default async function handler(
 ) {
   const dbInstance = collection(firestore, "ploeg");
   const data = await getDocs(dbInstance);
-  const ploegen: Ploeg[] = data.docs.map((doc) => ({ name: doc.data().name }));
+  const ploegen = data.docs.map((doc) => new Ploeg(doc.data().naam));
   res.status(200).json(ploegen);
 }
