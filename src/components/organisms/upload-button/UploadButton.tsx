@@ -1,7 +1,4 @@
 import { ChangeEvent, useCallback, useRef } from "react";
-import { Button } from "@mui/material";
-import { Upload } from "@mui/icons-material";
-import { StyledFileInput } from "../../atoms/input/StyledInput";
 
 export function UploadButton() {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -23,19 +20,13 @@ export function UploadButton() {
 
   return (
     <>
-      <Button
-        startIcon={<Upload />}
-        onClick={memoizedOnClick}
-        variant="contained"
-      >
-        Upload bestand
-      </Button>
-      <StyledFileInput
-        type="file"
-        accept=".xml"
-        ref={hiddenFileInput}
-        onChange={uploadedFile}
-      />
+      <button onClick={memoizedOnClick}>Upload bestand</button>
+      {/*<button*/}
+      {/*  type="file"*/}
+      {/*  accept=".xml"*/}
+      {/*  ref={hiddenFileInput}*/}
+      {/*  onChange={uploadedFile}*/}
+      {/*/>*/}
     </>
   );
 }
