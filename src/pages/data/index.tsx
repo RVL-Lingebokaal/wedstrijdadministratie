@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react';
-
-class Ploeg {
-  naam: string = '';
-
-  constructor(naam: string) {
-    this.naam = naam;
-  }
-}
+import { useEffect, useState } from "react";
+import { Ploeg } from "../../models/ploeg";
 
 let shouldLoad = true;
 
@@ -16,13 +9,13 @@ export default function Data() {
   useEffect(() => {
     if (shouldLoad) {
       shouldLoad = false;
-      fetch('/api/ploegen')
+      fetch("/api/ploegen")
         .then((response) => {
           return response.json();
         })
-        .then((ploegen : Ploeg[]) => {
+        .then((ploegen: Ploeg[]) => {
           setPloegen(ploegen);
-        })
+        });
     }
   });
 
@@ -31,9 +24,9 @@ export default function Data() {
       <h1>Data</h1>
 
       <h2>Ploegen</h2>
-      {ploegen.map(ploeg => (
-        <div key={ploeg.naam}>
-          <p>{ploeg.naam}</p>
+      {ploegen.map(({ name }) => (
+        <div key={name}>
+          <p>{name}</p>
         </div>
       ))}
     </div>
