@@ -1,4 +1,5 @@
 import { Header } from "../../molecules/header/header";
+import { Footer } from "../../molecules/footer/footer";
 import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -28,6 +29,7 @@ export function Page({
       >
         <div className="w-6xl">{children}</div>
       </main>
+      <Footer/>
     </div>
   );
 }
