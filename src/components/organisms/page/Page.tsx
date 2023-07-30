@@ -1,6 +1,7 @@
 import { Header } from "../header/header";
 import React from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export function Page({
   className,
@@ -9,16 +10,24 @@ export function Page({
   children: React.ReactNode;
   className: string;
 }) {
+  const { pathname } = useRouter();
+
   return (
-    <div className={className}>
+    <div className={`${className}`}>
       <Head>
         <title>Lingebokaal administratie</title>
         <meta name="description" content="Lingebokaal administratie" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/rvl_logo_small.png" />
       </Head>
       <Header />
-      <main>{children}</main>
+      <main
+        className={`h-screen flex justify-center py-6 ${
+          pathname === "/" ? "diagonal-theme-line" : "bg-background"
+        }`}
+      >
+        <div className="w-6xl">{children}</div>
+      </main>
     </div>
   );
 }
