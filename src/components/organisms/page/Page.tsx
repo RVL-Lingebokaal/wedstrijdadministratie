@@ -23,7 +23,7 @@ export function Page({
       </Head>
       <Header />
       <main
-        className={`h-screen flex justify-center py-6 ${
+        className={`h-full flex justify-center py-6 ${
           pathname === "/" ? "diagonal-theme-line" : "bg-background"
         }`}
       >
