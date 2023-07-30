@@ -11,7 +11,6 @@ const navLinks = [
 
 export function Header() {
   const { pathname } = useRouter();
-  console.log(pathname);
 
   return (
     <div className="bg-primary flex justify-center">
@@ -19,7 +18,12 @@ export function Header() {
         <Image src="/rvl_logo.png" alt="RVL logo" width={128} height={50} />
         <div className="flex justify-end gap-6">
           {navLinks.map(({ title, target }) => (
-            <Link className="text-white" key={target} href={target} passHref>
+            <Link
+              className="text-white text-2xl"
+              key={target}
+              href={target}
+              passHref
+            >
               {title}
             </Link>
           ))}

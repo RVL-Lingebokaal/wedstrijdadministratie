@@ -4,14 +4,15 @@ import Person from "../../public/person.svg";
 import Rowing from "../../public/rowing.svg";
 import Calendar from "../../public/calendar.svg";
 import Image from "next/image";
+import { Block } from "../components/molecules/block/Block.client";
 
 export default function Home() {
   const elements = useMemo(() => {
     return [
-      { text: "Deelnemers", number: 1566, icon: Person },
-      { text: "Teams", number: 123, icon: Groups },
-      { text: "Verenigingen", number: 23, icon: Rowing },
-      { text: "Dagen", number: 152, icon: Calendar },
+      { bottom: "Deelnemers", title: "1566", icon: Person },
+      { bottom: "Teams", title: "123", icon: Groups },
+      { bottom: "Verenigingen", title: "23", icon: Rowing },
+      { bottom: "Dagen", title: "152", icon: Calendar },
     ];
   }, []);
 
@@ -19,17 +20,25 @@ export default function Home() {
     <div>
       <h1 className="text-white text-7xl font-bold">RVL Lingebokaal</h1>
       <h2 className="text-white text-6xl">Tijdsregistratie </h2>
-      <div className="flex flex-row gap-x-4">
-        {elements.map(({ text, number, icon }) => (
-          <div
-            className="place-items-center flex flex-col border-4 border-secondary bg-white flex-1 p-3"
-            key={text}
-          >
-            <h4 className="text-4xl font-extrabold">{text}</h4>
-            <Image src={icon} alt={text} />
-            <p className="text-3xl">{number}</p>
-          </div>
+      <div className="flex flex-row gap-x-4 mt-48">
+        {elements.map(({ title, bottom, icon }) => (
+          <Block title={title} bottom={bottom} key={title} variant="small">
+            <Image src={icon} alt={title} className="py-2" />
+          </Block>
         ))}
+      </div>
+      <div className="mt-12">
+        <Block variant="large">
+          <p className="text-xl">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </Block>
       </div>
     </div>
   );
