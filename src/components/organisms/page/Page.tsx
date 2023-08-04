@@ -14,7 +14,7 @@ export function Page({
   const { pathname } = useRouter();
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className} min-h-screen`}>
       <Head>
         <title>Lingebokaal administratie</title>
         <meta name="description" content="Lingebokaal administratie" />
@@ -23,7 +23,7 @@ export function Page({
       </Head>
       <Header />
       <main
-        className={`h-full flex justify-center py-6 ${
+        className={`h-[calc(100vh_-_204px)] flex justify-center py-6 ${
           pathname === "/" ? "diagonal-theme-line" : "bg-background"
         }`}
       >
