@@ -15,11 +15,15 @@ export function Header() {
   return (
     <div className="bg-primary flex justify-center">
       <nav className="flex justify-between py-6 w-6xl">
-        <Image src="/rvl_logo.png" alt="RVL logo" width={128} height={50} />
+        <Link href="/">
+          <Image className="bg-white p-2" src="/rvl_logo.svg" alt="RVL logo" width={200} height={50} />
+        </Link>
         <div className="flex justify-end gap-6">
           {navLinks.map(({ title, target }) => (
             <Link
-              className="text-white text-2xl"
+              className={`text-white text-2xl my-auto ${
+                pathname === target ? "underline decoration-secondary decoration-[3px] underline-offset-8" : ""
+              }`}
               key={target}
               href={target}
               passHref
