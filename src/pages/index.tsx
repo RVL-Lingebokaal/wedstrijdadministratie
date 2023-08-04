@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div>
       <h1 className="text-white text-7xl font-bold">RVL Lingebokaal</h1>
-      <h2 className="text-white text-6xl">Tijdsregistratie </h2>
+      <h2 className="text-white text-6xl">Wedstrijdadministratie</h2>
       <div className="flex flex-row gap-x-4 mt-48">
         {elements.map(({ title, bottom, icon }) => (
           <Block title={title} bottom={bottom} key={title} variant="small">
