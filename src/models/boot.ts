@@ -14,6 +14,12 @@ export enum BootTypes {
   boatEightWith = "8*",
 }
 
+export interface BootItem {
+  type: BootTypes;
+  correction: number;
+  price: number;
+}
+
 export interface BootForm {
-  items: { type: BootTypes; correction: number; price: number }[];
+  items: BootItem[];
 }

@@ -1,9 +1,12 @@
 import { GridHeader } from "../../atoms/grid-header/gridHeader";
 import { GridRow } from "../../atoms/grid-row/gridRow";
 import {
+  ArrayPath,
   Controller,
   DefaultValues,
+  FieldArrayWithId,
   FieldPath,
+  Path,
   useFieldArray,
   useForm,
 } from "react-hook-form";
@@ -12,35 +15,40 @@ import { Button } from "../../atoms/button/button";
 import { ObjectSchema } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { BootForm } from "../../../models/boot";
+import { SettingsForm } from "../../../models/settings";
 
-interface RowHeaderItem {
+export type Form = BootForm | SettingsForm;
+
+interface RowHeaderItem<T extends Form> {
   isInput?: boolean;
-  name: FieldPath<Form["items"][0]>;
+  getValue?: (field: FieldArrayWithId<T, ArrayPath<T>>) => string;
+  name: FieldPath<T["items"][0]>;
 }
 
-type Form = BootForm;
-
-interface TableFormProps {
-  onSubmit: (val: Form) => void;
-  schema: ObjectSchema<Form>;
-  defaultValues: DefaultValues<Form>;
+interface TableFormProps<T extends Form> {
+  onSubmit: (val: T) => void;
+  schema: ObjectSchema<T>;
+  defaultValues: DefaultValues<T>;
   gridHeaderItems: string[];
-  rowInputs: RowHeaderItem[];
+  rowInputs: RowHeaderItem<T>[];
 }
 
-export function TableForm({
+export function TableForm<T extends Form>({
   onSubmit,
   schema,
   defaultValues,
   rowInputs,
   gridHeaderItems,
-}: TableFormProps) {
-  const { handleSubmit, control } = useForm<Form>({
+}: TableFormProps<T>) {
+  const { handleSubmit, control } = useForm<T>({
     resolver: yupResolver(schema),
     defaultValues: defaultValues,
     mode: "all",
   });
-  const { fields } = useFieldArray<Form>({ control, name: "items" });
+  const { fields } = useFieldArray<T, ArrayPath<T>>({
+    control,
+    name: "items" as ArrayPath<T>,
+  });
 
   return (
     <div className="w-full">
@@ -50,16 +58,16 @@ export function TableForm({
           {fields.map((field, index) => (
             <GridRow
               key={field.id}
-              items={rowInputs.map(({ name, isInput }) => ({
+              items={rowInputs.map(({ name, isInput, getValue }) => ({
                 node: isInput ? (
                   <Controller
                     key={field.id}
                     control={control}
-                    name={`items.${index}.${name}`}
+                    name={`items.${index}.${String(name)}` as Path<T>}
                     render={({ field }) => <Input {...field} />}
                   />
                 ) : (
-                  field[name]
+                  getValue?.(field) ?? ""
                 ),
                 isInput,
               }))}

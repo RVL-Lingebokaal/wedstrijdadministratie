@@ -15,7 +15,7 @@ export function TypesForm() {
       defaultValues={getDefaultValues()}
       gridHeaderItems={["Boottype", "Correctiefactor", "Prijs"]}
       rowInputs={[
-        { name: "type" },
+        { name: "type", getValue: (field) => field.type },
         { name: "correction", isInput: true },
         { name: "price", isInput: true },
       ]}
