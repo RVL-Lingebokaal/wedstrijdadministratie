@@ -1,5 +1,5 @@
 import { typesFormSchema } from "../../../../schemas/typesFormSchema";
-import { BootForm, BootTypes } from "../../../../models/boot";
+import { BootForm, BootTypes } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 

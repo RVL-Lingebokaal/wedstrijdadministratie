@@ -1,5 +1,5 @@
 import { array, mixed, number, object } from "yup";
-import { BootTypes } from "../models/boot";
+import { BootTypes } from "../models/settings";
 
 export const typesFormSchema = object({
   items: array()

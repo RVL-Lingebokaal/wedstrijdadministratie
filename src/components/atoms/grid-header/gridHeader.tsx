@@ -1,4 +1,4 @@
-import { getRoundedClass } from "../../utils/gridUtils";
+import { colsOptions, getRoundedClass } from "../../utils/gridUtils";
 
 interface GridHeaderProps {
   items: string[];
@@ -6,7 +6,7 @@ interface GridHeaderProps {
 
 export function GridHeader({ items }: GridHeaderProps) {
   return (
-    <div className="text-white text-xl grid grid-cols-3 m-1">
+    <div className={`text-white text-xl grid ${colsOptions[items.length]} m-1`}>
       {items.map((item, index) => (
         <div
           key={item}

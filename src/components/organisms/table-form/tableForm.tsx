@@ -14,10 +14,9 @@ import { Input } from "../../atoms/input/input";
 import { Button } from "../../atoms/button/button";
 import { ObjectSchema } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { BootForm } from "../../../models/boot";
-import { SettingsForm } from "../../../models/settings";
+import { AgeForm, BootForm } from "../../../models/settings";
 
-export type Form = BootForm | SettingsForm;
+export type Form = BootForm | AgeForm;
 
 interface RowHeaderItem<T extends Form> {
   isInput?: boolean;
@@ -52,7 +51,7 @@ export function TableForm<T extends Form>({
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-3xl">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-4xl">
         <div className="mx-4">
           <GridHeader items={gridHeaderItems} />
           {fields.map((field, index) => (

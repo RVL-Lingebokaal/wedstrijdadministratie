@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { getRoundedClass } from "../../utils/gridUtils";
+import { colsOptions, getRoundedClass } from "../../utils/gridUtils";
 
 interface Item {
   node: string | ReactNode;
@@ -13,7 +13,7 @@ interface GridRowProps {
 
 export function GridRow({ items, lastRow }: GridRowProps) {
   return (
-    <div className="grid grid-cols-3 m-1">
+    <div className={`grid ${colsOptions[items.length]} m-1`}>
       {items.map(({ node, isInput }, index) => (
         <div
           key={index}
