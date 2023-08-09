@@ -2,6 +2,7 @@ import { typesFormSchema } from "../../../../schemas/typesFormSchema";
 import { BootForm, BootTypes } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
+import { Input } from "../../../atoms/input/input";
 
 export function TypesForm() {
   const onSubmit = useCallback((data: BootForm) => {
@@ -16,8 +17,8 @@ export function TypesForm() {
       gridHeaderItems={["Boottype", "Correctiefactor", "Prijs"]}
       rowInputs={[
         { name: "type", getValue: (field) => field.type },
-        { name: "correction", isInput: true },
-        { name: "price", isInput: true },
+        { name: "correction", input: (field) => <Input {...field} /> },
+        { name: "price", input: (field) => <Input {...field} /> },
       ]}
     />
   );

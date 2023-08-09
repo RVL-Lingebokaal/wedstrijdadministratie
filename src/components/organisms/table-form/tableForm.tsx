@@ -3,6 +3,7 @@ import { GridRow } from "../../atoms/grid-row/gridRow";
 import {
   ArrayPath,
   Controller,
+  ControllerRenderProps,
   DefaultValues,
   FieldArrayWithId,
   FieldPath,
@@ -10,16 +11,16 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { Input } from "../../atoms/input/input";
 import { Button } from "../../atoms/button/button";
 import { ObjectSchema } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AgeForm, BootForm } from "../../../models/settings";
+import { ReactElement } from "react";
 
 export type Form = BootForm | AgeForm;
 
 interface RowHeaderItem<T extends Form> {
-  isInput?: boolean;
+  input?: (field: ControllerRenderProps<T>) => ReactElement;
   getValue?: (field: FieldArrayWithId<T, ArrayPath<T>>) => string;
   name: FieldPath<T["items"][0]>;
 }
@@ -57,18 +58,18 @@ export function TableForm<T extends Form>({
           {fields.map((field, index) => (
             <GridRow
               key={field.id}
-              items={rowInputs.map(({ name, isInput, getValue }) => ({
-                node: isInput ? (
+              items={rowInputs.map(({ name, input, getValue }) => ({
+                node: input ? (
                   <Controller
                     key={field.id}
                     control={control}
                     name={`items.${index}.${String(name)}` as Path<T>}
-                    render={({ field }) => <Input {...field} />}
+                    render={({ field }) => input(field)}
                   />
                 ) : (
                   getValue?.(field) ?? ""
                 ),
-                isInput,
+                isInput: Boolean(input),
               }))}
               lastRow={index === fields.length - 1}
             />

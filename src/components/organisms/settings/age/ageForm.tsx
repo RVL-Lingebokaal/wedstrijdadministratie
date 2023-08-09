@@ -7,6 +7,8 @@ import {
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { ageFormSchema } from "../../../../schemas/ageFormSchema";
+import { Input } from "../../../atoms/input/input";
+import { Select } from "../../../molecules/select/select";
 
 export function AgesForm() {
   const onSubmit = useCallback((data: AgeForm) => {
@@ -19,7 +21,7 @@ export function AgesForm() {
       schema={ageFormSchema}
       defaultValues={getDefaultValues()}
       gridHeaderItems={[
-        "Leeftijdsklasse",
+        "Klasse",
         "Leeftijd",
         "Correctiefactor Man",
         "Correctiefactor Vrouw",
@@ -28,9 +30,18 @@ export function AgesForm() {
       rowInputs={[
         { name: "type", getValue: (field) => field.type },
         { name: "age", getValue: (field) => field.age },
-        { name: "correctionMale", isInput: true },
-        { name: "correctionFemale", isInput: true },
-        { name: "strategy", isInput: true },
+        { name: "correctionMale", input: (field) => <Input {...field} /> },
+        { name: "correctionFemale", input: (field) => <Input {...field} /> },
+        {
+          name: "strategy",
+          input: (field) => (
+            <Select
+              selectedValue={field.value.toString()}
+              onChange={field.onChange}
+              items={Object.values(AgeStrategy)}
+            />
+          ),
+        },
       ]}
     />
   );

@@ -10,7 +10,7 @@ export function GridHeader({ items }: GridHeaderProps) {
       {items.map((item, index) => (
         <div
           key={item}
-          className={`bg-secondary py-3 px-4 ${getRoundedClass(
+          className={`bg-secondary-500 py-3 px-4 ${getRoundedClass(
             index,
             items.length,
             false

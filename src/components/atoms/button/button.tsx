@@ -11,7 +11,7 @@ interface ButtonProps {
 const colors = {
   highlight: "bg-highlight",
   primary: "bg-primary",
-  secondary: "bg-secondary",
+  secondary: "bg-secondary-500",
 };
 
 export function Button({
