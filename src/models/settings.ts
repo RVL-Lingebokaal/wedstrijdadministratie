@@ -77,3 +77,8 @@ export const ageTranslations = {
   VJ: "80 t/m 84",
   VK: "85 t/m 120",
 };
+
+export interface Settings {
+  boots: BootItem[];
+  ages: AgeItem[];
+}

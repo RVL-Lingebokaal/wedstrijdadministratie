@@ -9,17 +9,25 @@ import { TableForm } from "../../table-form/tableForm";
 import { ageFormSchema } from "../../../../schemas/ageFormSchema";
 import { Input } from "../../../atoms/input/input";
 import { Select } from "../../../molecules/select/select";
+import { useSaveSettings } from "../../../../hooks/useSaveSettings";
 
-export function AgesForm() {
-  const onSubmit = useCallback((data: AgeForm) => {
-    console.log(data);
-  }, []);
+interface AgeFormProps {
+  initialValues?: AgeForm;
+}
+
+export function AgesForm({ initialValues }: AgeFormProps) {
+  const { mutate } = useSaveSettings();
+
+  const onSubmit = useCallback(
+    async (data: AgeForm) => mutate({ type: "ages", items: data.items }),
+    [mutate]
+  );
 
   return (
     <TableForm
       onSubmit={onSubmit}
       schema={ageFormSchema}
-      defaultValues={getDefaultValues()}
+      defaultValues={getDefaultValues(initialValues)}
       gridHeaderItems={[
         "Klasse",
         "Leeftijd",
@@ -46,7 +54,11 @@ export function AgesForm() {
     />
   );
 }
-const getDefaultValues = () => {
+const getDefaultValues = (initialValues?: AgeForm) => {
+  if (initialValues && initialValues.items) {
+    return initialValues;
+  }
+
   const values = Object.values(AgeTypes);
   return {
     items: values.map((val) => ({
