@@ -8,13 +8,11 @@ const firebaseConfig = {
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize only once to support hot reload during development
-const app = getApps().length === 0
-    ? initializeApp(firebaseConfig)
-    : getApp();
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
 const firestore = getFirestore(app);
 

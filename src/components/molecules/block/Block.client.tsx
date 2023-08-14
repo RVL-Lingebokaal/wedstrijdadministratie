@@ -10,7 +10,7 @@ interface BlockProps {
 export function Block({ title, bottom, children, variant }: BlockProps) {
   return (
     <div
-      className={`place-items-center flex flex-col border-4 border-secondary bg-white flex-1 ${
+      className={`place-items-center flex flex-col border-4 border-secondary-500 bg-white flex-1 ${
         variant === "small" ? "px-7 py-5" : "p-12"
       }`}
     >
