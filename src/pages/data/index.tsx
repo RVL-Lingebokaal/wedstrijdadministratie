@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Ploeg } from "../../models/ploeg";
+import { Team } from "../../models/team";
 
 let shouldLoad = true;
 
 export default function Data() {
-  const [ploegen, setPloegen] = useState<Ploeg[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
     if (shouldLoad) {
@@ -13,8 +13,8 @@ export default function Data() {
         .then((response) => {
           return response.json();
         })
-        .then((ploegen: Ploeg[]) => {
-          setPloegen(ploegen);
+        .then((teams: Team[]) => {
+          setTeams(teams);
         });
     }
   });
@@ -24,9 +24,9 @@ export default function Data() {
       <h1>Data</h1>
 
       <h2>Ploegen</h2>
-      {ploegen.map((ploeg) => (
-        <div key={ploeg.naam}>
-          <p>{ploeg.naam}</p>
+      {teams.map((team) => (
+        <div key={team.getName()}>
+          <p>{team.getName()}</p>
         </div>
       ))}
     </div>

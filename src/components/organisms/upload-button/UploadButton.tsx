@@ -1,6 +1,9 @@
 import { ChangeEvent, useCallback, useRef } from "react";
+import { Button } from "../../atoms/button/button";
+import { useUploadFile } from "../../../hooks/useUploadFile";
 
 export function UploadButton() {
+  const { mutate, data, isLoading } = useUploadFile();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const memoizedOnClick = useCallback(() => {
@@ -12,21 +15,28 @@ export function UploadButton() {
   const uploadedFile = useCallback(
     ({ target: { files, validity } }: ChangeEvent<HTMLInputElement>) => {
       if (validity.valid && files) {
-        console.log(files[0]);
+        void mutate({ file: files[0] });
       }
     },
-    []
+    [mutate]
   );
 
   return (
     <>
-      <button onClick={memoizedOnClick}>Upload bestand</button>
-      {/*<button*/}
-      {/*  type="file"*/}
-      {/*  accept=".xml"*/}
-      {/*  ref={hiddenFileInput}*/}
-      {/*  onChange={uploadedFile}*/}
-      {/*/>*/}
+      <p>{`Er zijn op dit moment ${data?.count ?? 0} ploegen ingeladen.`}</p>
+      <Button
+        onClick={memoizedOnClick}
+        color="primary"
+        name="Upload bestand"
+        isLoading={isLoading}
+      />
+      <input
+        type="file"
+        accept="text/csv"
+        ref={hiddenFileInput}
+        onChange={uploadedFile}
+        className="hidden"
+      />
     </>
   );
 }

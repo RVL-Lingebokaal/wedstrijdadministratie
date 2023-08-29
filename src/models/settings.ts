@@ -22,11 +22,12 @@ export enum AgeStrategy {
   youngest = "jongste",
 }
 
-export enum BootTypes {
+export enum BoatTypes {
   cBoatOne = "C1x",
   cBoatFourBoardWith = "C4+",
   cBoatFourWith = "C4*",
   cBoatTwoWith = "C2*",
+  cBoatTwoScull = "C2x",
   skiff = "1x",
   boatTwoBoard = "2-",
   boatTwoScull = "2x",
@@ -38,14 +39,14 @@ export enum BootTypes {
   boatEightWith = "8*",
 }
 
-export interface BootItem {
-  type: BootTypes;
+export interface BoatItem {
+  type: BoatTypes;
   correction: number;
   price: number;
 }
 
-export interface BootForm {
-  items: BootItem[];
+export interface BoatForm {
+  items: BoatItem[];
 }
 
 export interface AgeItem {
@@ -79,6 +80,6 @@ export const ageTranslations = {
 };
 
 export interface Settings {
-  boots: BootItem[];
+  boats: BoatItem[];
   ages: AgeItem[];
 }

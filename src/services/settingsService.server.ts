@@ -1,9 +1,9 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import firestore from "../firebase/firebase";
-import { AgeItem, BootItem, Settings } from "../models/settings";
+import { AgeItem, BoatItem, Settings } from "../models/settings";
 
-export type ItemsToSave = AgeItem[] | BootItem[];
-export type SettingsType = "boots" | "ages";
+export type ItemsToSave = AgeItem[] | BoatItem[];
+export type SettingsType = "boats" | "ages";
 
 export class SettingsService {
   async getSettings(): Promise<Settings | undefined> {
