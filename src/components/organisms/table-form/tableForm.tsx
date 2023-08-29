@@ -14,10 +14,10 @@ import {
 import { Button } from "../../atoms/button/button";
 import { ObjectSchema } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AgeForm, BootForm } from "../../../models/settings";
+import { AgeForm, BoatForm } from "../../../models/settings";
 import { ReactElement } from "react";
 
-export type Form = BootForm | AgeForm;
+export type Form = BoatForm | AgeForm;
 
 interface RowHeaderItem<T extends Form> {
   input?: (field: ControllerRenderProps<T>) => ReactElement;

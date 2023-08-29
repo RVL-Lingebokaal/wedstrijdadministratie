@@ -1,18 +1,18 @@
 import { typesFormSchema } from "../../../../schemas/typesFormSchema";
-import { BootForm, BootTypes } from "../../../../models/settings";
+import { BoatForm, BoatTypes } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { Input } from "../../../atoms/input/input";
 import { useSaveSettings } from "../../../../hooks/useSaveSettings";
 
 interface TypesFormProps {
-  initialValues?: BootForm;
+  initialValues?: BoatForm;
 }
 export function TypesForm({ initialValues }: TypesFormProps) {
   const { mutate } = useSaveSettings();
 
   const onSubmit = useCallback(
-    async (data: BootForm) => mutate({ type: "boots", items: data.items }),
+    async (data: BoatForm) => mutate({ type: "boats", items: data.items }),
     [mutate]
   );
 
@@ -30,12 +30,12 @@ export function TypesForm({ initialValues }: TypesFormProps) {
     />
   );
 }
-const getDefaultValues = (initialValues?: BootForm) => {
+const getDefaultValues = (initialValues?: BoatForm) => {
   if (initialValues && initialValues.items) {
     return initialValues;
   }
 
-  const values = Object.values(BootTypes);
+  const values = Object.values(BoatTypes);
   return {
     items: values.map((val) => ({ type: val, correction: 1, price: 10 })),
   };

@@ -1,3 +1,5 @@
+import { FaSpinner } from "react-icons/fa";
+
 type Color = "primary" | "secondary" | "highlight";
 
 interface ButtonProps {
@@ -6,6 +8,7 @@ interface ButtonProps {
   onClick?: () => void;
   type?: "submit" | "button" | "reset";
   classNames?: string;
+  isLoading?: boolean;
 }
 
 const colors = {
@@ -20,13 +23,17 @@ export function Button({
   onClick,
   type = "button",
   classNames = "",
+  isLoading = false,
 }: ButtonProps) {
   return (
     <button
-      className={`p-4 border-2 rounded-lg ${colors[color]} ${classNames}`}
+      className={`p-3 border-2 rounded-lg ${colors[color]} ${classNames} flex`}
       onClick={onClick}
       type={type}
     >
+      {isLoading && (
+        <FaSpinner className="animate-spin text-white h-5 w-5 mr-3" />
+      )}
       <span className="text-white">{name}</span>
     </button>
   );

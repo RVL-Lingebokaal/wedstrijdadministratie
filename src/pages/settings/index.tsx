@@ -33,7 +33,7 @@ export default function Settings() {
           />
         ))}
       </div>
-      {tab === Tabs.type && <TypesForm initialValues={{ items: data.boots }} />}
+      {tab === Tabs.type && <TypesForm initialValues={{ items: data.boats }} />}
       {tab === Tabs.leeftijd && (
         <AgesForm initialValues={{ items: data.ages }} />
       )}
