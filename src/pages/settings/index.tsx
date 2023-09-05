@@ -2,10 +2,11 @@ import { Button } from "../../components/atoms/button/button";
 import { useState } from "react";
 import { TypesForm } from "../../components/organisms/settings/types/typesForm";
 import { AgesForm } from "../../components/organisms/settings/age/ageForm";
-import { useRetrieveSettings } from "../../hooks/useRetrieveSettings";
+import { useGetSettings } from "../../hooks/useGetSettings";
 import { FaSpinner } from "react-icons/fa";
+import { Tabs } from "../../components/molecules/tabs/tabs";
 
-enum Tabs {
+export enum SettingsTabs {
   type = "Boottype",
   leeftijd = "Leeftijd",
   ploeg = "Ploeg",
@@ -14,8 +15,8 @@ enum Tabs {
 }
 
 export default function Settings() {
-  const { data, isLoading } = useRetrieveSettings();
-  const [tab, setTab] = useState(Tabs.type);
+  const { data, isLoading } = useGetSettings();
+  const [tab, setTab] = useState<SettingsTabs[0]>(SettingsTabs.type);
 
   if (isLoading || !data) {
     return <FaSpinner className="animate-spin text-brand-blue-500" />;
@@ -23,18 +24,15 @@ export default function Settings() {
 
   return (
     <div className="flex">
-      <div className="flex flex-col gap-3">
-        {Object.values(Tabs).map((val) => (
-          <Button
-            key={val}
-            name={val}
-            color={val === tab ? "highlight" : "primary"}
-            onClick={() => setTab(val)}
-          />
-        ))}
-      </div>
-      {tab === Tabs.type && <TypesForm initialValues={{ items: data.boats }} />}
-      {tab === Tabs.leeftijd && (
+      <Tabs
+        tabs={Object.values(SettingsTabs)}
+        currentTab={tab}
+        setTab={setTab}
+      />
+      {tab === SettingsTabs.type && (
+        <TypesForm initialValues={{ items: data.boats }} />
+      )}
+      {tab === SettingsTabs.leeftijd && (
         <AgesForm initialValues={{ items: data.ages }} />
       )}
     </div>

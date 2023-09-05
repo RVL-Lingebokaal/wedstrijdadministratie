@@ -14,6 +14,8 @@ import {
   TEAM_REGISTRATION_FEE,
   TEAM_REMARKS,
   TEAM_CLUB,
+  HELM_START,
+  HELM_END,
 } from "./constants";
 import { Stream } from "stream";
 import { Boat } from "../models/boat";
@@ -33,7 +35,10 @@ export class BondService {
       if (record[0] === "PloegId") {
         continue;
       }
-      const participants = this.addParticipants(record, participantMap);
+      const { participants, helm } = this.addParticipants(
+        record,
+        participantMap
+      );
       const boat = new Boat({
         club: record[TEAM_CLUB],
         name: record[BOAT_NAME],
@@ -59,6 +64,7 @@ export class BondService {
           phoneNumber: record[TEAM_PHONE_NUMBER],
           boatType,
           gender,
+          helm,
         })
       );
     }
@@ -89,7 +95,15 @@ export class BondService {
       map.set(id, participant);
       participants.push(participant);
     }
-    return participants;
+    const helm = record[HELM_START]
+      ? new Participant({
+          name: record[HELM_START],
+          birthYear: parseInt(record[HELM_START + 1]),
+          id: record[HELM_START + 2],
+          club: record[HELM_END],
+        })
+      : null;
+    return { participants, helm };
   }
 
   private getBoatType(type: string): { boatType: BoatTypes; gender: Gender } {

@@ -23,13 +23,13 @@ export function Page({
       </Head>
       <Header />
       <main
-        className={`h-[calc(100vh_-_231px)] flex justify-center py-6 ${
+        className={`min-h-[calc(100vh_-_231px)] flex justify-center py-6 ${
           pathname === "/" ? "diagonal-theme-line" : "bg-background"
         }`}
       >
         <div className="w-6xl">{children}</div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

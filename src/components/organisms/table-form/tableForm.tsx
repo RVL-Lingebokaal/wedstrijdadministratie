@@ -54,7 +54,7 @@ export function TableForm<T extends Form>({
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="w-4xl">
         <div className="mx-4">
-          <GridHeader items={gridHeaderItems} />
+          <GridHeader items={gridHeaderItems} needsRounding />
           {fields.map((field, index) => (
             <GridRow
               key={field.id}

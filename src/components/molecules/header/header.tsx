@@ -7,6 +7,7 @@ const navLinks = [
   { title: "Instellingen", target: "/settings" },
   { title: "Upload", target: "/upload" },
   { title: "Data", target: "/data" },
+  { title: "Administratie", target: "/administration" },
 ];
 
 export function Header() {
@@ -16,13 +17,21 @@ export function Header() {
     <div className="bg-primary flex justify-center">
       <nav className="flex justify-between py-6 w-6xl">
         <Link href="/">
-          <Image className="bg-white p-2" src="/rvl_logo.svg" alt="RVL logo" width={200} height={50} />
+          <Image
+            className="bg-white p-2"
+            src="/rvl_logo.svg"
+            alt="RVL logo"
+            width={200}
+            height={50}
+          />
         </Link>
         <div className="flex justify-end gap-6">
           {navLinks.map(({ title, target }) => (
             <Link
               className={`text-white text-2xl my-auto ${
-                pathname === target ? "underline decoration-secondary decoration-[3px] underline-offset-8" : ""
+                pathname === target
+                  ? "underline decoration-secondary decoration-[3px] underline-offset-8"
+                  : ""
               }`}
               key={target}
               href={target}

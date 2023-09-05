@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Settings } from "../models/settings";
 
-export function useRetrieveSettings() {
+export function useGetSettings() {
   return useQuery(
     ["retrieve-settings"],
     async () => {
