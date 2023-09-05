@@ -11,15 +11,13 @@ export function useGetTeams() {
       if (!response.ok) throw new Error("Could not get teams");
 
       const result = (await response.json()) as any[];
-      const teams = result.map(
+      return result.map(
         (team) =>
           new Team({
             ...team,
             participants: team.participants.map((p: any) => new Participant(p)),
           })
       );
-
-      return teams;
     },
     {
       keepPreviousData: true,

@@ -1,4 +1,3 @@
-import { Button } from "../../components/atoms/button/button";
 import { useState } from "react";
 import { TypesForm } from "../../components/organisms/settings/types/typesForm";
 import { AgesForm } from "../../components/organisms/settings/age/ageForm";
