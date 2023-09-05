@@ -11,7 +11,9 @@ export const TEAM_REMARKS = 57;
 
 //Participant
 export const PARTICIPANT_START = 7;
-export const PARTICIPANT_END = 46;
+export const PARTICIPANT_END = 38;
+export const HELM_START = 43;
+export const HELM_END = 46;
 
 //Boat
 export const BOAT_NAME = 47;

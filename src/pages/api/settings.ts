@@ -18,7 +18,7 @@ export default async function handler(
 
     res.status(200);
   } else {
-    const settings = settingsService.getSettings();
+    const settings = await settingsService.getSettings();
     res.status(200).json(settings);
   }
 

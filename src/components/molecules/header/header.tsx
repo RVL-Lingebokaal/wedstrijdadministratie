@@ -7,6 +7,7 @@ const navLinks = [
   { title: "Instellingen", target: "/settings" },
   { title: "Upload", target: "/upload" },
   { title: "Data", target: "/data" },
+  { title: "Administratie", target: "/administration" },
 ];
 
 export function Header() {

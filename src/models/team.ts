@@ -1,6 +1,7 @@
 import { Participant } from "./participant";
 import { Boat } from "./boat";
-import { BoatTypes } from "./settings";
+import { AgeItem, BoatTypes } from "./settings";
+import { calculateAgeType } from "../components/utils/ageUtils";
 
 export enum Gender {
   M = "male",
@@ -21,6 +22,7 @@ interface TeamCreation {
   remarks: string;
   boatType: BoatTypes;
   gender: Gender;
+  helm: Participant | null;
 }
 
 export class Team {
@@ -36,6 +38,7 @@ export class Team {
   private remarks = "";
   private boatType: null | BoatTypes = null;
   private gender: null | Gender = null;
+  private helm: null | Participant = null;
 
   constructor({
     name,
@@ -50,6 +53,7 @@ export class Team {
     remarks,
     boatType,
     gender,
+    helm,
   }: TeamCreation) {
     this.name = name;
     this.id = id;
@@ -63,6 +67,7 @@ export class Team {
     this.preferredBlock = preferredBlock;
     this.boatType = boatType;
     this.gender = gender;
+    this.helm = helm ?? null;
   }
 
   getId() {
@@ -71,6 +76,22 @@ export class Team {
 
   getName() {
     return this.name;
+  }
+
+  getBoatType() {
+    return this.boatType;
+  }
+
+  getAgeClass(ages: AgeItem[]) {
+    if (this.participants.length === 1) {
+      return this.participants[0].getAgeType(ages);
+    }
+    const total = this.participants.reduce(
+      (acc, participant) => acc + participant.getAge(),
+      0
+    );
+    const age = total / this.participants.length;
+    return calculateAgeType(ages, age);
   }
 
   getDatabaseTeam() {
@@ -87,6 +108,7 @@ export class Team {
       preferredBlock: this.preferredBlock,
       boatType: this.boatType,
       gender: this.gender,
+      helm: this.helm?.getId(),
     };
   }
 }

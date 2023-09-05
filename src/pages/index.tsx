@@ -5,16 +5,31 @@ import Rowing from "../../public/rowing.svg";
 import Calendar from "../../public/calendar.svg";
 import Image from "next/image";
 import { Block } from "../components/molecules/block/Block.client";
+import { useGetCounts } from "../hooks/useGetCounts";
 
 export default function Home() {
+  const { data, isLoading } = useGetCounts();
+
   const elements = useMemo(() => {
+    if (isLoading) {
+      return [];
+    }
+
     return [
-      { bottom: "Deelnemers", title: "1566", icon: Person },
-      { bottom: "Teams", title: "123", icon: Groups },
+      {
+        bottom: "Deelnemers",
+        title: data?.participantsSize.toString() ?? "",
+        icon: Person,
+      },
+      {
+        bottom: "Teams",
+        title: data?.teamsSize.toString() ?? "",
+        icon: Groups,
+      },
       { bottom: "Verenigingen", title: "23", icon: Rowing },
       { bottom: "Dagen", title: "152", icon: Calendar },
     ];
-  }, []);
+  }, [data?.participantsSize, data?.teamsSize, isLoading]);
 
   return (
     <div>

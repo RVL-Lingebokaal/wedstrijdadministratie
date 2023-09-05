@@ -1,3 +1,6 @@
+import { AgeItem, AgeTypes } from "./settings";
+import { calculateAgeType } from "../components/utils/ageUtils";
+
 interface ParticipantCreation {
   name: string;
   id: string;
@@ -10,6 +13,7 @@ export class Participant {
   private id = "";
   private club = "";
   private birthYear = 1900;
+  private ageType: AgeTypes = AgeTypes.open;
 
   constructor({ name, id, club, birthYear }: ParticipantCreation) {
     this.birthYear = birthYear;
@@ -29,5 +33,21 @@ export class Participant {
       name: this.name,
       club: this.club,
     };
+  }
+
+  getAge() {
+    return new Date().getFullYear() - this.birthYear;
+  }
+
+  getAgeType(ages: AgeItem[]) {
+    if (!this.ageType) {
+      this.calculateAgeType(ages);
+    }
+
+    return this.ageType;
+  }
+
+  private calculateAgeType(ages: AgeItem[]) {
+    this.ageType = calculateAgeType(ages, this.getAge());
   }
 }
