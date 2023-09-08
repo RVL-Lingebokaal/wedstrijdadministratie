@@ -29,7 +29,7 @@ export function Page({
       >
         <div className="w-6xl">{children}</div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
