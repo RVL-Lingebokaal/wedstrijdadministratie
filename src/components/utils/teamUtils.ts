@@ -1,11 +1,14 @@
-import { Team } from "../../models/team";
-import { AgeItem, AgeTypes } from "../../models/settings";
+import { Gender, Team } from "../../models/team";
+import { AgeItem, AgeType, BoatType } from "../../models/settings";
 
-export function getGroups(teams: Team[]) {
+export function getGroups(teams: Team[], gender: Gender) {
   return teams.reduce((acc, team) => {
     const boatType = team.getBoatType();
     if (!boatType) {
       throw new Error("missing boattype in boat");
+    }
+    if (team.getGender() !== gender) {
+      return acc;
     }
     let teams: Team[] = [];
     if (acc.has(boatType)) {
@@ -13,7 +16,7 @@ export function getGroups(teams: Team[]) {
     }
     teams.push(team);
     return acc.set(boatType, teams);
-  }, new Map<string, Team[]>());
+  }, new Map<BoatType, Team[]>());
 }
 
 export function getTeamsByClass(teams: Team[], ages: AgeItem[]) {
@@ -25,5 +28,5 @@ export function getTeamsByClass(teams: Team[], ages: AgeItem[]) {
     }
     teams.push(team);
     return acc.set(ageClass, teams);
-  }, new Map<AgeTypes, Team[]>());
+  }, new Map<AgeType, Team[]>());
 }

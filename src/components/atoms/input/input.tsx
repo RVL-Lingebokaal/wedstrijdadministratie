@@ -1,13 +1,20 @@
+import { forwardRef } from "react";
+
 interface InputProps {
   onChange: () => void;
+  label?: string;
 }
 
-export function Input(props: InputProps) {
+export const Input = forwardRef(({ label, ...props }: InputProps, ref) => {
   return (
-    <input
-      className="border-gray-400 border rounded-lg px-2 py-1.5 w-full"
-      type="text"
-      {...props}
-    />
+    <div className="mt-2">
+      <label className="font-bold">{label}</label>
+      <input
+        className="border-gray-400 border rounded-lg px-2 py-1.5 w-full"
+        type="text"
+        {...props}
+      />
+    </div>
   );
-}
+});
+Input.displayName = "Input";

@@ -15,7 +15,7 @@ import { Button } from "../../atoms/button/button";
 import { ObjectSchema } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AgeForm, BoatForm } from "../../../models/settings";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 
 export type Form = BoatForm | AgeForm;
 
@@ -40,7 +40,7 @@ export function TableForm<T extends Form>({
   rowInputs,
   gridHeaderItems,
 }: TableFormProps<T>) {
-  const { handleSubmit, control } = useForm<T>({
+  const { handleSubmit, control, formState } = useForm<T>({
     resolver: yupResolver(schema),
     defaultValues: defaultValues,
     mode: "all",

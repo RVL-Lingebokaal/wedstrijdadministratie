@@ -1,6 +1,12 @@
 import { FaSpinner } from "react-icons/fa";
 
-type Color = "primary" | "secondary" | "highlight";
+type Color =
+  | "primary"
+  | "secondary"
+  | "highlight"
+  | "error"
+  | "white"
+  | "highlightReverse";
 
 interface ButtonProps {
   name: string;
@@ -15,6 +21,17 @@ const colors = {
   highlight: "bg-highlight",
   primary: "bg-primary",
   secondary: "bg-secondary-500",
+  error: "bg-red-600",
+  white: "bg-white",
+  highlightReverse: "bg-white",
+};
+const borderColors = {
+  highlight: "border-highlight",
+  primary: "border-primary",
+  secondary: "border-secondary-500",
+  error: "border-red-600",
+  white: "border-primary",
+  highlightReverse: "border-highlight",
 };
 
 export function Button({
@@ -27,14 +44,24 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`p-3 border-2 rounded-lg ${colors[color]} ${classNames} flex`}
+      className={`py-2 px-4 border-2 rounded-lg ${colors[color]} ${borderColors[color]} ${classNames} flex`}
       onClick={onClick}
       type={type}
     >
       {isLoading && (
         <FaSpinner className="animate-spin text-white h-5 w-5 mr-3" />
       )}
-      <span className="text-white">{name}</span>
+      <span
+        className={`${
+          color === "white"
+            ? "text-primary"
+            : color === "highlightReverse"
+            ? "text-highlight"
+            : "text-white"
+        }`}
+      >
+        {name}
+      </span>
     </button>
   );
 }

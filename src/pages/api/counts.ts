@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { teamService } from "../../services/teamService.server";
-import { participantService } from "../../services/participantService.server";
+import participantService from "../../services/participantService.server";
+import teamService from "../../services/teamService.server";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,5 +1,5 @@
 import { typesFormSchema } from "../../../../schemas/typesFormSchema";
-import { BoatForm, BoatTypes } from "../../../../models/settings";
+import { BoatForm, BoatType } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { Input } from "../../../atoms/input/input";
@@ -35,7 +35,7 @@ const getDefaultValues = (initialValues?: BoatForm) => {
     return initialValues;
   }
 
-  const values = Object.values(BoatTypes);
+  const values = Object.values(BoatType);
   return {
     items: values.map((val) => ({ type: val, correction: 1, price: 10 })),
   };

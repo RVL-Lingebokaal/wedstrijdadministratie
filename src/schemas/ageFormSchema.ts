@@ -1,11 +1,11 @@
 import { array, mixed, number, object, string } from "yup";
-import { AgeStrategy, AgeTypes } from "../models/settings";
+import { AgeStrategy, AgeType } from "../models/settings";
 
 export const ageFormSchema = object({
   items: array()
     .of(
       object({
-        type: mixed<AgeTypes>().oneOf(Object.values(AgeTypes)).required(),
+        type: mixed<AgeType>().oneOf(Object.values(AgeType)).required(),
         age: string().required(),
         correctionMale: number().required(),
         correctionFemale: number().required(),

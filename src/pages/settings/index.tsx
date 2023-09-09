@@ -4,6 +4,14 @@ import { AgesForm } from "../../components/organisms/settings/age/ageForm";
 import { useGetSettings } from "../../hooks/useGetSettings";
 import { FaSpinner } from "react-icons/fa";
 import { Tabs } from "../../components/molecules/tabs/tabs";
+import {
+  AgeItem,
+  AgeStrategy,
+  AgeType,
+  BoatItem,
+  BoatType,
+} from "../../models/settings";
+import { LoadingSpinner } from "../../components/atoms/loading-spinner/loadingSpinner";
 
 export enum SettingsTabs {
   type = "Boottype",
@@ -17,8 +25,8 @@ export default function Settings() {
   const { data, isLoading } = useGetSettings();
   const [tab, setTab] = useState<SettingsTabs[0]>(SettingsTabs.type);
 
-  if (isLoading || !data) {
-    return <FaSpinner className="animate-spin text-brand-blue-500" />;
+  if (isLoading) {
+    return <LoadingSpinner />;
   }
 
   return (
@@ -29,11 +37,41 @@ export default function Settings() {
         setTab={setTab}
       />
       {tab === SettingsTabs.type && (
-        <TypesForm initialValues={{ items: data.boats }} />
+        <TypesForm
+          initialValues={{
+            items:
+              data && data.boats.length > 0
+                ? data.boats
+                : getDefaultvaluesBoats(),
+          }}
+        />
       )}
       {tab === SettingsTabs.leeftijd && (
-        <AgesForm initialValues={{ items: data.ages }} />
+        <AgesForm
+          initialValues={{
+            items:
+              data && data.ages.length > 0 ? data.ages : getDefaultvaluesAges(),
+          }}
+        />
       )}
     </div>
   );
 }
+
+const getDefaultvaluesBoats = (): BoatItem[] => {
+  return Object.values(BoatType).map((key) => ({
+    type: key,
+    correction: 1,
+    price: 10,
+  }));
+};
+
+const getDefaultvaluesAges = (): AgeItem[] => {
+  return Object.values(AgeType).map((key) => ({
+    type: key,
+    age: key,
+    correctionFemale: 1,
+    correctionMale: 1,
+    strategy: AgeStrategy.average,
+  }));
+};

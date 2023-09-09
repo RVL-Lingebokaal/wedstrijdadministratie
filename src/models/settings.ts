@@ -1,4 +1,6 @@
-export enum AgeTypes {
+import { Gender } from "./team";
+
+export enum AgeType {
   fourteen = "14",
   sixteen = "16",
   eighteen = "18",
@@ -22,7 +24,7 @@ export enum AgeStrategy {
   youngest = "jongste",
 }
 
-export enum BoatTypes {
+export enum BoatType {
   cBoatOne = "C1x",
   cBoatFourBoardWith = "C4+",
   cBoatFourWith = "C4*",
@@ -40,7 +42,7 @@ export enum BoatTypes {
 }
 
 export interface BoatItem {
-  type: BoatTypes;
+  type: BoatType;
   correction: number;
   price: number;
 }
@@ -49,8 +51,15 @@ export interface BoatForm {
   items: BoatItem[];
 }
 
+export interface ClassItem {
+  name: string;
+  boatType: BoatType;
+  ages: AgeType[];
+  gender: Gender;
+}
+
 export interface AgeItem {
-  type: AgeTypes;
+  type: AgeType;
   age: string;
   correctionMale: number;
   correctionFemale: number;
@@ -82,4 +91,5 @@ export const ageTranslations = {
 export interface Settings {
   boats: BoatItem[];
   ages: AgeItem[];
+  classes: ClassItem[];
 }

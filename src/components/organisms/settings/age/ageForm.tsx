@@ -2,7 +2,7 @@ import {
   AgeForm,
   AgeStrategy,
   ageTranslations,
-  AgeTypes,
+  AgeType,
 } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
@@ -59,7 +59,7 @@ const getDefaultValues = (initialValues?: AgeForm) => {
     return initialValues;
   }
 
-  const values = Object.values(AgeTypes);
+  const values = Object.values(AgeType);
   return {
     items: values.map((val) => ({
       type: val,

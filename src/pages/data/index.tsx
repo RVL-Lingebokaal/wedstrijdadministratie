@@ -9,7 +9,7 @@ export default function Data() {
   useEffect(() => {
     if (shouldLoad) {
       shouldLoad = false;
-      fetch("/api/ploegen")
+      fetch("/api/teams")
         .then((response) => {
           return response.json();
         })

@@ -1,8 +1,8 @@
 import { Team } from "../models/team";
 import { collection, doc, getDocs, writeBatch } from "firebase/firestore";
 import firestore from "../firebase/firebase";
-import { boatService } from "./boatService.server";
-import { participantService } from "./participantService.server";
+import boatService from "./boatService.server";
+import participantService from "./participantService.server";
 import { Boat } from "../models/boat";
 import { Participant } from "../models/participant";
 
@@ -16,6 +16,8 @@ export class TeamService {
       const docRef = doc(firestore, "ploeg", team.getId());
       batch.set(docRef, team.getDatabaseTeam(), { merge: true });
     });
+
+    this.teams = teams;
 
     return await batch.commit();
   }
@@ -55,4 +57,21 @@ export class TeamService {
   }
 }
 
-export const teamService = new TeamService();
+let teamService: TeamService;
+
+if (process.env.NODE_ENV === "production") {
+  teamService = new TeamService();
+} else {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (!global.teamService) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    global.teamService = new TeamService();
+  }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  teamService = global.teamService;
+}
+
+export default teamService;
