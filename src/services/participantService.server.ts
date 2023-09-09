@@ -13,11 +13,6 @@ export class ParticipantService {
       batch.set(docRef, participant.getDatabaseParticipant(), { merge: true });
     });
 
-    this.participants = participants.reduce(
-      (acc, participant) => acc.set(participant.getId(), participant),
-      new Map<string, Participant>()
-    );
-
     return await batch.commit();
   }
 
@@ -28,7 +23,7 @@ export class ParticipantService {
       this.participants = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
         return acc.set(
-          doc.id,
+          docData.id,
           new Participant({
             name: docData.name,
             club: docData.club,
@@ -41,5 +36,21 @@ export class ParticipantService {
     return this.participants;
   }
 }
+let participantService: ParticipantService;
 
-export const participantService = new ParticipantService();
+if (process.env.NODE_ENV === "production") {
+  participantService = new ParticipantService();
+} else {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (!global.participantService) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    global.participantService = new ParticipantService();
+  }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  participantService = global.participantService;
+}
+
+export default participantService;

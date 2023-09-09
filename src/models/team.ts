@@ -1,6 +1,6 @@
 import { Participant } from "./participant";
 import { Boat } from "./boat";
-import { AgeItem, BoatTypes } from "./settings";
+import { AgeItem, BoatType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
 
 export enum Gender {
@@ -20,7 +20,7 @@ interface TeamCreation {
   coach: string;
   phoneNumber: string;
   remarks: string;
-  boatType: BoatTypes;
+  boatType: BoatType;
   gender: Gender;
   helm: Participant | null;
 }
@@ -36,7 +36,7 @@ export class Team {
   private coach = "";
   private phoneNumber = "";
   private remarks = "";
-  private boatType: null | BoatTypes = null;
+  private boatType: null | BoatType = null;
   private gender: null | Gender = null;
   private helm: null | Participant = null;
 
@@ -76,6 +76,10 @@ export class Team {
 
   getName() {
     return this.name;
+  }
+
+  getGender() {
+    return this.gender;
   }
 
   getBoatType() {

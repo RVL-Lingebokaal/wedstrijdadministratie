@@ -12,12 +12,6 @@ export class BoatService {
       const docRef = doc(firestore, "boot", boat.getId());
       batch.set(docRef, boat.getDatabaseBoat(), { merge: true });
     });
-
-    this.boats = boats.reduce(
-      (acc, boat) => acc.set(boat.getId(), boat),
-      new Map<string, Boat>()
-    );
-    return await batch.commit();
   }
 
   async getBoats() {
@@ -37,4 +31,21 @@ export class BoatService {
   }
 }
 
-export const boatService = new BoatService();
+let boatService: BoatService;
+
+if (process.env.NODE_ENV === "production") {
+  boatService = new BoatService();
+} else {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (!global.boatService) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    global.boatService = new BoatService();
+  }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  boatService = global.boatService;
+}
+
+export default boatService;

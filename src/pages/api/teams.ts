@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { teamService } from "../../services/teamService.server";
+import teamService from "../../services/teamService.server";
 import { Team } from "../../models/team";
 
 export default async function handler(

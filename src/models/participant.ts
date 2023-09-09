@@ -1,4 +1,4 @@
-import { AgeItem, AgeTypes } from "./settings";
+import { AgeItem, AgeType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
 
 interface ParticipantCreation {
@@ -13,7 +13,7 @@ export class Participant {
   private id = "";
   private club = "";
   private birthYear = 1900;
-  private ageType: AgeTypes = AgeTypes.open;
+  private ageType: AgeType = AgeType.open;
 
   constructor({ name, id, club, birthYear }: ParticipantCreation) {
     this.birthYear = birthYear;

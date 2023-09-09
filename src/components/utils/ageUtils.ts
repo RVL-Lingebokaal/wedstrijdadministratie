@@ -1,4 +1,4 @@
-import { AgeItem, AgeTypes } from "../../models/settings";
+import { AgeItem, AgeType } from "../../models/settings";
 
 export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   const type = ages.find(({ age }) => {
@@ -8,5 +8,5 @@ export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
     return ageToBeFound >= lower && ageToBeFound <= high;
   })?.type;
 
-  return type ?? AgeTypes.open;
+  return type ?? AgeType.open;
 }

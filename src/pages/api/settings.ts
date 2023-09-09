@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {
+import settingsService, {
   ItemsToSave,
-  settingsService,
   SettingsType,
 } from "../../services/settingsService.server";
 

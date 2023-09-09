@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { bondService } from "../../../services/bondService.server";
 import Busboy from "busboy";
 import { Stream } from "stream";
-import { teamService } from "../../../services/teamService.server";
-import { participantService } from "../../../services/participantService.server";
-import { boatService } from "../../../services/boatService.server";
+import teamService from "../../../services/teamService.server";
+import participantService from "../../../services/participantService.server";
+import boatService from "../../../services/boatService.server";
 
 export default async function handler(
   req: NextApiRequest,

@@ -19,7 +19,7 @@ import {
 } from "./constants";
 import { Stream } from "stream";
 import { Boat } from "../models/boat";
-import { BoatTypes } from "../models/settings";
+import { BoatType } from "../models/settings";
 
 export class BondService {
   async readBondFile(
@@ -106,7 +106,7 @@ export class BondService {
     return { participants, helm };
   }
 
-  private getBoatType(type: string): { boatType: BoatTypes; gender: Gender } {
+  private getBoatType(type: string): { boatType: BoatType; gender: Gender } {
     const typeWithoutSpaces = type.replaceAll(" ", "").toLowerCase();
     const gender = typeWithoutSpaces.includes("h")
       ? Gender.M
@@ -117,60 +117,60 @@ export class BondService {
     switch (typeWithoutSpaces) {
       case "hc1x":
       case "dc1x":
-        return { gender, boatType: BoatTypes.cBoatOne };
+        return { gender, boatType: BoatType.cBoatOne };
       case "h1x":
       case "d1x":
-        return { gender, boatType: BoatTypes.skiff };
+        return { gender, boatType: BoatType.skiff };
       case "mixc2*":
       case "dc2*":
       case "hc2*":
-        return { gender, boatType: BoatTypes.cBoatTwoWith };
+        return { gender, boatType: BoatType.cBoatTwoWith };
       case "mixc2x":
       case "dc2x":
       case "hc2x":
-        return { gender, boatType: BoatTypes.cBoatTwoScull };
+        return { gender, boatType: BoatType.cBoatTwoScull };
       case "mixc4*":
       case "dc4*":
       case "hc4*":
-        return { gender, boatType: BoatTypes.cBoatFourWith };
+        return { gender, boatType: BoatType.cBoatFourWith };
       case "mixc4+":
       case "dc4+":
       case "hc4+":
-        return { gender, boatType: BoatTypes.cBoatFourBoardWith };
+        return { gender, boatType: BoatType.cBoatFourBoardWith };
       case "mix2-":
       case "d2-":
       case "h2-":
-        return { gender, boatType: BoatTypes.boatTwoBoard };
+        return { gender, boatType: BoatType.boatTwoBoard };
       case "mix2x":
       case "d2x":
       case "h2x":
-        return { gender, boatType: BoatTypes.boatTwoScull };
+        return { gender, boatType: BoatType.boatTwoScull };
       case "mix4+":
       case "d4+":
       case "h4+":
-        return { gender, boatType: BoatTypes.boatFourBoardWith };
+        return { gender, boatType: BoatType.boatFourBoardWith };
       case "mix4-":
       case "d4-":
       case "h4-":
-        return { gender, boatType: BoatTypes.boatFourBoard };
+        return { gender, boatType: BoatType.boatFourBoard };
       case "mix4*":
       case "d4*":
       case "h4*":
-        return { gender, boatType: BoatTypes.boatFourWith };
+        return { gender, boatType: BoatType.boatFourWith };
       case "mix4x-":
       case "d4x-":
       case "h4x-":
-        return { gender, boatType: BoatTypes.boatFour };
+        return { gender, boatType: BoatType.boatFour };
       case "mix8+":
       case "d8+":
       case "d8":
       case "h8+":
       case "h8":
-        return { gender, boatType: BoatTypes.boatEightBoardWith };
+        return { gender, boatType: BoatType.boatEightBoardWith };
       case "mix8*":
       case "d8*":
       case "h8*":
-        return { gender, boatType: BoatTypes.boatEightWith };
+        return { gender, boatType: BoatType.boatEightWith };
       default:
         throw Error(`Could not translate: ${type}`);
     }
