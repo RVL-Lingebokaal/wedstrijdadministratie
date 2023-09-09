@@ -1,7 +1,6 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import firestore from "../firebase/firebase";
 import { AgeItem, BoatItem, ClassItem, Settings } from "../models/settings";
-import { Gender } from "../models/team";
 
 export type ItemsToSave = AgeItem[] | BoatItem[] | ClassItem[];
 export type SettingsType = keyof Settings;
