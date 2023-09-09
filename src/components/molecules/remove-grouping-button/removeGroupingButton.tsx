@@ -1,5 +1,4 @@
 import { Button } from "../../atoms/button/button";
-import { useSaveSettings } from "../../../hooks/useSaveSettings";
 import { useRemoveClassItem } from "../../../hooks/useRemoveClassItem";
 import { useCallback } from "react";
 import { ClassItem } from "../../../models/settings";

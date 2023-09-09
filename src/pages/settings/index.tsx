@@ -2,7 +2,6 @@ import { useState } from "react";
 import { TypesForm } from "../../components/organisms/settings/types/typesForm";
 import { AgesForm } from "../../components/organisms/settings/age/ageForm";
 import { useGetSettings } from "../../hooks/useGetSettings";
-import { FaSpinner } from "react-icons/fa";
 import { Tabs } from "../../components/molecules/tabs/tabs";
 import {
   AgeItem,

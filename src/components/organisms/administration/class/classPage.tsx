@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { GridHeader } from "../../../atoms/grid-header/gridHeader";
-import { AgeType, BoatType, ClassItem } from "../../../../models/settings";
+import { ClassItem } from "../../../../models/settings";
 import { getGroups } from "../../../utils/teamUtils";
 import { useEffect, useMemo, useState } from "react";
 import { useGetTeams } from "../../../../hooks/useGetTeams";

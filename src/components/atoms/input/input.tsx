@@ -5,7 +5,7 @@ interface InputProps {
   label?: string;
 }
 
-export const Input = forwardRef(({ label, ...props }: InputProps, ref) => {
+export const Input = forwardRef(({ label, ...props }: InputProps) => {
   return (
     <div className="mt-2">
       <label className="font-bold">{label}</label>
