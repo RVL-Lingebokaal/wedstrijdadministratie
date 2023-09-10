@@ -34,7 +34,8 @@ export class SettingsService {
     const index = this.settings.classes.findIndex(
       (c) => c.gender === gender && c.boatType === boatType && c.name === name
     );
-    const newItems = this.settings.classes.splice(index, 1);
+    this.settings.classes.splice(index, 1);
+    const newItems = this.settings.classes;
     await this.saveSettings("classes", newItems);
   }
 }

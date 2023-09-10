@@ -11,6 +11,6 @@ export function useGetSettings() {
 
       return (await response.json()) as Settings;
     },
-    { keepPreviousData: true }
+    { keepPreviousData: false }
   );
 }

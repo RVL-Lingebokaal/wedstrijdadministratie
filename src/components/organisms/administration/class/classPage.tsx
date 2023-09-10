@@ -17,6 +17,7 @@ export default function ClassPage({ gender }: ClassPageProps) {
   const { data: teamData, isLoading } = useGetTeams();
   const { data: settingsData } = useGetSettings();
   const [classes, setClasses] = useState<null | ClassItem[]>(null);
+
   useEffect(() => {
     if (classes === null && settingsData) {
       setClasses(settingsData.classes);

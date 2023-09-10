@@ -63,13 +63,12 @@ export function ClassSection({
         name,
         boatType,
         gender,
-        ages: Array.from(selectedIndexes.values()).reduce<AgeType[]>(
-          (acc, val) => {
+        ages: Array.from(selectedIndexes.values())
+          .reduce<AgeType[]>((acc, val) => {
             acc.push(sortedKeys[val]);
             return acc;
-          },
-          []
-        ),
+          }, [])
+          .sort(),
       };
       classes.push(classItem);
       mutate({ type: "classes", items: classes });
