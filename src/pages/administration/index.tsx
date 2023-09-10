@@ -28,7 +28,7 @@ export default function Administration() {
           items={Object.values(Gender).map(translateGender)}
           selectedValue={translateGender(gender)}
           onChange={(val: string) => setGender(getGender(val))}
-          classNames="bg-white m-1 w-40"
+          classNames="bg-white w-40 ml-1 border-primary py-2 px-4"
         />
         {tab === AdministrationTabs.class && <ClassPage gender={gender} />}
       </div>

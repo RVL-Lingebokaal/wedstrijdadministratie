@@ -76,7 +76,7 @@ export function GroupingButton({
       <Button
         name="Groepeer"
         color="highlight"
-        classNames="mt-1"
+        classNames="mt-1 ml-1"
         onClick={onClick}
       />
     </>

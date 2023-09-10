@@ -41,9 +41,15 @@ export function ClassRow({
     <button
       disabled={disabled}
       onClick={onClick}
-      className={`w-3/4 text-left ${borderText}`}
+      className={`w-3/4 text-left ${borderText} ${
+        border?.top ? "mt-1" : "mt-0"
+      }`}
     >
-      <div className={`grid ${colsOptions[items.length]} mt-1 mx-1`}>
+      <div
+        className={`grid ${colsOptions[items.length]} ${
+          border ? "mx-0" : "mx-1"
+        } ${border?.top ? "mt-0" : "mt-1"}`}
+      >
         {items.map(({ text, key }) => (
           <div
             key={key ?? text}
