@@ -11,6 +11,7 @@ export function useGetCounts() {
       return (await response.json()) as {
         teamsSize: number;
         participantsSize: number;
+        clubsSize: number;
       };
     },
     {

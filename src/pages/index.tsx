@@ -6,6 +6,7 @@ import Calendar from "../../public/calendar.svg";
 import Image from "next/image";
 import { Block } from "../components/molecules/block/Block.client";
 import { useGetCounts } from "../hooks/useGetCounts";
+import { DateTime } from "luxon";
 
 export default function Home() {
   const { data, isLoading } = useGetCounts();
@@ -14,6 +15,9 @@ export default function Home() {
     if (isLoading) {
       return [];
     }
+    const currentDate = DateTime.now();
+    const eventDate = DateTime.fromISO("2023-11-11");
+    const diff = eventDate.diff(currentDate, ["days"]);
 
     return [
       {
@@ -26,10 +30,18 @@ export default function Home() {
         title: data?.teamsSize.toString() ?? "",
         icon: Groups,
       },
-      { bottom: "Verenigingen", title: "23", icon: Rowing },
-      { bottom: "Dagen", title: "152", icon: Calendar },
+      {
+        bottom: "Verenigingen",
+        title: data?.clubsSize.toString() ?? "",
+        icon: Rowing,
+      },
+      {
+        bottom: "Dagen",
+        title: Math.ceil(diff.days).toString(),
+        icon: Calendar,
+      },
     ];
-  }, [data?.participantsSize, data?.teamsSize, isLoading]);
+  }, [data?.clubsSize, data?.participantsSize, data?.teamsSize, isLoading]);
 
   return (
     <div>
