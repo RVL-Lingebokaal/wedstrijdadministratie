@@ -86,6 +86,10 @@ export class Team {
     return this.boatType;
   }
 
+  getClub() {
+    return this.club;
+  }
+
   getAgeClass(ages: AgeItem[]) {
     if (this.participants.length === 1) {
       return this.participants[0].getAgeType(ages);

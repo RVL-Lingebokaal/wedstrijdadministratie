@@ -4,11 +4,22 @@ import teamService from "../../services/teamService.server";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ teamsSize: number; participantsSize: number }>
+  res: NextApiResponse<{
+    teamsSize: number;
+    participantsSize: number;
+    clubsSize: number;
+  }>
 ) {
   const teams = await teamService.getTeams();
   const participants = await participantService.getParticipants();
-  res
-    .status(200)
-    .json({ teamsSize: teams.length, participantsSize: participants.size });
+  const clubs = teams.reduce<Set<string>>(
+    (acc, team) => acc.add(team.getClub()),
+    new Set()
+  );
+
+  res.status(200).json({
+    teamsSize: teams.length,
+    participantsSize: participants.size,
+    clubsSize: clubs.size,
+  });
 }
