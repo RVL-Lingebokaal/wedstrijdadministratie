@@ -39,7 +39,7 @@ export default function Settings() {
         <TypesForm
           initialValues={{
             items:
-              data && data.boats.length > 0
+              data && data.boats && data.boats.length > 0
                 ? data.boats
                 : getDefaultvaluesBoats(),
           }}
@@ -49,7 +49,9 @@ export default function Settings() {
         <AgesForm
           initialValues={{
             items:
-              data && data.ages.length > 0 ? data.ages : getDefaultvaluesAges(),
+              data && data.ages && data.ages.length > 0
+                ? data.ages
+                : getDefaultvaluesAges(),
           }}
         />
       )}
