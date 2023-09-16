@@ -10,14 +10,15 @@ export class ParticipantService {
 
     participants.forEach((participant) => {
       const docRef = doc(firestore, "deelnemer", participant.getId());
+      this.participants.set(participant.getId(), participant);
       batch.set(docRef, participant.getDatabaseParticipant(), { merge: true });
     });
 
     return await batch.commit();
   }
 
-  async getParticipants() {
-    if (this.participants.size === 0) {
+  async getParticipants(needsRefetch = false) {
+    if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, "deelnemer");
       const data = await getDocs(dbInstance);
       this.participants = data.docs.reduce((acc, doc) => {

@@ -4,10 +4,12 @@ import { HiChevronUpDown, HiCheck } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
 interface SelectProps {
-  items: string[];
+  items: string[] | number[];
   selectedValue: string;
   onChange: (item: string) => void;
+  topClassNames?: string;
   classNames?: string;
+  label?: string;
 }
 
 export function Select({
@@ -15,10 +17,13 @@ export function Select({
   selectedValue,
   onChange,
   classNames = "",
+  label,
+  topClassNames,
 }: SelectProps) {
   return (
     <Listbox value={selectedValue} onChange={onChange}>
-      <div className="relative">
+      <div className={topClassNames}>
+        {label && <Listbox.Label className="font-bold">{label}</Listbox.Label>}
         <Listbox.Button
           className={twMerge(
             "relative w-full cursor-default border-gray-400 border rounded-lg px-2 py-1.5 text-left",

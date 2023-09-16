@@ -10,8 +10,11 @@ export class BoatService {
 
     boats.forEach((boat) => {
       const docRef = doc(firestore, "boot", boat.getId());
+      this.boats.set(boat.getId(), boat);
       batch.set(docRef, boat.getDatabaseBoat(), { merge: true });
     });
+
+    return await batch.commit();
   }
 
   async getBoats() {

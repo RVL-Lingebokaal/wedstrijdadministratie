@@ -90,6 +90,18 @@ export class Team {
     return this.club;
   }
 
+  getParticipants() {
+    return this.participants;
+  }
+
+  getBoat() {
+    return this.boat;
+  }
+
+  getHelm() {
+    return this.helm;
+  }
+
   getAgeClass(ages: AgeItem[]) {
     if (this.participants.length === 1) {
       return this.participants[0].getAgeType(ages);
@@ -116,7 +128,7 @@ export class Team {
       preferredBlock: this.preferredBlock,
       boatType: this.boatType,
       gender: this.gender,
-      helm: this.helm?.getId(),
+      helm: this.helm?.getId() ?? null,
     };
   }
 }

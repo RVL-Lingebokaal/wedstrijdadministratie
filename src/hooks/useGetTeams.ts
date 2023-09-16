@@ -6,7 +6,7 @@ export function useGetTeams() {
   return useQuery(
     ["get-teams"],
     async () => {
-      const response = await fetch("/api/teams", { method: "GET" });
+      const response = await fetch("/api/teams/all", { method: "GET" });
 
       if (!response.ok) throw new Error("Could not get teams");
 

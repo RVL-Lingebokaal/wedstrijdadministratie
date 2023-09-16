@@ -1,34 +1,29 @@
-import { useEffect, useState } from "react";
-import { Team } from "../../models/team";
-
-let shouldLoad = true;
+import { useGetTeams } from "../../hooks/useGetTeams";
+import { LoadingSpinner } from "../../components/atoms/loading-spinner/loadingSpinner";
+import TeamAddButton from "../../components/molecules/team-add-button/teamAddButton";
 
 export default function Data() {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const { data, isLoading, refetch } = useGetTeams();
 
-  useEffect(() => {
-    if (shouldLoad) {
-      shouldLoad = false;
-      fetch("/api/teams")
-        .then((response) => {
-          return response.json();
-        })
-        .then((teams: Team[]) => {
-          setTeams(teams);
-        });
-    }
-  });
+  if (isLoading) {
+    return (
+      <div>
+        <h1 className="font-bold text-2xl text-primary">Data</h1>
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div>
-      <h1>Data</h1>
-
-      <h2>Ploegen</h2>
-      {teams.map((team) => (
-        <div key={team.getName()}>
-          <p>{team.getName()}</p>
-        </div>
-      ))}
+      <h1 className="font-bold text-2xl mb-3 text-primary">Data</h1>
+      <h2 className="font-bold text-xl mb-2">Ploegen</h2>
+      <p className="mb-2">
+        Er zijn op dit moment {data?.length ?? 0} teams ingeschreven
+      </p>
+      <div>
+        <TeamAddButton refetch={refetch} />
+      </div>
     </div>
   );
 }
