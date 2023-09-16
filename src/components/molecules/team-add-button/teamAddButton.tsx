@@ -96,6 +96,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                     selectedValue={field.value}
                     onChange={(val) => field.onChange(val)}
                     label="Boottype"
+                    topClassNames="grow"
                   />
                 )}
               />
@@ -108,6 +109,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                     selectedValue={field.value.toString()}
                     onChange={(val) => field.onChange(parseInt(val))}
                     label="Voorkeursblok"
+                    topClassNames="grow"
                   />
                 )}
               />
@@ -120,6 +122,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                     selectedValue={field.value}
                     onChange={(val) => field.onChange(val)}
                     label="Geslacht"
+                    topClassNames="grow"
                   />
                 )}
               />
