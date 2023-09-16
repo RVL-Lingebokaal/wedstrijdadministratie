@@ -19,7 +19,7 @@ interface ClassSectionProps {
   classes: ClassItem[];
   gender: Gender;
   ownClassItems: ClassItem[];
-  updateClasses: (classes: ClassItem[]) => void;
+  refetch: () => void;
 }
 
 export function ClassSection({
@@ -29,7 +29,7 @@ export function ClassSection({
   classes,
   gender,
   ownClassItems,
-  updateClasses,
+  refetch,
 }: ClassSectionProps) {
   const { mutate } = useSaveSettings();
   const [selectedIndexes, setSelectedIndexes] = useState<Set<number>>(
@@ -73,17 +73,9 @@ export function ClassSection({
       classes.push(classItem);
       mutate({ type: "classes", items: classes });
       setSelectedIndexes(new Set());
-      updateClasses([...classes]);
+      refetch();
     },
-    [
-      boatType,
-      classes,
-      gender,
-      mutate,
-      selectedIndexes,
-      sortedKeys,
-      updateClasses,
-    ]
+    [boatType, classes, gender, mutate, refetch, selectedIndexes, sortedKeys]
   );
 
   return (
@@ -123,7 +115,7 @@ export function ClassSection({
               <RemoveGroupingButton
                 group={group}
                 classes={classes}
-                updateClasses={updateClasses}
+                refetch={refetch}
               />
             )}
           </div>

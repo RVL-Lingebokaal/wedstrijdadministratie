@@ -10,8 +10,6 @@ export default async function handler(
     const args = JSON.parse(req.body) as ClassItem;
     await settingsService.removeClassItem(args);
 
-    res.status(200);
+    return res.status(200).send({ success: true });
   }
-
-  return res;
 }

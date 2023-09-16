@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react";
 import { GridHeader } from "../../../atoms/grid-header/gridHeader";
 import { ClassItem } from "../../../../models/settings";
 import { getGroups } from "../../../utils/teamUtils";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useGetTeams } from "../../../../hooks/useGetTeams";
 import { useGetSettings } from "../../../../hooks/useGetSettings";
 import { ClassSection } from "../../../molecules/class-section/classSection";
@@ -15,14 +15,7 @@ interface ClassPageProps {
 
 export default function ClassPage({ gender }: ClassPageProps) {
   const { data: teamData, isLoading } = useGetTeams();
-  const { data: settingsData } = useGetSettings();
-  const [classes, setClasses] = useState<null | ClassItem[]>(null);
-
-  useEffect(() => {
-    if (classes === null && settingsData) {
-      setClasses(settingsData.classes);
-    }
-  }, [classes, settingsData]);
+  const { data: settingsData, refetch } = useGetSettings();
 
   const groups = useMemo(
     () => getGroups(teamData ?? [], gender),
@@ -32,20 +25,22 @@ export default function ClassPage({ gender }: ClassPageProps) {
 
   const classMap = useMemo(() => {
     const map = new Map<string, ClassItem[]>();
-    if (classes === null || classes.length === 0) {
+    if (settingsData?.classes === null || settingsData?.classes.length === 0) {
       return map;
     }
-    return classes.reduce((acc, c) => {
-      const key = JSON.stringify({ gender: c.gender, boat: c.boatType });
-      let arr: ClassItem[] = [];
-      if (acc.has(key)) {
-        arr = acc.get(key) ?? [];
-      }
-      arr.push(c);
-      acc.set(key, arr);
-      return acc;
-    }, map);
-  }, [classes]);
+    return (
+      settingsData?.classes.reduce((acc, c) => {
+        const key = JSON.stringify({ gender: c.gender, boat: c.boatType });
+        let arr: ClassItem[] = [];
+        if (acc.has(key)) {
+          arr = acc.get(key) ?? [];
+        }
+        arr.push(c);
+        acc.set(key, arr);
+        return acc;
+      }, map) ?? map
+    );
+  }, [settingsData?.classes]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -75,10 +70,10 @@ export default function ClassPage({ gender }: ClassPageProps) {
                 teams={groups.get(val) ?? []}
                 ages={settingsData?.ages ?? []}
                 boatType={val}
-                classes={classes ?? []}
+                classes={settingsData?.classes ?? []}
                 gender={gender}
                 ownClassItems={classItems}
-                updateClasses={setClasses}
+                refetch={refetch}
               />
             </Disclosure.Panel>
           </Disclosure>

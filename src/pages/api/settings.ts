@@ -15,11 +15,10 @@ export default async function handler(
     };
     await settingsService.saveSettings(args.type, args.items);
 
-    res.status(200);
+    return res.status(200).send({ success: true });
   } else {
     const settings = await settingsService.getSettings();
-    res.status(200).json(settings);
-  }
 
-  return res;
+    return res.status(200).send(settings);
+  }
 }
