@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ItemsToSave, SettingsType } from "../services/settingsService.server";
 
 interface SaveSettinsArgs {
@@ -6,14 +6,23 @@ interface SaveSettinsArgs {
   items: ItemsToSave;
 }
 export function useSaveSettings() {
-  return useMutation(["save-settings"], async (args: SaveSettinsArgs) => {
-    const response = await fetch("/api/settings", {
-      method: "POST",
-      body: JSON.stringify(args),
-    });
+  const queryClient = useQueryClient();
 
-    if (!response.ok) throw new Error("Could not save settings");
+  return useMutation(
+    ["save-settings"],
+    async (args: SaveSettinsArgs) => {
+      const response = await fetch("/api/settings", {
+        method: "POST",
+        body: JSON.stringify(args),
+      });
 
-    return { success: true };
-  });
+      if (!response.ok) throw new Error("Could not save settings");
+
+      return { success: true };
+    },
+    {
+      onSuccess: () =>
+        queryClient.invalidateQueries({ queryKey: ["retrieve-settings"] }),
+    }
+  );
 }

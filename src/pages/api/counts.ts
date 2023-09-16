@@ -17,7 +17,7 @@ export default async function handler(
     new Set()
   );
 
-  res.status(200).json({
+  res.status(200).send({
     teamsSize: teams.length,
     participantsSize: participants.size,
     clubsSize: clubs.size,

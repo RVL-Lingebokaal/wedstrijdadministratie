@@ -1,15 +1,24 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClassItem } from "../models/settings";
 
 export function useRemoveClassItem() {
-  return useMutation(["remove-class-item"], async (args: ClassItem) => {
-    const response = await fetch("/api/settings/remove", {
-      method: "POST",
-      body: JSON.stringify(args),
-    });
+  const queryClient = useQueryClient();
 
-    if (!response.ok) throw new Error("Could not remove class item");
+  return useMutation(
+    ["remove-class-item"],
+    async (args: ClassItem) => {
+      const response = await fetch("/api/settings/remove", {
+        method: "POST",
+        body: JSON.stringify(args),
+      });
 
-    return { success: true };
-  });
+      if (!response.ok) throw new Error("Could not remove class item");
+
+      return { success: true };
+    },
+    {
+      onSuccess: () =>
+        queryClient.invalidateQueries({ queryKey: ["retrieve-settings"] }),
+    }
+  );
 }

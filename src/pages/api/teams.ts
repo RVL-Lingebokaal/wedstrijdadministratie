@@ -7,5 +7,5 @@ export default async function handler(
   res: NextApiResponse<Team[]>
 ) {
   const teams = await teamService.getTeams();
-  res.status(200).json(teams);
+  return res.status(200).send(teams);
 }

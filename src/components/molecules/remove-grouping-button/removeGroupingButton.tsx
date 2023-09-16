@@ -7,13 +7,13 @@ import ConfirmModal from "../../atoms/confirm-modal/confirmModal";
 interface RemoveGroupingButtonProps {
   group: ClassItem;
   classes: ClassItem[];
-  updateClasses: (classes: ClassItem[]) => void;
+  refetch: () => void;
 }
 
 export function RemoveGroupingButton({
   group,
   classes,
-  updateClasses,
+  refetch,
 }: RemoveGroupingButtonProps) {
   const { mutate } = useRemoveClassItem();
   const [showModal, setShowModal] = useState(false);
@@ -29,8 +29,9 @@ export function RemoveGroupingButton({
         boatType === group.boatType
     );
     classes.splice(index, 1);
-    updateClasses([...classes.splice(index, 1)]);
-  }, [classes, group, mutate, updateClasses]);
+    refetch();
+    setShowModal(false);
+  }, [classes, group, mutate, refetch]);
 
   return (
     <>
