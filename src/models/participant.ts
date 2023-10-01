@@ -13,7 +13,7 @@ export class Participant {
   private id = "";
   private club = "";
   private birthYear = 1900;
-  private ageType: AgeType = AgeType.open;
+  private ageType: AgeType | undefined = undefined;
 
   constructor({ name, id, club, birthYear }: ParticipantCreation) {
     this.birthYear = birthYear;

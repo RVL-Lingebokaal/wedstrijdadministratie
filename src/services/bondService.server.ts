@@ -3,8 +3,6 @@ import { Gender, Team } from "../models/team";
 import { Participant } from "../models/participant";
 import {
   BOAT_NAME,
-  PARTICIPANT_END,
-  PARTICIPANT_START,
   TEAM_COACH,
   TEAM_COMPETITION_CODE,
   TEAM_ID,
@@ -14,12 +12,13 @@ import {
   TEAM_REGISTRATION_FEE,
   TEAM_REMARKS,
   TEAM_CLUB,
-  HELM_START,
-  HELM_END,
+  HELM,
 } from "./constants";
 import { Stream } from "stream";
 import { Boat } from "../models/boat";
 import { BoatType } from "../models/settings";
+
+const PARTICIPANT_KEYS = ["Slag", "2", "3", "4", "5", "6", "7", "Boeg"];
 
 export class BondService {
   async readBondFile(
@@ -29,16 +28,14 @@ export class BondService {
     const participantMap = new Map<string, Participant>();
     const boats = new Map<string, Boat>();
 
-    const parser = parse({ delimiter: ",", trim: true });
+    const parser = parse({ delimiter: ",", trim: true, columns: true });
     const records = stream.pipe(parser);
     for await (const record of records) {
-      if (record[0] === "PloegId") {
-        continue;
-      }
       const { participants, helm } = this.addParticipants(
         record,
         participantMap
       );
+
       const boat = new Boat({
         club: record[TEAM_CLUB],
         name: record[BOAT_NAME],
@@ -47,9 +44,11 @@ export class BondService {
       if (!boats.has(boatId)) {
         boats.set(boatId, boat);
       }
+
       const { gender, boatType } = this.getBoatType(
         record[TEAM_COMPETITION_CODE]
       );
+
       teams.add(
         new Team({
           name: record[TEAM_NAME],
@@ -75,35 +74,44 @@ export class BondService {
     };
   }
 
-  private addParticipants(record: string[], map: Map<string, Participant>) {
+  private addParticipants(
+    record: Record<string, string>,
+    map: Map<string, Participant>
+  ) {
     const participants: Participant[] = [];
-    for (let i = PARTICIPANT_START; i < PARTICIPANT_END; i = i + 4) {
-      const name = record[i];
-      const id = record[i + 2];
-      if (!name) {
-        continue;
+    PARTICIPANT_KEYS.forEach((key) => {
+      const rec = record[key];
+      if (rec && rec !== "") {
+        const participant = this.createParticipant(record, key, map);
+        participants.push(participant);
       }
-      const participant =
-        map.get(id) ??
-        new Participant({
-          name,
-          birthYear: parseInt(record[i + 1]),
-          id,
-          club: record[i + 3],
-        });
+    });
 
-      map.set(id, participant);
-      participants.push(participant);
-    }
-    const helm = record[HELM_START]
-      ? new Participant({
-          name: record[HELM_START],
-          birthYear: parseInt(record[HELM_START + 1]),
-          id: record[HELM_START + 2],
-          club: record[HELM_END],
-        })
-      : null;
+    const rec = record[HELM];
+    const helm =
+      rec && rec !== "" ? this.createParticipant(record, HELM, map) : null;
+
     return { participants, helm };
+  }
+
+  private createParticipant(
+    record: Record<string, string>,
+    path: string,
+    map: Map<string, Participant>
+  ) {
+    const id = record[`NKODE ${path}`];
+    const participant =
+      map.get(id) ??
+      new Participant({
+        name: record[path],
+        birthYear: parseInt(
+          record[`geb${isNaN(parseInt(path)) ? "" : " "}${path}`]
+        ),
+        id,
+        club: record[`VKODE ${path}`],
+      });
+    map.set(id, participant);
+    return participant;
   }
 
   private getBoatType(type: string): { boatType: BoatType; gender: Gender } {
