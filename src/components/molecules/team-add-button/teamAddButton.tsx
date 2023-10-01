@@ -163,7 +163,8 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
               />
             </div>
             {boatType !== BoatType.skiff &&
-              boatType !== BoatType.boatTwoScull && (
+              boatType !== BoatType.boardTwoWithout &&
+              boatType !== BoatType.scullTwoWithout && (
                 <div className="flex gap-x-3">
                   <Controller
                     name={`helm.name`}
@@ -265,10 +266,15 @@ function getDisabled(type: BoatType, participantsLength: number) {
   switch (type) {
     case BoatType.skiff:
       return participantsLength >= 1;
-    case BoatType.boatTwoScull:
+    case BoatType.boardTwoWithout:
+    case BoatType.scullTwoWithout:
       return participantsLength >= 2;
-    case BoatType.boatFourBoardWith:
-    case BoatType.cBoatFourBoardWith:
+    case BoatType.scullFourWith:
+    case BoatType.scullFourWithout:
+    case BoatType.scullFourWithC:
+    case BoatType.boardFourWithC:
+    case BoatType.boardFourWith:
+    case BoatType.boardFourWithout:
       return participantsLength >= 4;
     default:
       return participantsLength >= 8;

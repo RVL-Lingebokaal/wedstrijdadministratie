@@ -1,18 +1,29 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useUploadFile() {
-  return useMutation(["upload-bond-file"], async (args: { file: File }) => {
-    const formData = new FormData();
-    formData.set("file", args.file);
+  const queryClient = useQueryClient();
 
-    const response = await fetch("/api/fileupload/bond", {
-      method: "POST",
-      body: formData,
-    });
-    const jsonResponse = await response.json();
+  return useMutation(
+    ["upload-bond-file"],
+    async (args: { file: File }) => {
+      const formData = new FormData();
+      formData.set("file", args.file);
 
-    if (!response.ok) throw new Error("Could not upload file");
+      const response = await fetch("/api/fileupload/bond", {
+        method: "POST",
+        body: formData,
+      });
+      const jsonResponse = await response.json();
 
-    return { success: true, count: jsonResponse.count };
-  });
+      if (!response.ok) throw new Error("Could not upload file");
+
+      return { success: true, count: jsonResponse.count };
+    },
+    {
+      onSuccess: () =>
+        queryClient.invalidateQueries({
+          queryKey: ["get-counts", "get-teams"],
+        }),
+    }
+  );
 }
