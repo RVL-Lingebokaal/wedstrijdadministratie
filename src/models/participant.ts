@@ -44,7 +44,7 @@ export class Participant {
       this.calculateAgeType(ages);
     }
 
-    return this.ageType;
+    return this.ageType as AgeType;
   }
 
   private calculateAgeType(ages: AgeItem[]) {
