@@ -78,6 +78,11 @@ export class TeamService {
     }
     return this.teams;
   }
+
+  async getTeam(teamId: string) {
+    const teams = await this.getTeams();
+    return teams.get(teamId);
+  }
 }
 
 let teamService: TeamService;

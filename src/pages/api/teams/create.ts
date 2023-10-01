@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
-import { TeamAddForm } from "../../../components/molecules/team-add-button/teamAddButton";
+import { TeamAddForm } from "../../../components/organisms/team/team-add-button/teamAddButton";
 import { Team } from "../../../models/team";
 import { Boat } from "../../../models/boat";
 import { Participant } from "../../../models/participant";

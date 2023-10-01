@@ -74,6 +74,10 @@ export class Team {
     return this.id;
   }
 
+  getNameAndId() {
+    return `${this.id} - ${this.name}`;
+  }
+
   getName() {
     return this.name;
   }
@@ -114,6 +118,10 @@ export class Team {
     return calculateAgeType(ages, age);
   }
 
+  getPreferredBlock() {
+    return this.preferredBlock;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -130,5 +138,14 @@ export class Team {
       gender: this.gender,
       helm: this.helm?.getId() ?? null,
     };
+  }
+
+  updateTeam(updatedValues: Partial<TeamCreation>) {
+    this.participants = updatedValues.participants ?? this.participants;
+    this.club = updatedValues.club ?? this.club;
+    this.helm = updatedValues.helm ?? this.helm;
+    this.boat = updatedValues.boat ?? this.boat;
+    this.preferredBlock = updatedValues.preferredBlock ?? this.preferredBlock;
+    this.gender = updatedValues.gender ?? this.gender;
   }
 }

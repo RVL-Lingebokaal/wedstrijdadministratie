@@ -39,6 +39,14 @@ export class Participant {
     return new Date().getFullYear() - this.birthYear;
   }
 
+  getParticipantForm() {
+    return {
+      name: this.name,
+      club: this.club,
+      birthYear: this.birthYear,
+    };
+  }
+
   getAgeType(ages: AgeItem[]) {
     if (!this.ageType) {
       this.calculateAgeType(ages);

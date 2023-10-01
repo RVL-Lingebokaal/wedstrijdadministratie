@@ -9,7 +9,7 @@ import { getTeamsByClass } from "../../utils/teamUtils";
 import { useCallback, useMemo, useState } from "react";
 import { ClassRow } from "../../atoms/class-row/classRow";
 import { GroupingButton } from "../grouping-button/groupingButton";
-import { useSaveSettings } from "../../../hooks/useSaveSettings";
+import { useSaveSettings } from "../../../hooks/settings/useSaveSettings";
 import { RemoveGroupingButton } from "../remove-grouping-button/removeGroupingButton";
 
 interface ClassSectionProps {

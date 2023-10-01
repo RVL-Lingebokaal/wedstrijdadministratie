@@ -1,8 +1,9 @@
 import { Tabs } from "../../components/molecules/tabs/tabs";
 import { useState } from "react";
 import ClassPage from "../../components/organisms/administration/class/classPage";
-import { Select } from "../../components/molecules/select/select";
+import { Select } from "../../components/atoms/select/select";
 import { Gender } from "../../models/team";
+import SelectGender from "../../components/atoms/select/selectGender";
 
 export enum AdministrationTabs {
   class = "Klasseverdeling",
@@ -24,36 +25,13 @@ export default function Administration() {
       />
 
       <div>
-        <Select
-          items={Object.values(Gender).map(translateGender)}
-          selectedValue={translateGender(gender)}
-          onChange={(val: string) => setGender(getGender(val))}
+        <SelectGender
+          selectedValue={gender}
+          onChange={(val: Gender) => setGender(val)}
           classNames="bg-white w-40 ml-1 border-primary py-2 px-4"
         />
         {tab === AdministrationTabs.class && <ClassPage gender={gender} />}
       </div>
     </div>
   );
-}
-
-function translateGender(gender: Gender) {
-  switch (gender) {
-    case Gender.M:
-      return "Mannen";
-    case Gender.F:
-      return "Vrouwen";
-    default:
-      return "Mix";
-  }
-}
-
-function getGender(val: string) {
-  switch (val) {
-    case "Mannen":
-      return Gender.M;
-    case "Vrouwen":
-      return Gender.F;
-    default:
-      return Gender.MIX;
-  }
 }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Settings } from "../models/settings";
+import { Settings } from "../../models/settings";
 
 export function useGetSettings() {
   return useQuery(
