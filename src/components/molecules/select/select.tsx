@@ -46,7 +46,7 @@ export function Select({
         >
           <Listbox.Options
             className={twMerge(
-              "z-10 absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base",
+              "z-10 absolute max-h-60 overflow-auto rounded-md bg-white py-1 text-base",
               classNames
             )}
           >

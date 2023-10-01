@@ -32,17 +32,23 @@ export function AddParticipantForm({
         <Controller
           name={`participants.${index}.name`}
           control={control}
-          render={({ field }) => <Input label="Naam" {...field} />}
+          render={({ field }) => (
+            <Input label="Naam" classNames="mt-2" {...field} />
+          )}
         />
         <Controller
           name={`participants.${index}.club`}
           control={control}
-          render={({ field }) => <Input label="Vereniging" {...field} />}
+          render={({ field }) => (
+            <Input label="Vereniging" classNames="mt-2" {...field} />
+          )}
         />
         <Controller
           name={`participants.${index}.birthYear`}
           control={control}
-          render={({ field }) => <Input label="Geboortejaar" {...field} />}
+          render={({ field }) => (
+            <Input label="Geboortejaar" classNames="mt-2" {...field} />
+          )}
         />
       </div>
       <Button

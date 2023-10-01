@@ -9,15 +9,16 @@ interface InputProps {
   onChange: () => void;
   label?: string;
   hasError?: boolean;
+  classNames?: string;
 }
 
 export const Input = forwardRef(
   (
-    { label, hasError, ...props }: InputProps,
+    { label, hasError, classNames, ...props }: InputProps,
     ref: ForwardedRef<HTMLInputElement | null>
   ) => {
     return (
-      <div className="mt-2">
+      <div className={classNames}>
         <label className="font-bold">{label}</label>
         <input
           className={`${
