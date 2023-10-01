@@ -44,6 +44,22 @@ export class TeamService {
     return await setDoc(docRef, team.getDatabaseTeam());
   }
 
+  async removeAllTeams() {
+    if (this.teams.size === 0) {
+      return;
+    }
+    const dbInstance = collection(firestore, "ploeg");
+    const data = await getDocs(dbInstance);
+
+    const batch = writeBatch(firestore);
+    data.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    this.teams = new Map();
+  }
+
   async getTeams() {
     if (this.teams.size === 0) {
       const dbInstance = collection(firestore, "ploeg");
