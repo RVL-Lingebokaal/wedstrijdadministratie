@@ -115,32 +115,13 @@ export class BondService {
       : Gender.MIX;
 
     switch (typeWithoutSpaces) {
-      case "hc1x":
-      case "dc1x":
-        return { gender, boatType: BoatType.cBoatOne };
       case "h1x":
       case "d1x":
         return { gender, boatType: BoatType.skiff };
-      case "mixc2*":
-      case "dc2*":
-      case "hc2*":
-        return { gender, boatType: BoatType.cBoatTwoWith };
-      case "mixc2x":
-      case "dc2x":
-      case "hc2x":
-        return { gender, boatType: BoatType.cBoatTwoScull };
-      case "mixc4*":
-      case "dc4*":
-      case "hc4*":
-        return { gender, boatType: BoatType.cBoatFourWith };
       case "mixc4+":
       case "dc4+":
       case "hc4+":
         return { gender, boatType: BoatType.cBoatFourBoardWith };
-      case "mix2-":
-      case "d2-":
-      case "h2-":
-        return { gender, boatType: BoatType.boatTwoBoard };
       case "mix2x":
       case "d2x":
       case "h2x":
@@ -149,28 +130,12 @@ export class BondService {
       case "d4+":
       case "h4+":
         return { gender, boatType: BoatType.boatFourBoardWith };
-      case "mix4-":
-      case "d4-":
-      case "h4-":
-        return { gender, boatType: BoatType.boatFourBoard };
-      case "mix4*":
-      case "d4*":
-      case "h4*":
-        return { gender, boatType: BoatType.boatFourWith };
-      case "mix4x-":
-      case "d4x-":
-      case "h4x-":
-        return { gender, boatType: BoatType.boatFour };
       case "mix8+":
       case "d8+":
       case "d8":
       case "h8+":
       case "h8":
         return { gender, boatType: BoatType.boatEightBoardWith };
-      case "mix8*":
-      case "d8*":
-      case "h8*":
-        return { gender, boatType: BoatType.boatEightWith };
       default:
         throw Error(`Could not translate: ${type}`);
     }

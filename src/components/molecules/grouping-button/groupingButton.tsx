@@ -63,9 +63,9 @@ export function GroupingButton({
         <FormModal
           onClose={() => setShowModal(false)}
           onSubmit={handleSubmit(onSubmit)}
-          title="Geef naam"
+          title="Naam"
+          description="Geef hieronder een naam voor de klassen die je net hebt geselecteerd."
         >
-          Geef hieronder een naam voor de klassen die je net hebt geselecteerd.
           <Controller
             name="name"
             control={control}

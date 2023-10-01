@@ -12,13 +12,13 @@ export default async function handler(
 ) {
   const teams = await teamService.getTeams();
   const participants = await participantService.getParticipants();
-  const clubs = teams.reduce<Set<string>>(
+  const clubs = Array.from(teams.values()).reduce<Set<string>>(
     (acc, team) => acc.add(team.getClub()),
     new Set()
   );
 
   res.status(200).send({
-    teamsSize: teams.length,
+    teamsSize: teams.size,
     participantsSize: participants.size,
     clubsSize: clubs.size,
   });
