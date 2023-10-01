@@ -135,6 +135,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                   <Input
                     label="Team naam"
                     hasError={fieldState.invalid}
+                    classNames="mt-2"
                     {...field}
                   />
                 )}
@@ -146,6 +147,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                   <Input
                     label="Vereniging"
                     hasError={fieldState.invalid}
+                    classNames="mt-2"
                     {...field}
                   />
                 )}
@@ -157,6 +159,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                   <Input
                     label="Boot naam"
                     hasError={fieldState.invalid}
+                    classNames="mt-2"
                     {...field}
                   />
                 )}
@@ -173,6 +176,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                       <Input
                         label="Naam stuur"
                         hasError={fieldState.invalid}
+                        classNames="mt-2"
                         {...field}
                       />
                     )}
@@ -184,6 +188,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                       <Input
                         label="Vereniging stuur"
                         hasError={fieldState.invalid}
+                        classNames="mt-2"
                         {...field}
                       />
                     )}
@@ -195,6 +200,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
                       <Input
                         label="Geboortejaar stuur"
                         hasError={fieldState.invalid}
+                        classNames="mt-2"
                         {...field}
                       />
                     )}
