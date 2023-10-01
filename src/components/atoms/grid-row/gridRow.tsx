@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { colsOptions, getRoundedClass } from "../../utils/gridUtils";
+import { twMerge } from "tailwind-merge";
 
 interface Item {
   node: string | ReactNode;
@@ -9,11 +10,14 @@ interface Item {
 interface GridRowProps {
   items: Item[];
   lastRow?: boolean;
+  classNames?: string;
 }
 
-export function GridRow({ items, lastRow }: GridRowProps) {
+export function GridRow({ items, lastRow, classNames }: GridRowProps) {
   return (
-    <div className={`grid ${colsOptions[items.length]} m-1`}>
+    <div
+      className={twMerge([`grid ${colsOptions[items.length]} m-1`, classNames])}
+    >
       {items.map(({ node, isInput }, index) => (
         <div
           key={index}

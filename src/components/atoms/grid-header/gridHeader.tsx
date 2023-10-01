@@ -1,16 +1,24 @@
 import { colsOptions, getRoundedClass } from "../../utils/gridUtils";
+import { twMerge } from "tailwind-merge";
 
 interface GridHeaderProps {
   items: string[];
   needsRounding?: boolean;
+  classNames?: string;
 }
 
-export function GridHeader({ items, needsRounding = false }: GridHeaderProps) {
+export function GridHeader({
+  items,
+  needsRounding = false,
+  classNames,
+}: GridHeaderProps) {
   return (
     <div
-      className={`text-white text-xl grid ${
-        colsOptions[items.length]
-      } m-1 text-left`}
+      className={twMerge(
+        "text-white text-xl grid m-1 text-left",
+        colsOptions[items.length],
+        classNames
+      )}
     >
       {items.map((item, index) => (
         <div

@@ -1,4 +1,5 @@
 import { FaSpinner } from "react-icons/fa";
+import { twMerge } from "tailwind-merge";
 
 export type Color =
   | "primary"
@@ -46,9 +47,13 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`py-2 px-4 border-2 rounded-lg ${colors[color]} ${
-        borderColors[color]
-      } ${classNames} flex ${disabled ? "opacity-50" : ""}`}
+      className={twMerge([
+        "py-2 px-4 border-2 rounded-lg",
+        colors[color],
+        borderColors[color],
+        disabled ? "opacity-50" : "",
+        classNames,
+      ])}
       onClick={onClick}
       type={type}
       disabled={disabled}
