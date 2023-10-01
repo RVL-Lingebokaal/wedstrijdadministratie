@@ -51,17 +51,29 @@ export function TableForm<T extends Form>({
   });
 
   return (
-    <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-4xl">
-        <div className="mx-4">
-          <GridHeader items={gridHeaderItems} needsRounding />
+    <div className="w-full flex">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mx-4 w-full">
+          <div className="flex">
+            <GridHeader
+              items={gridHeaderItems}
+              needsRounding
+              classNames="w-4/5"
+            />
+            <Button
+              name="Opslaan"
+              color="highlight"
+              type="submit"
+              classNames=" flex items-center my-1 max-h-14"
+            />
+          </div>
+
           {fields.map((field, index) => (
             <GridRow
               key={field.id}
               items={rowInputs.map(({ name, input, getValue }) => ({
                 node: input ? (
                   <Controller
-                    key={field.id}
                     control={control}
                     name={`items.${index}.${String(name)}` as Path<T>}
                     render={({ field }) => input(field)}
@@ -72,15 +84,10 @@ export function TableForm<T extends Form>({
                 isInput: Boolean(input),
               }))}
               lastRow={index === fields.length - 1}
+              classNames="w-4/5"
             />
           ))}
         </div>
-        <Button
-          name="Opslaan"
-          color="highlight"
-          type="submit"
-          classNames="float-right mx-4 my-2"
-        />
       </form>
     </div>
   );
