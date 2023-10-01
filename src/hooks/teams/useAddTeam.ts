@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TeamAddForm } from "../components/molecules/team-add-button/teamAddButton";
+import { TeamAddForm } from "../../components/organisms/team/team-add-button/teamAddButton";
 
 export function useAddTeam() {
   const queryClient = useQueryClient();
@@ -7,7 +7,7 @@ export function useAddTeam() {
   return useMutation(
     ["save-team"],
     async (args: TeamAddForm) => {
-      const response = await fetch("/api/teams/add", {
+      const response = await fetch("/api/teams/create", {
         method: "POST",
         body: JSON.stringify(args),
       });

@@ -8,8 +8,8 @@ import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { ageFormSchema } from "../../../../schemas/ageFormSchema";
 import { Input } from "../../../atoms/input/input";
-import { Select } from "../../../molecules/select/select";
-import { useSaveSettings } from "../../../../hooks/useSaveSettings";
+import { Select } from "../../../atoms/select/select";
+import { useSaveSettings } from "../../../../hooks/settings/useSaveSettings";
 
 interface AgeFormProps {
   initialValues?: AgeForm;
@@ -38,15 +38,21 @@ export function AgesForm({ initialValues }: AgeFormProps) {
       rowInputs={[
         { name: "type", getValue: (field) => field.type },
         { name: "age", getValue: (field) => field.age },
-        { name: "correctionMale", input: (field) => <Input {...field} /> },
-        { name: "correctionFemale", input: (field) => <Input {...field} /> },
+        {
+          name: "correctionMale",
+          input: (field) => <Input noMargin {...field} />,
+        },
+        {
+          name: "correctionFemale",
+          input: (field) => <Input noMargin {...field} />,
+        },
         {
           name: "strategy",
           input: (field) => (
             <Select
               selectedValue={field.value.toString()}
               onChange={field.onChange}
-              items={Object.values(AgeStrategy)}
+              items={Object.values(AgeStrategy).map((val) => ({ id: val }))}
             />
           ),
         },

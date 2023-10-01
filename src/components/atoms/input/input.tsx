@@ -9,15 +9,17 @@ interface InputProps {
   onChange: () => void;
   label?: string;
   hasError?: boolean;
+  noMargin?: boolean;
+  disabled?: boolean;
 }
 
 export const Input = forwardRef(
   (
-    { label, hasError, ...props }: InputProps,
+    { label, hasError, noMargin, ...props }: InputProps,
     ref: ForwardedRef<HTMLInputElement | null>
   ) => {
     return (
-      <div className="mt-2">
+      <div className={`${noMargin ? "m-0" : "mt-2"}`}>
         <label className="font-bold">{label}</label>
         <input
           className={`${

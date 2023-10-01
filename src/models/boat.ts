@@ -18,6 +18,10 @@ export class Boat {
     return this.id;
   }
 
+  getName() {
+    return this.name;
+  }
+
   getDatabaseBoat() {
     return {
       name: this.name,

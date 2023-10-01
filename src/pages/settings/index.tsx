@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TypesForm } from "../../components/organisms/settings/types/typesForm";
 import { AgesForm } from "../../components/organisms/settings/age/ageForm";
-import { useGetSettings } from "../../hooks/useGetSettings";
+import { useGetSettings } from "../../hooks/settings/useGetSettings";
 import { Tabs } from "../../components/molecules/tabs/tabs";
 import {
   AgeItem,

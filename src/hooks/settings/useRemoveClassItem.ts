@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClassItem } from "../models/settings";
+import { ClassItem } from "../../models/settings";
 
 export function useRemoveClassItem() {
   const queryClient = useQueryClient();

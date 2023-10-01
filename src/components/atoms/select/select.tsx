@@ -3,8 +3,14 @@ import { Listbox, Transition } from "@headlessui/react";
 import { HiChevronUpDown, HiCheck } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
+export interface SelectItem {
+  text?: string;
+  id: string | number;
+  disabled?: boolean;
+}
+
 interface SelectProps {
-  items: string[] | number[];
+  items: SelectItem[];
   selectedValue: string;
   onChange: (item: string) => void;
   topClassNames?: string;
@@ -20,6 +26,7 @@ export function Select({
   label,
   topClassNames,
 }: SelectProps) {
+  const selectedItem = items.find((i) => i.id === selectedValue);
   return (
     <Listbox value={selectedValue} onChange={onChange}>
       <div className={topClassNames}>
@@ -30,7 +37,9 @@ export function Select({
             classNames
           )}
         >
-          <span className="block truncate">{selectedValue}</span>
+          <span className="block truncate ">
+            {selectedItem?.text ?? selectedValue}
+          </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <HiChevronUpDown
               className="h-5 w-5 text-gray-400"
@@ -46,19 +55,24 @@ export function Select({
         >
           <Listbox.Options
             className={twMerge(
-              "z-10 absolute max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base",
+              "z-10 absolute max-h-60 w-auto overflow-auto rounded-md bg-white py-1 text-base",
               classNames
             )}
           >
-            {items.map((item) => (
+            {items.map(({ text, id, disabled }) => (
               <Listbox.Option
-                key={item}
+                key={id}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-secondary-100 text-primary" : "text-gray-900"
+                    active
+                      ? "bg-secondary-100 text-primary"
+                      : disabled
+                      ? "text-gray-400 italic"
+                      : "text-gray-900"
                   }`
                 }
-                value={item}
+                value={id}
+                disabled={disabled}
               >
                 {({ selected }) => (
                   <>
@@ -67,7 +81,7 @@ export function Select({
                         selected ? "font-medium" : "font-normal"
                       }`}
                     >
-                      {item}
+                      {text ?? id}
                     </span>
                     {selected ? (
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
