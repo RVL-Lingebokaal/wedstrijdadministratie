@@ -106,10 +106,15 @@ export function getDisabled(type: BoatType, participantsLength: number) {
   switch (type) {
     case BoatType.skiff:
       return participantsLength >= 1;
-    case BoatType.boatTwoScull:
+    case BoatType.scullTwoWithout:
+    case BoatType.boardTwoWithout:
       return participantsLength >= 2;
-    case BoatType.boatFourBoardWith:
-    case BoatType.cBoatFourBoardWith:
+    case BoatType.scullFourWith:
+    case BoatType.scullFourWithout:
+    case BoatType.scullFourWithC:
+    case BoatType.boardFourWithC:
+    case BoatType.boardFourWithout:
+    case BoatType.boardFourWith:
       return participantsLength >= 4;
     default:
       return participantsLength >= 8;
