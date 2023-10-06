@@ -86,7 +86,7 @@ export default function TeamForm({
         <InputController path="club" control={control} label="Vereniging" />
         <InputController path="boat" control={control} label="Boot naam" />
       </div>
-      {boatType !== BoatType.skiff && boatType !== BoatType.boatTwoScull && (
+      {boatType !== BoatType.skiff && boatType !== BoatType.boardTwoWithout && (
         <div className="flex gap-x-3">
           <InputController
             path="helm.name"
