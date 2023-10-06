@@ -6,6 +6,7 @@ interface InputControllerProps<T extends FieldValues> {
   control: Control<T>;
   label?: string;
   disabled?: boolean;
+  classNames?: string;
 }
 
 export default function InputController<T extends FieldValues>({
@@ -13,6 +14,7 @@ export default function InputController<T extends FieldValues>({
   control,
   label,
   disabled,
+  classNames,
 }: InputControllerProps<T>) {
   return (
     <Controller
@@ -23,6 +25,7 @@ export default function InputController<T extends FieldValues>({
           disabled={disabled}
           label={label}
           hasError={fieldState.invalid}
+          classNames={classNames}
           {...field}
         />
       )}

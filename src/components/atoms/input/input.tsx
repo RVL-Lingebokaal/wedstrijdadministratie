@@ -1,4 +1,5 @@
 import { ForwardedRef, forwardRef } from "react";
+import { twMerge } from "tailwind-merge";
 
 const borderColor = {
   regular: "border-gray-400",
@@ -10,17 +11,16 @@ interface InputProps {
   label?: string;
   hasError?: boolean;
   classNames?: string;
-  noMargin?: boolean;
   disabled?: boolean;
 }
 
 export const Input = forwardRef(
   (
-    { label, hasError, noMargin, classNames, ...props }: InputProps,
+    { label, hasError, classNames, ...props }: InputProps,
     ref: ForwardedRef<HTMLInputElement | null>
   ) => {
     return (
-      <div className={twMerge(`${noMargin ? "m-0" : "mt-2"}`, classNames)}>
+      <div className={twMerge("mt-2", classNames)}>
         <label className="font-bold">{label}</label>
         <input
           className={`${

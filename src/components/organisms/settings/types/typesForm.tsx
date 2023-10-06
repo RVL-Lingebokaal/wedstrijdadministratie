@@ -24,8 +24,14 @@ export function TypesForm({ initialValues }: TypesFormProps) {
       gridHeaderItems={["Boottype", "Correctiefactor", "Prijs"]}
       rowInputs={[
         { name: "type", getValue: (field) => field.type },
-        { name: "correction", input: (field) => <Input noMargin {...field} /> },
-        { name: "price", input: (field) => <Input noMargin {...field} /> },
+        {
+          name: "correction",
+          input: (field) => <Input classNames="m-0" {...field} />,
+        },
+        {
+          name: "price",
+          input: (field) => <Input classNames="m-0" {...field} />,
+        },
       ]}
     />
   );
