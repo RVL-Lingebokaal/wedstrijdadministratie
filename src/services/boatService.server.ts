@@ -23,6 +23,22 @@ export class BoatService {
     return await batch.commit();
   }
 
+  async removeAllBoats() {
+    if (this.boats.size === 0) {
+      return;
+    }
+    const dbInstance = collection(firestore, "boot");
+    const data = await getDocs(dbInstance);
+
+    const batch = writeBatch(firestore);
+    data.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    this.boats = new Map();
+  }
+
   async getBoats() {
     if (this.boats.size === 0) {
       const dbInstance = collection(firestore, "boot");

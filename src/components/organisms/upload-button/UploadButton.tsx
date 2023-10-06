@@ -3,7 +3,7 @@ import { Button } from "../../atoms/button/button";
 import { useUploadFile } from "../../../hooks/useUploadFile";
 
 export function UploadButton() {
-  const { mutate, data, isLoading } = useUploadFile();
+  const { mutate, isLoading } = useUploadFile();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const memoizedOnClick = useCallback(() => {
@@ -23,7 +23,6 @@ export function UploadButton() {
 
   return (
     <>
-      <p>{`Er zijn op dit moment ${data?.count ?? 0} ploegen ingeladen.`}</p>
       <Button
         onClick={memoizedOnClick}
         color="primary"

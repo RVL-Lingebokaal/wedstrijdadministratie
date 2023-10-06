@@ -9,17 +9,18 @@ interface InputProps {
   onChange: () => void;
   label?: string;
   hasError?: boolean;
+  classNames?: string;
   noMargin?: boolean;
   disabled?: boolean;
 }
 
 export const Input = forwardRef(
   (
-    { label, hasError, noMargin, ...props }: InputProps,
+    { label, hasError, noMargin, classNames, ...props }: InputProps,
     ref: ForwardedRef<HTMLInputElement | null>
   ) => {
     return (
-      <div className={`${noMargin ? "m-0" : "mt-2"}`}>
+      <div className={twMerge(`${noMargin ? "m-0" : "mt-2"}`, classNames)}>
         <label className="font-bold">{label}</label>
         <input
           className={`${

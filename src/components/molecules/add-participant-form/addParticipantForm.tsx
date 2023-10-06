@@ -33,16 +33,19 @@ export function AddParticipantForm({
           path={`participants.${index}.name`}
           control={control}
           label="Naam"
+          classNames="mt-2"
         />
         <InputController<TeamAddForm>
           path={`participants.${index}.club`}
           control={control}
           label="Vereniging"
+          classNames="mt-2"
         />
         <InputController<TeamAddForm>
           path={`participants.${index}.birthYear`}
           control={control}
           label="Geboortejaar"
+          classNames="mt-2"
         />
       </div>
       <Button

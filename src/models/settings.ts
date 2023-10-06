@@ -25,11 +25,17 @@ export enum AgeStrategy {
 }
 
 export enum BoatType {
-  cBoatFourBoardWith = "C4x+",
+  scullFourWith = "4*",
+  scullFourWithout = "4x-",
+  scullFourWithC = "C4*",
+  boardFourWithC = "C4+",
+  boardFourWithout = "4-",
+  boardFourWith = "4+",
+  scullEightWith = "8*",
+  boardEightWith = "8+",
+  boardTwoWithout = "2-",
+  scullTwoWithout = "2x",
   skiff = "1x",
-  boatTwoScull = "2x",
-  boatFourBoardWith = "4x+",
-  boatEightBoardWith = "8+",
 }
 
 export interface BoatItem {

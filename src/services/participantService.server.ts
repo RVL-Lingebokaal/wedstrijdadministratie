@@ -26,6 +26,30 @@ export class ParticipantService {
     return await batch.commit();
   }
 
+  async removeAllParticipants() {
+    if (this.participants.size === 0) {
+      return;
+    }
+
+    const dbInstance = collection(firestore, "deelnemer");
+    const data = await getDocs(dbInstance);
+
+    let batch = writeBatch(firestore);
+    const batchSize = 500;
+
+    for (let i = 0; i < data.size; i++) {
+      batch.delete(data.docs[i].ref);
+      if (i % batchSize === 0) {
+        await batch.commit();
+        batch = writeBatch(firestore);
+      }
+    }
+
+    await batch.commit();
+
+    this.participants = new Map();
+  }
+
   async getParticipants(needsRefetch = false) {
     if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, "deelnemer");

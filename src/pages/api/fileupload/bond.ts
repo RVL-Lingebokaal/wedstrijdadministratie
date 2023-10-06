@@ -14,16 +14,20 @@ export default async function handler(
     try {
       const busBoy = Busboy({ headers: req.headers });
       busBoy.on("file", async function (_, stream: Stream) {
+        await teamService.removeAllTeams();
+        await participantService.removeAllParticipants();
+        await boatService.removeAllBoats();
+
         const { teams, participants, boats } = await bondService.readBondFile(
           stream
         );
+
         await teamService.saveTeams(teams);
         await participantService.saveParticipants(participants);
         await boatService.saveBoats(boats);
-        res.json({ count: teams.length });
       });
       busBoy.on("close", () => {
-        res.status(200);
+        res.status(200).send({ success: true });
       });
       req.pipe(busBoy);
     } catch (e) {

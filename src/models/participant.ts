@@ -13,7 +13,7 @@ export class Participant {
   private id = "";
   private club = "";
   private birthYear = 1900;
-  private ageType: AgeType = AgeType.open;
+  private ageType: AgeType | undefined = undefined;
 
   constructor({ name, id, club, birthYear }: ParticipantCreation) {
     this.birthYear = birthYear;
@@ -75,7 +75,7 @@ export class Participant {
       this.calculateAgeType(ages);
     }
 
-    return this.ageType;
+    return this.ageType as AgeType;
   }
 
   private calculateAgeType(ages: AgeItem[]) {
