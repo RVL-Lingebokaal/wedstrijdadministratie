@@ -24,7 +24,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const teamsMap = useMemo(
     () =>
       teams.reduce<Map<string, Team>>(
-        (acc, t) => acc.set(t.getId(), t),
+        (acc, t) => acc.set(t.getId().toString(), t),
         new Map()
       ),
     [teams]
@@ -35,19 +35,21 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
       defaultValues: getTeamFormValues(),
       resolver: yupResolver(addTeamSchema),
     });
+
   const onClickSubmit = useCallback(
     async (val: TeamAddForm) => {
       const dirtyFields = formState.dirtyFields;
-      const updatedObject = Object.keys(dirtyFields).reduce((obj, key) => {
+      const updatedObject = Object.keys(dirtyFields).reduce<
+        Record<string, any>
+      >((obj, key) => {
         obj[key] = val[key as keyof TeamAddForm];
         return obj;
-      }, {} as Record<string, any>) as Partial<TeamAddForm>;
-      await mutate({ teamId: team?.getId() ?? "", ...updatedObject });
+      }, {}) as Partial<TeamAddForm>;
+      await mutate({ teamId: team?.getId() ?? 0, ...updatedObject });
       refetch();
     },
     [formState.dirtyFields, mutate, refetch, team]
   );
-  console.log(formState.dirtyFields);
 
   return (
     <>
@@ -59,7 +61,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
           panelClassNames="max-w-xl"
         >
           <Select
-            selectedValue={team ? team.getId() : ""}
+            selectedValue={team ? team.getId().toString() : ""}
             items={[
               { id: "", text: "Kies een team", disabled: true },
               ...teams.map((t) => ({ id: t.getId(), text: t.getNameAndId() })),

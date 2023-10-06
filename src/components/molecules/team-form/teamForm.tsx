@@ -59,6 +59,7 @@ export default function TeamForm({
           label="Boottype"
           topClassNames="grow"
           items={Object.values(BoatType).map((val) => ({ id: val }))}
+          disabled={isUpdate}
         />
         <SelectController
           path="preferredBlock"

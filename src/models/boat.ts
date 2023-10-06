@@ -1,4 +1,4 @@
-interface BoatCreation {
+export interface BoatCreation {
   name: string;
   club: string;
 }
@@ -27,5 +27,10 @@ export class Boat {
       name: this.name,
       club: this.club,
     };
+  }
+
+  updateData({ name, club }: Partial<BoatCreation>) {
+    this.name = name ?? this.name;
+    this.club = club ?? this.club;
   }
 }

@@ -11,11 +11,15 @@ export default async function handler(
   }
 
   const args = JSON.parse(req.body) as UpdateTeamArgs;
-  const team = await teamService.getTeam(args.teamId);
+  const team = args.teamId ? await teamService.getTeam(args.teamId) : undefined;
 
   if (!team) {
-    res
+    return res
       .status(500)
       .json({ error: `Er bestaat geen team voor id: ${args.teamId}` });
   }
+
+  await team.updateTeam(args);
+
+  return res.status(200).send({ success: true });
 }
