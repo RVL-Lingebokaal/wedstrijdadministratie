@@ -16,6 +16,7 @@ interface SelectProps {
   topClassNames?: string;
   classNames?: string;
   label?: string;
+  disabled?: boolean;
 }
 
 export function Select({
@@ -25,10 +26,11 @@ export function Select({
   classNames = "",
   label,
   topClassNames,
+  disabled,
 }: SelectProps) {
   const selectedItem = items.find((i) => i.id === selectedValue);
   return (
-    <Listbox value={selectedValue} onChange={onChange}>
+    <Listbox value={selectedValue} onChange={onChange} disabled={disabled}>
       <div className={topClassNames}>
         {label && <Listbox.Label className="font-bold">{label}</Listbox.Label>}
         <Listbox.Button
@@ -37,7 +39,7 @@ export function Select({
             classNames
           )}
         >
-          <span className="block truncate ">
+          <span className={`block truncate ${disabled ? "text-gray-600" : ""}`}>
             {selectedItem?.text ?? selectedValue}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">

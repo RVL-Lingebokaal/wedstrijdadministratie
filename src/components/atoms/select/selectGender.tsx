@@ -7,6 +7,7 @@ interface SelectGenderProps {
   classNames?: string;
   label?: string;
   topClassNames?: string;
+  disabled?: boolean;
 }
 
 export default function SelectGender({
@@ -15,6 +16,7 @@ export default function SelectGender({
   classNames,
   label,
   topClassNames,
+  disabled,
 }: SelectGenderProps) {
   return (
     <Select
@@ -27,6 +29,7 @@ export default function SelectGender({
       classNames={classNames}
       label={label}
       topClassNames={topClassNames}
+      disabled={disabled}
     />
   );
 }

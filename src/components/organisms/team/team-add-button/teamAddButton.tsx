@@ -13,11 +13,18 @@ interface TeamAddButtonProps {
   refetch: () => void;
 }
 
+export interface TeamAddFormParticipant {
+  name: string;
+  club: string;
+  birthYear: number;
+  id?: string;
+}
+
 export interface TeamAddForm {
   name: string;
   club: string;
-  participants: { name: string; club: string; birthYear: number }[];
-  helm: { name: string; club: string; birthYear: number } | null;
+  participants: TeamAddFormParticipant[];
+  helm: TeamAddFormParticipant | null;
   boat: string;
   preferredBlock: number;
   boatType: BoatType;

@@ -11,6 +11,7 @@ interface SelectControllerProps<T extends FieldValues> {
   isGender?: boolean;
   classNames?: string;
   onSelect?: (val: string) => void;
+  disabled?: boolean;
 }
 
 export default function SelectController<T extends FieldValues>({
@@ -22,6 +23,7 @@ export default function SelectController<T extends FieldValues>({
   isGender,
   classNames,
   onSelect,
+  disabled,
 }: SelectControllerProps<T>) {
   return (
     <Controller
@@ -35,6 +37,7 @@ export default function SelectController<T extends FieldValues>({
             classNames={classNames}
             label={label}
             topClassNames={topClassNames}
+            disabled={disabled}
           />
         ) : (
           <Select
@@ -47,6 +50,7 @@ export default function SelectController<T extends FieldValues>({
             label={label}
             topClassNames={topClassNames}
             classNames={classNames}
+            disabled={disabled}
           />
         )
       }
