@@ -86,25 +86,27 @@ export default function TeamForm({
         <InputController path="club" control={control} label="Vereniging" />
         <InputController path="boat" control={control} label="Boot naam" />
       </div>
-      {boatType !== BoatType.skiff && boatType !== BoatType.boardTwoWithout && (
-        <div className="flex gap-x-3">
-          <InputController
-            path="helm.name"
-            control={control}
-            label="Naam stuur"
-          />
-          <InputController
-            path="helm.club"
-            control={control}
-            label="Vereniging stuur"
-          />
-          <InputController
-            path="helm.birthYear"
-            control={control}
-            label="Geboortejaar stuur"
-          />
-        </div>
-      )}
+      {boatType !== BoatType.skiff &&
+        boatType !== BoatType.boardTwoWithout &&
+        boatType !== BoatType.scullTwoWithout && (
+          <div className="flex gap-x-3">
+            <InputController
+              path="helm.name"
+              control={control}
+              label="Naam stuur"
+            />
+            <InputController
+              path="helm.club"
+              control={control}
+              label="Vereniging stuur"
+            />
+            <InputController
+              path="helm.birthYear"
+              control={control}
+              label="Geboortejaar stuur"
+            />
+          </div>
+        )}
       {!isUpdate && (
         <Button
           name="Voeg deelnemer toe"
