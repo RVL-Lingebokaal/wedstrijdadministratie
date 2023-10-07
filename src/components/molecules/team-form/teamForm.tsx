@@ -81,10 +81,10 @@ export default function TeamForm({
           disabled={isUpdate}
           path="name"
           control={control}
-          label="Team naam"
+          label="Teamnaam"
         />
         <InputController path="club" control={control} label="Vereniging" />
-        <InputController path="boat" control={control} label="Boot naam" />
+        <InputController path="boat" control={control} label="Bootnaam" />
       </div>
       {boatType !== BoatType.skiff &&
         boatType !== BoatType.boardTwoWithout &&

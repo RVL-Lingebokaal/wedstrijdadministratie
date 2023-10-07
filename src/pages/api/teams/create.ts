@@ -24,7 +24,7 @@ export default async function handler(
   }
   const team = new Team({
     name: args.name,
-    id: teamService.generateId().toString(),
+    id: "",
     club: args.club,
     boat: new Boat({ name: args.boat, club: args.club }),
     registrationFee: 0,

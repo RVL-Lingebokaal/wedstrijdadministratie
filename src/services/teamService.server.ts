@@ -1,5 +1,6 @@
 import { Team } from "../models/team";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -13,8 +14,7 @@ import { Boat } from "../models/boat";
 import { Participant } from "../models/participant";
 
 export class TeamService {
-  private teams: Map<number, Team> = new Map();
-  private alreadyUsedIds: Set<number> = new Set<number>();
+  private teams: Map<string, Team> = new Map();
 
   async saveTeams(teams: Team[]) {
     const batch = writeBatch(firestore);
@@ -22,7 +22,6 @@ export class TeamService {
     teams.forEach((team) => {
       const docRef = doc(firestore, "ploeg", team.getId().toString());
       this.teams.set(team.getId(), team);
-      this.alreadyUsedIds.add(team.getId());
       batch.set(docRef, team.getDatabaseTeam(), { merge: true });
     });
 
@@ -30,8 +29,7 @@ export class TeamService {
   }
 
   async saveTeam(team: Team) {
-    this.alreadyUsedIds.add(team.getId());
-    const docRef = doc(firestore, "ploeg", team.getId().toString());
+    const db = doc(firestore, "ploeg", team.getId());
 
     const participants = team.getHelm()
       ? ([...team.getParticipants(), team.getHelm()] as Participant[])
@@ -42,9 +40,18 @@ export class TeamService {
     if (boat) {
       await boatService.saveBoats([boat]);
     }
-    this.teams.set(team.getId(), team);
 
-    return await setDoc(docRef, team.getDatabaseTeam());
+    if (team.getId() === "") {
+      const docRef = await addDoc(
+        collection(firestore, "cities"),
+        team.getDatabaseTeam()
+      );
+      team.setId(docRef.id);
+    } else {
+      await setDoc(db, team.getDatabaseTeam());
+    }
+
+    this.teams.set(team.getId(), team);
   }
 
   async removeAllTeams() {
@@ -70,11 +77,9 @@ export class TeamService {
 
       const boats = await boatService.getBoats();
       const participants = await participantService.getParticipants();
-      this.alreadyUsedIds = new Set<number>();
 
       this.teams = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
-        this.alreadyUsedIds.add(docData.id);
         const team = new Team({
           boat: boats.get(docData.boat) as Boat,
           boatType: docData.boatType,
@@ -100,12 +105,7 @@ export class TeamService {
     return this.teams;
   }
 
-  generateId() {
-    const highestNumber = Math.max(...Array.from(this.alreadyUsedIds.values()));
-    return highestNumber + 10;
-  }
-
-  async getTeam(teamId: number) {
+  async getTeam(teamId: string) {
     const teams = await this.getTeams();
     return teams.get(teamId);
   }

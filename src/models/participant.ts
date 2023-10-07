@@ -36,6 +36,10 @@ export class Participant {
     return this.id;
   }
 
+  setId(id: string) {
+    this.id = id;
+  }
+
   getDatabaseParticipant() {
     return {
       birthYear: this.birthYear,

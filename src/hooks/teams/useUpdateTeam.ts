@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TeamAddForm } from "../../components/organisms/team/team-add-button/teamAddButton";
 
 export interface UpdateTeamArgs extends Partial<TeamAddForm> {
-  teamId: number;
+  teamId: string;
 }
 export function useUpdateTeam() {
   const queryClient = useQueryClient();

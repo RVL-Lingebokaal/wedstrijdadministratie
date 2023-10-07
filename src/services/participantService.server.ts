@@ -1,5 +1,6 @@
 import { Participant, ParticipantCreation } from "../models/participant";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -11,7 +12,6 @@ import { TeamAddFormParticipant } from "../components/organisms/team/team-add-bu
 
 export class ParticipantService {
   private participants: Map<string, Participant> = new Map();
-  private alreadyUsedIds: Set<string> = new Set<string>();
 
   async saveParticipants(participants: Participant[]) {
     const batch = writeBatch(firestore);
@@ -19,7 +19,6 @@ export class ParticipantService {
     participants.forEach((participant) => {
       const docRef = doc(firestore, "deelnemer", participant.getId());
       this.participants.set(participant.getId(), participant);
-      this.alreadyUsedIds.add(participant.getId());
       batch.set(docRef, participant.getDatabaseParticipant(), { merge: true });
     });
 
@@ -55,11 +54,8 @@ export class ParticipantService {
       const dbInstance = collection(firestore, "deelnemer");
       const data = await getDocs(dbInstance);
 
-      this.alreadyUsedIds = new Set<string>();
-
       this.participants = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
-        this.alreadyUsedIds.add(docData.id);
         return acc.set(
           docData.id,
           new Participant({
@@ -91,17 +87,15 @@ export class ParticipantService {
       return foundParticipant;
     }
 
-    const id = this.generateId();
-    const participant = new Participant({ name, id, club, birthYear });
+    const participant = new Participant({ name, id: "", club, birthYear });
 
-    this.participants = this.participants.set(id, participant);
-    this.alreadyUsedIds.add(id);
-    const docRef = doc(firestore, "deelnemer", participant.getId());
-    await setDoc(
-      docRef,
-      { ...participant.getDatabaseParticipant() },
-      { merge: true }
+    const docRef = await addDoc(
+      collection(firestore, "deelnemer"),
+      participant.getDatabaseParticipant()
     );
+    participant.setId(docRef.id);
+
+    this.participants = this.participants.set(participant.getId(), participant);
 
     return participant;
   }
@@ -122,16 +116,8 @@ export class ParticipantService {
 
     return participant;
   }
-
-  generateId() {
-    let id = (Math.random() * 100000).toString();
-    while (this.alreadyUsedIds.has(id)) {
-      id = (Math.random() * 100000).toString();
-    }
-    this.alreadyUsedIds.add(id);
-    return id;
-  }
 }
+
 let participantService: ParticipantService;
 
 if (process.env.NODE_ENV === "production") {

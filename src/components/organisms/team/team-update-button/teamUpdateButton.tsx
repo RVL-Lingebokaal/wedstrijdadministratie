@@ -24,7 +24,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const teamsMap = useMemo(
     () =>
       teams.reduce<Map<string, Team>>(
-        (acc, t) => acc.set(t.getId().toString(), t),
+        (acc, t) => acc.set(t.getId(), t),
         new Map()
       ),
     [teams]
@@ -45,7 +45,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
         obj[key] = val[key as keyof TeamAddForm];
         return obj;
       }, {}) as Partial<TeamAddForm>;
-      await mutate({ teamId: team?.getId() ?? 0, ...updatedObject });
+      mutate({ teamId: team?.getId() ?? "", ...updatedObject });
       refetch();
     },
     [formState.dirtyFields, mutate, refetch, team]

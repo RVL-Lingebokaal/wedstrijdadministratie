@@ -37,7 +37,7 @@ interface UpdateTeamParticipants {
 
 export class Team {
   private name = "";
-  private id = 0;
+  private id = "";
   private club = "";
   private participants: Participant[] = [];
   private boat: null | Boat = null;
@@ -66,7 +66,7 @@ export class Team {
     helm,
   }: TeamCreation) {
     this.name = name;
-    this.id = parseInt(id);
+    this.id = id;
     this.club = club;
     this.participants = participants;
     this.boat = boat;
@@ -82,6 +82,10 @@ export class Team {
 
   getId() {
     return this.id;
+  }
+
+  setId(id: string) {
+    this.id = id;
   }
 
   getNameAndId() {
