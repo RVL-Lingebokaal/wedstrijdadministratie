@@ -39,7 +39,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
     mode: "onSubmit",
   });
   const [error, setError] = useState<string | null>(null);
-  const { watch, control, getValues, handleSubmit, reset } = methods;
+  const { watch, control, getValues, handleSubmit, reset, setValue } = methods;
   const { mutate } = useAddTeam();
   const boatType = watch("boatType");
 
@@ -75,6 +75,7 @@ export default function TeamAddButton({ refetch }: TeamAddButtonProps) {
               watch={watch}
               getValues={getValues}
               setError={(val) => setError(val)}
+              setValue={setValue}
             />
             {error && <span className="text-red-600">{error}</span>}
           </FormProvider>

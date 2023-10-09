@@ -30,11 +30,18 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
     [teams]
   );
   const onClick = useCallback(() => setShowModal(true), []);
-  const { formState, getValues, control, handleSubmit, watch, reset } =
-    useForm<TeamAddForm>({
-      defaultValues: getTeamFormValues(),
-      resolver: yupResolver(addTeamSchema),
-    });
+  const {
+    formState,
+    getValues,
+    control,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+  } = useForm<TeamAddForm>({
+    defaultValues: getTeamFormValues(),
+    resolver: yupResolver(addTeamSchema),
+  });
 
   const onClickSubmit = useCallback(
     async (val: TeamAddForm) => {
@@ -80,6 +87,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
             getValues={getValues}
             setError={setError}
             isUpdate
+            setValue={setValue}
           />
         </FormModal>
       )}

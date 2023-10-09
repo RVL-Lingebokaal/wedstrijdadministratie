@@ -13,6 +13,7 @@ import {
   Control,
   useFieldArray,
   UseFormGetValues,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import { useCallback, useState } from "react";
@@ -23,6 +24,7 @@ interface TeamFormProps {
   getValues: UseFormGetValues<TeamAddForm>;
   setError: (val: string | null) => void;
   isUpdate?: boolean;
+  setValue: UseFormSetValue<TeamAddForm>;
 }
 
 export default function TeamForm({
@@ -31,6 +33,7 @@ export default function TeamForm({
   getValues,
   setError,
   isUpdate,
+  setValue,
 }: TeamFormProps) {
   const [showAddParticipant, setShowAddParticipant] = useState(false);
 
@@ -60,6 +63,11 @@ export default function TeamForm({
           topClassNames="grow"
           items={Object.values(BoatType).map((val) => ({ id: val }))}
           disabled={isUpdate}
+          onSelect={(val) =>
+            checkNeedsHelm(val as BoatType) && !isUpdate
+              ? setValue("helm", { club: "", birthYear: 1900, name: "" })
+              : undefined
+          }
         />
         <SelectController
           path="preferredBlock"
@@ -86,27 +94,25 @@ export default function TeamForm({
         <InputController path="club" control={control} label="Vereniging" />
         <InputController path="boat" control={control} label="Bootnaam" />
       </div>
-      {boatType !== BoatType.skiff &&
-        boatType !== BoatType.boardTwoWithout &&
-        boatType !== BoatType.scullTwoWithout && (
-          <div className="flex gap-x-3">
-            <InputController
-              path="helm.name"
-              control={control}
-              label="Naam stuur"
-            />
-            <InputController
-              path="helm.club"
-              control={control}
-              label="Vereniging stuur"
-            />
-            <InputController
-              path="helm.birthYear"
-              control={control}
-              label="Geboortejaar stuur"
-            />
-          </div>
-        )}
+      {checkNeedsHelm(boatType) && (
+        <div className="flex gap-x-3">
+          <InputController
+            path="helm.name"
+            control={control}
+            label="Naam stuur"
+          />
+          <InputController
+            path="helm.club"
+            control={control}
+            label="Vereniging stuur"
+          />
+          <InputController
+            path="helm.birthYear"
+            control={control}
+            label="Geboortejaar stuur"
+          />
+        </div>
+      )}
       {!isUpdate && (
         <Button
           name="Voeg deelnemer toe"
@@ -114,7 +120,7 @@ export default function TeamForm({
           disabled={showAddParticipant || getDisabled(boatType, fields.length)}
           onClick={() => {
             setShowAddParticipant(true);
-            append({ name: "", club, birthYear: 1999 });
+            append({ name: "", club, birthYear: 1900 });
             setError(null);
           }}
           classNames="my-3"
@@ -166,5 +172,13 @@ export default function TeamForm({
         ) : undefined
       )}
     </>
+  );
+}
+
+function checkNeedsHelm(val: BoatType) {
+  return (
+    val !== BoatType.skiff &&
+    val !== BoatType.boardTwoWithout &&
+    val !== BoatType.scullTwoWithout
   );
 }
