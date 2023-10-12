@@ -1,5 +1,5 @@
 import { Button } from "../../atoms/button/button";
-import { useRemoveClassItem } from "../../../hooks/useRemoveClassItem";
+import { useRemoveClassItem } from "../../../hooks/settings/useRemoveClassItem";
 import { useCallback, useState } from "react";
 import { ClassItem } from "../../../models/settings";
 import ConfirmModal from "../../atoms/confirm-modal/confirmModal";

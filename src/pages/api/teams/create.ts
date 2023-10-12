@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
-import { TeamAddForm } from "../../../components/molecules/team-add-button/teamAddButton";
+import { TeamAddForm } from "../../../components/organisms/team/team-add-button/teamAddButton";
 import { Team } from "../../../models/team";
 import { Boat } from "../../../models/boat";
-import { Participant } from "../../../models/participant";
+import participantService from "../../../services/participantService.server";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,9 +14,17 @@ export default async function handler(
   }
 
   const args = JSON.parse(req.body) as TeamAddForm;
+  const helm = args.helm
+    ? await participantService.createParticipant({ ...args.helm })
+    : null;
+  const participants = [];
+  for await (const p of args.participants) {
+    const participant = await participantService.createParticipant(p);
+    participants.push(participant);
+  }
   const team = new Team({
     name: args.name,
-    id: Math.floor(Math.random() * 10000 + 1).toString(),
+    id: "",
     club: args.club,
     boat: new Boat({ name: args.boat, club: args.club }),
     registrationFee: 0,
@@ -26,23 +34,8 @@ export default async function handler(
     remarks: "",
     boatType: args.boatType,
     gender: args.gender,
-    helm: args.helm
-      ? new Participant({
-          name: args.helm.name,
-          club: args.helm.club,
-          birthYear: args.helm.birthYear,
-          id: Math.floor(Math.random() * 1000000 + 1).toString(),
-        })
-      : null,
-    participants: args.participants.map(
-      ({ name, club, birthYear }) =>
-        new Participant({
-          name,
-          club,
-          birthYear,
-          id: Math.floor(Math.random() * 1000000 + 1).toString(),
-        })
-    ),
+    helm,
+    participants,
   });
 
   await teamService.saveTeam(team);

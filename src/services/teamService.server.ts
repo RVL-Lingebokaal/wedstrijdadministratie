@@ -1,5 +1,6 @@
 import { Team } from "../models/team";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
@@ -19,7 +20,7 @@ export class TeamService {
     const batch = writeBatch(firestore);
 
     teams.forEach((team) => {
-      const docRef = doc(firestore, "ploeg", team.getId());
+      const docRef = doc(firestore, "ploeg", team.getId().toString());
       this.teams.set(team.getId(), team);
       batch.set(docRef, team.getDatabaseTeam(), { merge: true });
     });
@@ -28,7 +29,7 @@ export class TeamService {
   }
 
   async saveTeam(team: Team) {
-    const docRef = doc(firestore, "ploeg", team.getId());
+    const db = doc(firestore, "ploeg", team.getId());
 
     const participants = team.getHelm()
       ? ([...team.getParticipants(), team.getHelm()] as Participant[])
@@ -39,9 +40,18 @@ export class TeamService {
     if (boat) {
       await boatService.saveBoats([boat]);
     }
-    this.teams.set(team.getId(), team);
 
-    return await setDoc(docRef, team.getDatabaseTeam());
+    if (team.getId() === "") {
+      const docRef = await addDoc(
+        collection(firestore, "cities"),
+        team.getDatabaseTeam()
+      );
+      team.setId(docRef.id);
+    } else {
+      await setDoc(db, team.getDatabaseTeam());
+    }
+
+    this.teams.set(team.getId(), team);
   }
 
   async removeAllTeams() {
@@ -93,6 +103,11 @@ export class TeamService {
       }, new Map());
     }
     return this.teams;
+  }
+
+  async getTeam(teamId: string) {
+    const teams = await this.getTeams();
+    return teams.get(teamId);
   }
 }
 

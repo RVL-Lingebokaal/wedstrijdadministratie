@@ -3,7 +3,7 @@ import { BoatForm, BoatType } from "../../../../models/settings";
 import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { Input } from "../../../atoms/input/input";
-import { useSaveSettings } from "../../../../hooks/useSaveSettings";
+import { useSaveSettings } from "../../../../hooks/settings/useSaveSettings";
 
 interface TypesFormProps {
   initialValues?: BoatForm;
@@ -24,8 +24,14 @@ export function TypesForm({ initialValues }: TypesFormProps) {
       gridHeaderItems={["Boottype", "Correctiefactor", "Prijs"]}
       rowInputs={[
         { name: "type", getValue: (field) => field.type },
-        { name: "correction", input: (field) => <Input {...field} /> },
-        { name: "price", input: (field) => <Input {...field} /> },
+        {
+          name: "correction",
+          input: (field) => <Input classNames="m-0" {...field} />,
+        },
+        {
+          name: "price",
+          input: (field) => <Input classNames="m-0" {...field} />,
+        },
       ]}
     />
   );

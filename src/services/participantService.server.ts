@@ -1,6 +1,14 @@
-import { Participant } from "../models/participant";
-import { collection, doc, getDocs, writeBatch } from "firebase/firestore";
+import { Participant, ParticipantCreation } from "../models/participant";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  writeBatch,
+} from "firebase/firestore";
 import firestore from "../firebase/firebase";
+import { TeamAddFormParticipant } from "../components/organisms/team/team-add-button/teamAddButton";
 
 export class ParticipantService {
   private participants: Map<string, Participant> = new Map();
@@ -45,6 +53,7 @@ export class ParticipantService {
     if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, "deelnemer");
       const data = await getDocs(dbInstance);
+
       this.participants = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
         return acc.set(
@@ -60,7 +69,55 @@ export class ParticipantService {
     }
     return this.participants;
   }
+
+  async createParticipant({
+    name,
+    club,
+    birthYear,
+  }: Omit<ParticipantCreation, "id">) {
+    const participants = Array.from(this.participants.values());
+    const foundParticipant = participants.find(
+      (p) =>
+        name === p.getName() &&
+        club === p.getClub() &&
+        birthYear === p.getBirthYear()
+    );
+
+    if (foundParticipant) {
+      return foundParticipant;
+    }
+
+    const participant = new Participant({ name, id: "", club, birthYear });
+
+    const docRef = await addDoc(
+      collection(firestore, "deelnemer"),
+      participant.getDatabaseParticipant()
+    );
+    participant.setId(docRef.id);
+
+    this.participants = this.participants.set(participant.getId(), participant);
+
+    return participant;
+  }
+
+  async updateParticipant(
+    participant: Participant,
+    args: TeamAddFormParticipant
+  ) {
+    participant.updateParticipantData(args);
+    this.participants = this.participants.set(participant.getId(), participant);
+
+    const docRef = doc(firestore, "deelnemer", participant.getId());
+    await setDoc(
+      docRef,
+      { ...participant.getDatabaseParticipant() },
+      { merge: true }
+    );
+
+    return participant;
+  }
 }
+
 let participantService: ParticipantService;
 
 if (process.env.NODE_ENV === "production") {

@@ -1,5 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ItemsToSave, SettingsType } from "../services/settingsService.server";
+import {
+  ItemsToSave,
+  SettingsType,
+} from "../../services/settingsService.server";
 
 interface SaveSettinsArgs {
   type: SettingsType;

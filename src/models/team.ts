@@ -2,6 +2,11 @@ import { Participant } from "./participant";
 import { Boat } from "./boat";
 import { AgeItem, BoatType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
+import participantService from "../services/participantService.server";
+import { UpdateTeamArgs } from "../hooks/teams/useUpdateTeam";
+import { TeamAddFormParticipant } from "../components/organisms/team/team-add-button/teamAddButton";
+import boatService from "../services/boatService.server";
+import teamService from "../services/teamService.server";
 
 export enum Gender {
   M = "male",
@@ -23,6 +28,11 @@ interface TeamCreation {
   boatType: BoatType;
   gender: Gender;
   helm: Participant | null;
+}
+
+interface UpdateTeamParticipants {
+  participants: Map<string, Participant>;
+  args: UpdateTeamArgs;
 }
 
 export class Team {
@@ -74,6 +84,14 @@ export class Team {
     return this.id;
   }
 
+  setId(id: string) {
+    this.id = id;
+  }
+
+  getNameAndId() {
+    return `${this.id} - ${this.name}`;
+  }
+
   getName() {
     return this.name;
   }
@@ -114,6 +132,10 @@ export class Team {
     return calculateAgeType(ages, age);
   }
 
+  getPreferredBlock() {
+    return this.preferredBlock;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -130,5 +152,90 @@ export class Team {
       gender: this.gender,
       helm: this.helm?.getId() ?? null,
     };
+  }
+
+  async updateTeam(args: UpdateTeamArgs) {
+    const participants = await participantService.getParticipants();
+    for (const key of Object.keys(args)) {
+      switch (key) {
+        case "helm":
+          await this.updateHelm({ participants, args });
+          break;
+        case "club":
+          this.club = args.club ?? this.club;
+          break;
+        case "name":
+          this.name = args.name ?? this.name;
+          break;
+        case "preferredBlock":
+          this.preferredBlock = args.preferredBlock ?? this.preferredBlock;
+          break;
+        case "gender":
+          this.gender = args.gender ?? this.gender;
+          break;
+        case "boatType":
+          this.boatType = args.boatType ?? this.boatType;
+          break;
+        case "participants":
+          this.participants =
+            (await this.updateParticipants({ participants, args })) ?? [];
+          break;
+        case "boat":
+          this.boat = await this.updateBoat(args.boat ?? "");
+          break;
+      }
+    }
+    await teamService.saveTeam(this);
+  }
+
+  private async updateHelm({ participants, args }: UpdateTeamParticipants) {
+    if (!args.helm) {
+      return;
+    }
+
+    const participant = await this.createParticipant(
+      participants,
+      args.helm,
+      args.helm.id
+    );
+
+    this.helm = participant ?? null;
+  }
+
+  private async updateParticipants({
+    participants,
+    args,
+  }: UpdateTeamParticipants) {
+    if (!args.participants) {
+      return;
+    }
+    const newParticipants: Participant[] = [];
+    for (const p of args.participants) {
+      const participant = await this.createParticipant(participants, p, p.id);
+      newParticipants.push(participant);
+    }
+    return newParticipants;
+  }
+
+  private async createParticipant(
+    participants: Map<string, Participant>,
+    p: TeamAddFormParticipant,
+    id?: string
+  ) {
+    let participant = id ? participants.get(id) : undefined;
+    if (!participant) {
+      participant = await participantService.createParticipant(p);
+    } else {
+      participant = await participantService.updateParticipant(participant, p);
+    }
+
+    return participant;
+  }
+
+  private async updateBoat(name: string) {
+    return await boatService.updateBoat(
+      { name, club: this.club },
+      this.boat?.getId()
+    );
   }
 }

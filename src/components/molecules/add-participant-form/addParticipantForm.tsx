@@ -1,8 +1,8 @@
-import { Controller, useFormContext } from "react-hook-form";
-import { Input } from "../../atoms/input/input";
+import { useFormContext } from "react-hook-form";
 import { Button } from "../../atoms/button/button";
 import { useCallback } from "react";
-import { TeamAddForm } from "../team-add-button/teamAddButton";
+import { TeamAddForm } from "../../organisms/team/team-add-button/teamAddButton";
+import InputController from "../../atoms/input/inputController";
 
 interface ParticipantForm {
   name: string;
@@ -29,26 +29,23 @@ export function AddParticipantForm({
   return (
     <div className="rounded-md border border-gray-300 p-2 my-3">
       <div className="flex gap-x-3">
-        <Controller
-          name={`participants.${index}.name`}
+        <InputController<TeamAddForm>
+          path={`participants.${index}.name`}
           control={control}
-          render={({ field }) => (
-            <Input label="Naam" classNames="mt-2" {...field} />
-          )}
+          label="Naam"
+          classNames="mt-2"
         />
-        <Controller
-          name={`participants.${index}.club`}
+        <InputController<TeamAddForm>
+          path={`participants.${index}.club`}
           control={control}
-          render={({ field }) => (
-            <Input label="Vereniging" classNames="mt-2" {...field} />
-          )}
+          label="Vereniging"
+          classNames="mt-2"
         />
-        <Controller
-          name={`participants.${index}.birthYear`}
+        <InputController<TeamAddForm>
+          path={`participants.${index}.birthYear`}
           control={control}
-          render={({ field }) => (
-            <Input label="Geboortejaar" classNames="mt-2" {...field} />
-          )}
+          label="Geboortejaar"
+          classNames="mt-2"
         />
       </div>
       <Button

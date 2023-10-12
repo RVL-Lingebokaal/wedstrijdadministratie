@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { Team } from "../models/team";
-import { Participant } from "../models/participant";
+import { Team } from "../../models/team";
+import { Participant } from "../../models/participant";
+import { Boat } from "../../models/boat";
 
 export function useGetTeams() {
   return useQuery(
@@ -16,6 +17,8 @@ export function useGetTeams() {
           new Team({
             ...team,
             participants: team.participants.map((p: any) => new Participant(p)),
+            boat: new Boat(team.boat),
+            helm: team.helm ? new Participant(team.helm) : null,
           })
       );
     },

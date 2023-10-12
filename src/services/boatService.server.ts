@@ -1,5 +1,11 @@
-import { Boat } from "../models/boat";
-import { collection, doc, getDocs, writeBatch } from "firebase/firestore";
+import { Boat, BoatCreation } from "../models/boat";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  writeBatch,
+} from "firebase/firestore";
 import firestore from "../firebase/firebase";
 
 export class BoatService {
@@ -47,6 +53,22 @@ export class BoatService {
       );
     }
     return this.boats;
+  }
+
+  async updateBoat(args: BoatCreation, id?: string) {
+    let boat = id ? this.boats.get(id) : undefined;
+    if (!boat) {
+      boat = new Boat(args);
+    } else {
+      boat.updateData(args);
+    }
+
+    this.boats.set(boat.getId(), boat);
+
+    const docRef = doc(firestore, "boot", boat.getId());
+    await setDoc(docRef, { ...boat.getDatabaseBoat() }, { merge: true });
+
+    return boat;
   }
 }
 
