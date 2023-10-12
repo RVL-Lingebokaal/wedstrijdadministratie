@@ -59,7 +59,7 @@ export class BondService {
           registrationFee: record[TEAM_REGISTRATION_FEE],
           remarks: record[TEAM_REMARKS],
           coach: record[TEAM_COACH],
-          preferredBlock: record[TEAM_PREFFERED_BLOCK],
+          preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
           phoneNumber: record[TEAM_PHONE_NUMBER],
           boatType,
           gender,
@@ -109,6 +109,7 @@ export class BondService {
         ),
         id,
         club: record[`VKODE ${path}`],
+        preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
       });
     map.set(id, participant);
     return participant;

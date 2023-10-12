@@ -90,7 +90,7 @@ export class TeamService {
             (id: string) => participants.get(id) as Participant
           ),
           phoneNumber: docData.phoneNumber,
-          preferredBlock: docData.preferredBlock,
+          preferredBlock: parseInt(docData.preferredBlock),
           registrationFee: docData.registrationFee,
           remarks: docData.remarks,
           name: docData.name,

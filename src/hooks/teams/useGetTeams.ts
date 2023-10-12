@@ -16,6 +16,7 @@ export function useGetTeams() {
         (team) =>
           new Team({
             ...team,
+            preferredBlock: parseInt(team.preferredBlock),
             participants: team.participants.map((p: any) => new Participant(p)),
             boat: new Boat(team.boat),
             helm: team.helm ? new Participant(team.helm) : null,

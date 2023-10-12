@@ -42,13 +42,14 @@ export class Team {
   private participants: Participant[] = [];
   private boat: null | Boat = null;
   private registrationFee = 0;
-  private preferredBlock = 0;
+  private preferredBlock = 1;
   private coach = "";
   private phoneNumber = "";
   private remarks = "";
   private boatType: null | BoatType = null;
   private gender: null | Gender = null;
   private helm: null | Participant = null;
+  private block: null | number = null;
 
   constructor({
     name,
@@ -136,6 +137,14 @@ export class Team {
     return this.preferredBlock;
   }
 
+  getBlock() {
+    return this.block ?? this.preferredBlock;
+  }
+
+  getRemarks() {
+    return this.remarks;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -158,6 +167,11 @@ export class Team {
     const participants = await participantService.getParticipants();
     for (const key of Object.keys(args)) {
       switch (key) {
+        case "preferredBlock":
+          this.preferredBlock = args.preferredBlock
+            ? parseInt(args.preferredBlock.toString())
+            : this.preferredBlock;
+          break;
         case "helm":
           await this.updateHelm({ participants, args });
           break;
@@ -166,9 +180,6 @@ export class Team {
           break;
         case "name":
           this.name = args.name ?? this.name;
-          break;
-        case "preferredBlock":
-          this.preferredBlock = args.preferredBlock ?? this.preferredBlock;
           break;
         case "gender":
           this.gender = args.gender ?? this.gender;
@@ -224,7 +235,10 @@ export class Team {
   ) {
     let participant = id ? participants.get(id) : undefined;
     if (!participant) {
-      participant = await participantService.createParticipant(p);
+      participant = await participantService.createParticipant({
+        ...p,
+        preferredBlock: this.preferredBlock,
+      });
     } else {
       participant = await participantService.updateParticipant(participant, p);
     }

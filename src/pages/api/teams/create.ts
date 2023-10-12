@@ -15,7 +15,10 @@ export default async function handler(
 
   const args = JSON.parse(req.body) as TeamAddForm;
   const helm = args.helm
-    ? await participantService.createParticipant({ ...args.helm })
+    ? await participantService.createParticipant({
+        ...args.helm,
+        preferredBlock: parseInt(args.preferredBlock.toString()),
+      })
     : null;
   const participants = [];
   for await (const p of args.participants) {
@@ -28,7 +31,7 @@ export default async function handler(
     club: args.club,
     boat: new Boat({ name: args.boat, club: args.club }),
     registrationFee: 0,
-    preferredBlock: args.preferredBlock,
+    preferredBlock: parseInt(args.preferredBlock.toString()),
     coach: "",
     phoneNumber: "",
     remarks: "",
