@@ -2,19 +2,19 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 import { Select, SelectItem } from "./select";
 import SelectGender from "./selectGender";
 
-interface SelectControllerProps<T extends FieldValues> {
+interface SelectControllerProps<T extends FieldValues, V> {
   path: Path<T>;
   control: Control<T>;
   label?: string;
-  items?: SelectItem[];
+  items?: SelectItem<V>[];
   topClassNames?: string;
   isGender?: boolean;
   classNames?: string;
-  onSelect?: (val: string) => void;
+  onSelect?: (val: V) => void;
   disabled?: boolean;
 }
 
-export default function SelectController<T extends FieldValues>({
+export default function SelectController<T extends FieldValues, V>({
   path,
   control,
   label,
@@ -24,7 +24,7 @@ export default function SelectController<T extends FieldValues>({
   classNames,
   onSelect,
   disabled,
-}: SelectControllerProps<T>) {
+}: SelectControllerProps<T, V>) {
   return (
     <Controller
       name={path}

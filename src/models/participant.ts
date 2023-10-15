@@ -7,6 +7,7 @@ export interface ParticipantCreation {
   club: string;
   birthYear: number;
   preferredBlock: number;
+  blocks?: Set<number>;
 }
 
 export class Participant {
@@ -23,12 +24,13 @@ export class Participant {
     club,
     birthYear,
     preferredBlock,
+    blocks,
   }: ParticipantCreation) {
     this.birthYear = birthYear;
     this.id = id;
     this.name = name;
     this.club = club;
-    this.blocks.add(preferredBlock);
+    this.blocks = blocks ? blocks : this.blocks.add(preferredBlock);
   }
 
   updateParticipantData({
@@ -55,6 +57,7 @@ export class Participant {
       id: this.id,
       name: this.name,
       club: this.club,
+      preferredBlocks: Array.from(this.blocks.entries()),
     };
   }
 

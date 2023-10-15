@@ -63,6 +63,8 @@ export class ParticipantService {
             club: docData.club,
             birthYear: docData.birthYear,
             id: docData.id,
+            blocks: new Set(docData.preferredBlocks),
+            preferredBlock: docData.preferredBlocks[0],
           })
         );
       }, new Map<string, Participant>());
@@ -74,7 +76,8 @@ export class ParticipantService {
     name,
     club,
     birthYear,
-  }: Omit<ParticipantCreation, "id">) {
+    preferredBlock,
+  }: Omit<ParticipantCreation, "id"> & { preferredBlock: number }) {
     const participants = Array.from(this.participants.values());
     const foundParticipant = participants.find(
       (p) =>
@@ -87,7 +90,13 @@ export class ParticipantService {
       return foundParticipant;
     }
 
-    const participant = new Participant({ name, id: "", club, birthYear });
+    const participant = new Participant({
+      name,
+      id: "",
+      club,
+      birthYear,
+      preferredBlock,
+    });
 
     const docRef = await addDoc(
       collection(firestore, "deelnemer"),
