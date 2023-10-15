@@ -7,8 +7,16 @@ export const ageFormSchema = object({
       object({
         type: mixed<AgeType>().oneOf(Object.values(AgeType)).required(),
         age: string().required(),
-        correctionMale: number().required(),
-        correctionFemale: number().required(),
+        correctionMale: number()
+          .transform((_value, originalValue) =>
+            Number(originalValue.toString().replace(/,/, "."))
+          )
+          .required(),
+        correctionFemale: number()
+          .transform((_value, originalValue) =>
+            Number(originalValue.toString().replace(/,/, "."))
+          )
+          .required(),
         strategy: mixed<AgeStrategy>()
           .oneOf(Object.values(AgeStrategy))
           .required(),

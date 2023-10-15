@@ -40,7 +40,11 @@ export function TableForm<T extends Form>({
   rowInputs,
   gridHeaderItems,
 }: TableFormProps<T>) {
-  const { handleSubmit, control } = useForm<T>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<T>({
     resolver: yupResolver(schema),
     defaultValues: defaultValues,
     mode: "all",
