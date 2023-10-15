@@ -4,12 +4,18 @@ import { useCallback } from "react";
 import { TableForm } from "../../table-form/tableForm";
 import { Input } from "../../../atoms/input/input";
 import { useSaveSettings } from "../../../../hooks/settings/useSaveSettings";
+import toast from "react-hot-toast";
 
 interface TypesFormProps {
   initialValues?: BoatForm;
 }
 export function TypesForm({ initialValues }: TypesFormProps) {
-  const { mutate } = useSaveSettings();
+  const { mutate } = useSaveSettings({
+    onSuccess: () =>
+      toast.success(
+        "De wijzigingen in de correctiefactoren van de boot types zijn opgeslagen!"
+      ),
+  });
 
   const onSubmit = useCallback(
     async (data: BoatForm) => mutate({ type: "boats", items: data.items }),

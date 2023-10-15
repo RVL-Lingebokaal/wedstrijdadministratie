@@ -8,7 +8,12 @@ interface SaveSettinsArgs {
   type: SettingsType;
   items: ItemsToSave;
 }
-export function useSaveSettings() {
+
+interface UseSaveSettingsProps {
+  onSuccess: () => void;
+}
+
+export function useSaveSettings({ onSuccess }: UseSaveSettingsProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -24,8 +29,12 @@ export function useSaveSettings() {
       return { success: true };
     },
     {
-      onSuccess: () =>
-        queryClient.invalidateQueries({ queryKey: ["retrieve-settings"] }),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["retrieve-settings"],
+        });
+        onSuccess();
+      },
     }
   );
 }
