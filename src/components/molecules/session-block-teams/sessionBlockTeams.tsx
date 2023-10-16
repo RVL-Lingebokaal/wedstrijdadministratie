@@ -1,40 +1,96 @@
 import { AgeItem, BoatType } from "../../../models/settings";
 import { Team } from "../../../models/team";
-import { GridHeader } from "../../atoms/grid-header/gridHeader";
 import { SessionGridHeader } from "../../atoms/grid-header/sessionGridHeader";
-import { GridRow } from "../../atoms/grid-row/gridRow";
 import { SessionGridRow } from "../../atoms/grid-row/sessionGridRow";
+import { useGetSessionTotals } from "../../../hooks/useGetSessionTotals";
+import { Fragment, useCallback } from "react";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from "@hello-pangea/dnd";
+import { useUpdateBlockTeam } from "../../../hooks/teams/useUpdateBlockTeam";
 
 interface SessionBlockTeamsProps {
   teams?: Team[];
-  block: number;
   boatType: BoatType;
   ageClasses: AgeItem[];
-  totalTeams: number;
+  refetch: () => void;
 }
 
 export function SessionBlockTeams({
   teams,
-  block,
   ageClasses,
   boatType,
-  totalTeams,
+  refetch,
 }: SessionBlockTeamsProps) {
+  const { totalBlocks, blockTeams } = useGetSessionTotals(teams);
+  const { mutate, error } = useUpdateBlockTeam();
+
+  console.log(error);
+
+  const onClick = useCallback(
+    async (result: DropResult) => {
+      const { source, destination, draggableId } = result;
+
+      // dropped outside the list
+      if (!destination) {
+        return;
+      }
+      const destBlock = parseInt(destination.droppableId);
+      const sourceBlock = parseInt(source.droppableId);
+
+      if (destBlock !== sourceBlock) {
+        const team = teams?.find((t) => t.getId() === draggableId);
+        if (!team) return;
+
+        await mutate({ teamId: team.getId(), destBlock });
+        refetch();
+      }
+    },
+    [mutate, refetch, teams]
+  );
+
   return (
-    <>
-      <SessionGridHeader
-        block={block}
-        totalTeams={totalTeams}
-        teams={teams?.length ?? 0}
-        boatType={boatType}
-      />
-      {teams?.map((team) => (
-        <SessionGridRow
-          key={team.getId()}
-          team={team}
-          ageClasses={ageClasses}
-        />
-      ))}
-    </>
+    <DragDropContext onDragEnd={onClick}>
+      <div className="w-full">
+        {[1, 2, 3].map((block) => (
+          <Droppable key={block} droppableId={block.toString()}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <SessionGridHeader
+                  block={block}
+                  totalTeams={totalBlocks.get(block) ?? 0}
+                  teams={blockTeams.get(block)?.get(boatType)?.length ?? 0}
+                  boatType={boatType}
+                />
+                {blockTeams
+                  .get(block)
+                  ?.get(boatType)
+                  ?.map((team, index) => (
+                    <Draggable
+                      draggableId={team.getId()}
+                      index={index}
+                      key={team.getId()}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <SessionGridRow team={team} ageClasses={ageClasses} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        ))}
+      </div>
+    </DragDropContext>
   );
 }

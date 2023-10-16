@@ -101,6 +101,10 @@ export class Participant {
     this.blocks.add(block);
   }
 
+  removeBlock(block: number) {
+    this.blocks.delete(block);
+  }
+
   private calculateAgeType(ages: AgeItem[]) {
     this.ageType = calculateAgeType(ages, this.getAge());
   }

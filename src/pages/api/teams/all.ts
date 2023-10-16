@@ -9,5 +9,17 @@ export default async function handler(
     return res.status(500).json({ error: "Alleen GET methodes mogen" });
   }
   const teams = await teamService.getTeams();
-  return res.status(200).send(Array.from(teams.values()));
+
+  const arrayTeams = Array.from(teams.values());
+  const jsonTeams: any[] = [];
+  arrayTeams.forEach((t) => {
+    const team = {
+      ...t.getDatabaseTeam(),
+      participants: t.getParticipants().map((p) => p.getDatabaseParticipant()),
+      boat: t.getBoat()?.getDatabaseBoat(),
+    };
+    jsonTeams.push(team);
+  });
+
+  return res.status(200).send(jsonTeams);
 }

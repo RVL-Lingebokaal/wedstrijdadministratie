@@ -163,6 +163,23 @@ export class Team {
     };
   }
 
+  setPreferredBlock(block: number) {
+    try {
+      this.participants.forEach((p) => {
+        p.removeBlock(this.preferredBlock);
+        p.addBlock(block);
+      });
+      this.preferredBlock = block;
+    } catch (e) {
+      console.log(e);
+    } finally {
+      this.participants.map((p) => {
+        p.removeBlock(block);
+        p.addBlock(block);
+      });
+    }
+  }
+
   async updateTeam(args: UpdateTeamArgs) {
     const participants = await participantService.getParticipants();
     for (const key of Object.keys(args)) {

@@ -3,60 +3,17 @@ import { useGetTeams } from "../../../../hooks/teams/useGetTeams";
 import { useGetSettings } from "../../../../hooks/settings/useGetSettings";
 import { LoadingSpinner } from "../../../atoms/loading-spinner/loadingSpinner";
 import { Select } from "../../../atoms/select/select";
-import { Team } from "../../../../models/team";
 import { BoatType } from "../../../../models/settings";
 import { SessionBlockTeams } from "../../../molecules/session-block-teams/sessionBlockTeams";
 
 export default function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.skiff);
-  const { data: teamData, isLoading } = useGetTeams();
-  const { data: settingsData, refetch } = useGetSettings();
+  const { data: teamData, isLoading, refetch } = useGetTeams();
+  const { data: settingsData } = useGetSettings();
+
+  console.log({ teamData, isLoading });
 
   const ageClasses = settingsData?.ages ?? [];
-
-  const { blockTeams, totalBlocks } = useMemo(() => {
-    const map = new Map<number, Map<BoatType, Team[]>>();
-    if (!teamData || teamData.length === 0) {
-      return {
-        blockTeams: map,
-        totalBlocks: new Map<number, number>([
-          [1, 0],
-          [2, 0],
-          [3, 0],
-        ]),
-      };
-    }
-
-    const total = new Map<number, number>();
-    const blocks = teamData.reduce((acc, team) => {
-      const teamBoatType = team.getBoatType();
-      if (!teamBoatType) {
-        return acc;
-      }
-
-      const blockId = team.getBlock();
-
-      let totalBlock = total.get(blockId);
-      total.set(blockId, totalBlock ? ++totalBlock : 1);
-
-      const boatTypes = acc.get(blockId);
-      if (!boatTypes) {
-        const types = new Map<BoatType, Team[]>();
-        types.set(teamBoatType, [team]);
-        return acc.set(blockId, types);
-      }
-
-      let teams = boatTypes.get(teamBoatType);
-      if (!teams) {
-        teams = [];
-      }
-      teams.push(team);
-
-      boatTypes.set(teamBoatType, teams);
-      return acc.set(blockId, boatTypes);
-    }, map);
-    return { blockTeams: blocks, totalBlocks: total };
-  }, [teamData]);
 
   const boatTypeSelectItems = useMemo(() => {
     return Array.from(Object.values(BoatType).map((id) => ({ id })));
@@ -77,17 +34,36 @@ export default function SessionPage() {
         />
       </div>
       <div className="w-full">
-        {[1, 2, 3].map((block) => (
-          <SessionBlockTeams
-            key={block}
-            block={block}
-            boatType={boatType}
-            ageClasses={ageClasses}
-            totalTeams={totalBlocks.get(block) ?? 0}
-            teams={blockTeams.get(block)?.get(boatType)}
-          />
-        ))}
+        <SessionBlockTeams
+          boatType={boatType}
+          ageClasses={ageClasses}
+          teams={teamData}
+          refetch={refetch}
+        />
       </div>
     </>
   );
 }
+
+// const { source, destination } = result;
+//
+// // dropped outside the list
+// if (!destination) {
+//   return;
+// }
+// const sInd = +source.droppableId;
+// const dInd = +destination.droppableId;
+//
+// if (sInd === dInd) {
+//   const items = reorder(state[sInd], source.index, destination.index);
+//   const newState = [...state];
+//   newState[sInd] = items;
+//   setState(newState);
+// } else {
+//   const result = move(state[sInd], state[dInd], source, destination);
+//   const newState = [...state];
+//   newState[sInd] = result[sInd];
+//   newState[dInd] = result[dInd];
+//
+//   setState(newState.filter(group => group.length));
+// }

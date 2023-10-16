@@ -1,0 +1,48 @@
+import { useMemo } from "react";
+import { Team } from "../models/team";
+import { BoatType } from "../models/settings";
+
+export function useGetSessionTotals(teams?: Team[]) {
+  return useMemo(() => {
+    const basicMap = new Map<number, Map<BoatType, Team[]>>();
+    const blocksMap = new Map<number, number>([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ]);
+
+    if (!teams || teams.length === 0) {
+      return { blockTeams: basicMap, totalBlocks: blocksMap };
+    }
+
+    teams.reduce((acc, team) => {
+      const teamBoatType = team.getBoatType();
+      if (!teamBoatType) {
+        return acc;
+      }
+
+      const blockId = team.getBlock();
+
+      let totalBlock = blocksMap.get(blockId);
+      blocksMap.set(blockId, totalBlock ? ++totalBlock : 1);
+
+      const boatTypes = acc.get(blockId);
+      if (!boatTypes) {
+        const types = new Map<BoatType, Team[]>();
+        types.set(teamBoatType, [team]);
+        return acc.set(blockId, types);
+      }
+
+      let teams = boatTypes.get(teamBoatType);
+      if (!teams) {
+        teams = [];
+      }
+      teams.push(team);
+
+      boatTypes.set(teamBoatType, teams);
+      return acc.set(blockId, boatTypes);
+    }, basicMap);
+
+    return { blockTeams: basicMap, totalBlocks: blocksMap };
+  }, [teams]);
+}
