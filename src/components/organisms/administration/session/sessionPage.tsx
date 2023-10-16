@@ -4,9 +4,8 @@ import { useGetSettings } from "../../../../hooks/settings/useGetSettings";
 import { LoadingSpinner } from "../../../atoms/loading-spinner/loadingSpinner";
 import { Select } from "../../../atoms/select/select";
 import { Team } from "../../../../models/team";
-import { GridHeader } from "../../../atoms/grid-header/gridHeader";
-import { AgeItem, BoatType } from "../../../../models/settings";
-import { GridRow } from "../../../atoms/grid-row/gridRow";
+import { BoatType } from "../../../../models/settings";
+import { SessionBlockTeams } from "../../../molecules/session-block-teams/sessionBlockTeams";
 
 export default function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.skiff);
@@ -15,18 +14,31 @@ export default function SessionPage() {
 
   const ageClasses = settingsData?.ages ?? [];
 
-  const blockTeams = useMemo(() => {
+  const { blockTeams, totalBlocks } = useMemo(() => {
     const map = new Map<number, Map<BoatType, Team[]>>();
     if (!teamData || teamData.length === 0) {
-      return map;
+      return {
+        blockTeams: map,
+        totalBlocks: new Map<number, number>([
+          [1, 0],
+          [2, 0],
+          [3, 0],
+        ]),
+      };
     }
-    return teamData.reduce((acc, team) => {
+
+    const total = new Map<number, number>();
+    const blocks = teamData.reduce((acc, team) => {
       const teamBoatType = team.getBoatType();
       if (!teamBoatType) {
         return acc;
       }
 
       const blockId = team.getBlock();
+
+      let totalBlock = total.get(blockId);
+      total.set(blockId, totalBlock ? ++totalBlock : 1);
+
       const boatTypes = acc.get(blockId);
       if (!boatTypes) {
         const types = new Map<BoatType, Team[]>();
@@ -43,6 +55,7 @@ export default function SessionPage() {
       boatTypes.set(teamBoatType, teams);
       return acc.set(blockId, boatTypes);
     }, map);
+    return { blockTeams: blocks, totalBlocks: total };
   }, [teamData]);
 
   const boatTypeSelectItems = useMemo(() => {
@@ -64,41 +77,17 @@ export default function SessionPage() {
         />
       </div>
       <div className="w-full">
-        {getBlockTeams(blockTeams, 1, boatType, ageClasses)}
-        {getBlockTeams(blockTeams, 2, boatType, ageClasses)}
-        {getBlockTeams(blockTeams, 3, boatType, ageClasses)}
+        {[1, 2, 3].map((block) => (
+          <SessionBlockTeams
+            key={block}
+            block={block}
+            boatType={boatType}
+            ageClasses={ageClasses}
+            totalTeams={totalBlocks.get(block) ?? 0}
+            teams={blockTeams.get(block)?.get(boatType)}
+          />
+        ))}
       </div>
     </>
   );
-}
-
-function getBlockTeams(
-  blockTeams: Map<number, Map<BoatType, Team[]>>,
-  block: number,
-  boatType: BoatType,
-  ageClasses: AgeItem[]
-) {
-  return blockTeams
-    .get(block)
-    ?.get(boatType)
-    ?.map((team, index) => (
-      <>
-        <div className="flex">
-          <GridHeader
-            key={team.getId()}
-            needsRounding={index === 0}
-            items={[
-              team.getAgeClass(ageClasses),
-              team.getBoatType() ?? "",
-              team.getClub(),
-              team.getHelm()?.getName() ?? team.getParticipants()[0].getName(),
-            ]}
-            classNames="w-4/5"
-          />
-        </div>
-        {team.getRemarks() && (
-          <GridRow items={[{ node: team.getRemarks() }]} classNames="w-4/5" />
-        )}
-      </>
-    ));
 }
