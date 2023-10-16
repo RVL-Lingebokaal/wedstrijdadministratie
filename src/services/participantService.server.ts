@@ -63,8 +63,8 @@ export class ParticipantService {
             club: docData.club,
             birthYear: docData.birthYear,
             id: docData.id,
-            blocks: new Set(docData.preferredBlocks),
-            preferredBlock: docData.preferredBlocks[0],
+            blocks: new Set(JSON.parse(docData.preferredBlocks)[0]),
+            preferredBlock: JSON.parse(docData.preferredBlocks)[0][0],
           })
         );
       }, new Map<string, Participant>());

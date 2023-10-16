@@ -57,7 +57,7 @@ export class Participant {
       id: this.id,
       name: this.name,
       club: this.club,
-      preferredBlocks: Array.from(this.blocks.entries()),
+      preferredBlocks: JSON.stringify(Array.from(this.blocks.entries())),
     };
   }
 
