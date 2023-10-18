@@ -64,6 +64,7 @@ export function SessionBlockTeams({
                   totalTeams={totalBlocks.get(block) ?? 0}
                   teams={blockTeams.get(block)?.get(boatType)?.length ?? 0}
                   boatType={boatType}
+                  isFirst={block === 1}
                 />
                 {blockTeams
                   .get(block)

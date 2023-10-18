@@ -10,7 +10,7 @@ export enum AdministrationTabs {
 
 export default function Administration() {
   const [tab, setTab] = useState<AdministrationTabs[0]>(
-    AdministrationTabs.class
+    AdministrationTabs.session
   );
 
   return (

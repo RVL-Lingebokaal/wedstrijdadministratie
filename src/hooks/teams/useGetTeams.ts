@@ -12,6 +12,7 @@ export function useGetTeams() {
       if (!response.ok) throw new Error("Could not get teams");
 
       const result = (await response.json()) as any[];
+      console.log(result);
       return result.map((team) => {
         return new Team({
           ...team,
@@ -20,12 +21,16 @@ export function useGetTeams() {
             (p: any) =>
               new Participant({
                 ...p,
-                blocks: new Set(JSON.parse(p.preferredBlocks)[0]),
-                preferredBlock: JSON.parse(p.preferredBlocks)[0][0],
+                blocks: new Set(JSON.parse(p.blocks)),
               })
           ),
           boat: new Boat(team.boat),
-          helm: team.helm ? new Participant(team.helm) : null,
+          helm: team.helm
+            ? new Participant({
+                ...team.helm,
+                blocks: new Set(JSON.parse(team.helm.blocks)),
+              })
+            : null,
         });
       });
     },

@@ -26,6 +26,10 @@ export default async function handler(
     team.setPreferredBlock(args.destBlock);
     await teamService.saveTeam(team);
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ error });
   }
+
+  return res.status(200).send({ success: true });
 }

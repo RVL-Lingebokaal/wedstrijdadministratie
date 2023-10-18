@@ -7,6 +7,7 @@ import { UpdateTeamArgs } from "../hooks/teams/useUpdateTeam";
 import { TeamAddFormParticipant } from "../components/organisms/team/team-add-button/teamAddButton";
 import boatService from "../services/boatService.server";
 import teamService from "../services/teamService.server";
+import { BlockError } from "./error";
 
 export enum Gender {
   M = "male",
@@ -164,20 +165,39 @@ export class Team {
   }
 
   setPreferredBlock(block: number) {
+    //First try the participants
     try {
-      this.participants.forEach((p) => {
-        p.removeBlock(this.preferredBlock);
-        p.addBlock(block);
-      });
-      this.preferredBlock = block;
+      this.participants.forEach((p) =>
+        p.updateBlock(this.preferredBlock, block)
+      );
     } catch (e) {
-      console.log(e);
-    } finally {
-      this.participants.map((p) => {
-        p.removeBlock(block);
-        p.addBlock(block);
+      this.participants.map((p) =>
+        p.updateBlock(block, this.preferredBlock, true)
+      );
+      console.log("error is gecatched");
+
+      throw new BlockError({
+        name: "PARTICIPANT_BLOCK",
+        message: "Participant is already in this block",
       });
     }
+
+    //Then, try to update the helm in case the helm exists
+    if (this.helm) {
+      try {
+        this.helm.updateBlock(this.preferredBlock, block);
+      } catch (e) {
+        this.helm.updateBlock(block, this.preferredBlock, true);
+        console.log("error is gecatched");
+
+        throw new BlockError({
+          name: "HELM_BLOCK",
+          message: "Helm is already in this block",
+        });
+      }
+    }
+
+    this.preferredBlock = block;
   }
 
   async updateTeam(args: UpdateTeamArgs) {
@@ -209,7 +229,10 @@ export class Team {
             (await this.updateParticipants({ participants, args })) ?? [];
           break;
         case "boat":
-          this.boat = await this.updateBoat(args.boat ?? "");
+          this.boat = await this.updateBoat(
+            args.boat ?? "",
+            args.preferredBlock
+          );
           break;
       }
     }
@@ -254,7 +277,7 @@ export class Team {
     if (!participant) {
       participant = await participantService.createParticipant({
         ...p,
-        preferredBlock: this.preferredBlock,
+        blocks: new Set([this.preferredBlock]),
       });
     } else {
       participant = await participantService.updateParticipant(participant, p);
@@ -263,9 +286,10 @@ export class Team {
     return participant;
   }
 
-  private async updateBoat(name: string) {
+  private async updateBoat(name: string, block?: number) {
+    const preferredBlock = block ?? this.preferredBlock;
     return await boatService.updateBoat(
-      { name, club: this.club },
+      { name, club: this.club, blocks: [preferredBlock] },
       this.boat?.getId()
     );
   }

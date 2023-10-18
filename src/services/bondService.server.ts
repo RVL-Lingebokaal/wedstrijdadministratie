@@ -39,11 +39,16 @@ export class BondService {
       const boat = new Boat({
         club: record[TEAM_CLUB],
         name: record[BOAT_NAME],
+        blocks: [record[TEAM_PREFFERED_BLOCK]],
       });
       const boatId = boat.getId();
-      if (!boats.has(boatId)) {
-        boats.set(boatId, boat);
+      if (boats.has(boatId)) {
+        const oldBoat = boats.get(boatId);
+        if (oldBoat) {
+          boat.addBlocks(oldBoat.getBlocks());
+        }
       }
+      boats.set(boatId, boat);
 
       const { gender, boatType } = this.getBoatType(
         record[TEAM_COMPETITION_CODE]
@@ -109,8 +114,9 @@ export class BondService {
         ),
         id,
         club: record[`VKODE ${path}`],
-        preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
+        blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
       });
+    participant.addBlock(parseInt(record[TEAM_PREFFERED_BLOCK]), true);
     map.set(id, participant);
     return participant;
   }

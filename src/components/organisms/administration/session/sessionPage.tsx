@@ -7,11 +7,9 @@ import { BoatType } from "../../../../models/settings";
 import { SessionBlockTeams } from "../../../molecules/session-block-teams/sessionBlockTeams";
 
 export default function SessionPage() {
-  const [boatType, setBoatType] = useState<BoatType>(BoatType.skiff);
+  const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
   const { data: teamData, isLoading, refetch } = useGetTeams();
   const { data: settingsData } = useGetSettings();
-
-  console.log({ teamData, isLoading });
 
   const ageClasses = settingsData?.ages ?? [];
 

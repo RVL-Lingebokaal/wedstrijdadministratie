@@ -63,8 +63,7 @@ export class ParticipantService {
             club: docData.club,
             birthYear: docData.birthYear,
             id: docData.id,
-            blocks: new Set(JSON.parse(docData.preferredBlocks)[0]),
-            preferredBlock: JSON.parse(docData.preferredBlocks)[0][0],
+            blocks: new Set(JSON.parse(docData.blocks)),
           })
         );
       }, new Map<string, Participant>());
@@ -76,8 +75,8 @@ export class ParticipantService {
     name,
     club,
     birthYear,
-    preferredBlock,
-  }: Omit<ParticipantCreation, "id"> & { preferredBlock: number }) {
+    blocks,
+  }: Omit<ParticipantCreation, "id">) {
     const participants = Array.from(this.participants.values());
     const foundParticipant = participants.find(
       (p) =>
@@ -95,7 +94,7 @@ export class ParticipantService {
       id: "",
       club,
       birthYear,
-      preferredBlock,
+      blocks,
     });
 
     const docRef = await addDoc(

@@ -8,11 +8,14 @@ interface SessionGridRowProps {
 
 export function SessionGridRow({ team, ageClasses }: SessionGridRowProps) {
   return (
-    <div className="grid grid-cols-7 m-1">
+    <div className="grid grid-cols-12 m-1">
       <div className="bg-white py-3 px-4">{team.getAgeClass(ageClasses)}</div>
       <div className="bg-white py-3 px-4 col-span-2">{team.getClub()}</div>
-      <div className="bg-white py-3 px-4 col-span-4">
+      <div className="bg-white py-3 px-4 col-span-3">
         {team.getHelm()?.getName() ?? team.getParticipants()[0].getName()}
+      </div>
+      <div className="bg-white py-3 px-4 col-span-6 text-xs">
+        {team.getRemarks()}
       </div>
     </div>
   );

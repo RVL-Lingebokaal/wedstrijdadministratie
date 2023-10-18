@@ -18,14 +18,14 @@ export default async function handler(
   const helm = args.helm
     ? await participantService.createParticipant({
         ...args.helm,
-        preferredBlock,
+        blocks: new Set([preferredBlock]),
       })
     : null;
   const participants = [];
   for await (const p of args.participants) {
     const participant = await participantService.createParticipant({
       ...p,
-      preferredBlock,
+      blocks: new Set([preferredBlock]),
     });
     participants.push(participant);
   }
@@ -33,7 +33,11 @@ export default async function handler(
     name: args.name,
     id: "",
     club: args.club,
-    boat: new Boat({ name: args.boat, club: args.club }),
+    boat: new Boat({
+      name: args.boat,
+      club: args.club,
+      blocks: [args.preferredBlock],
+    }),
     registrationFee: 0,
     preferredBlock: parseInt(args.preferredBlock.toString()),
     coach: "",
