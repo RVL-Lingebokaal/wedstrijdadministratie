@@ -10,16 +10,24 @@ import { ageFormSchema } from "../../../../schemas/ageFormSchema";
 import { Input } from "../../../atoms/input/input";
 import { Select } from "../../../atoms/select/select";
 import { useSaveSettings } from "../../../../hooks/settings/useSaveSettings";
+import toast from "react-hot-toast";
 
 interface AgeFormProps {
   initialValues?: AgeForm;
 }
 
 export function AgesForm({ initialValues }: AgeFormProps) {
-  const { mutate } = useSaveSettings();
+  const { mutate } = useSaveSettings({
+    onSuccess: () =>
+      toast.success(
+        "De wijzigingen in de correctiefactoren van de leeftijd zijn opgeslagen!"
+      ),
+  });
 
   const onSubmit = useCallback(
-    async (data: AgeForm) => mutate({ type: "ages", items: data.items }),
+    async (data: AgeForm) => {
+      mutate({ type: "ages", items: data.items });
+    },
     [mutate]
   );
 

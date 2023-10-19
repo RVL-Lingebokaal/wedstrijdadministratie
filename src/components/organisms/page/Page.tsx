@@ -3,6 +3,8 @@ import { Footer } from "../../molecules/footer/footer";
 import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import StyledToast from "../../atoms/styled-toast/styledToast";
 
 export function Page({
   className,
@@ -27,6 +29,7 @@ export function Page({
           pathname === "/" ? "diagonal-theme-line" : "bg-background"
         }`}
       >
+        <StyledToast />
         <div className="w-6xl">{children}</div>
       </main>
       <Footer />

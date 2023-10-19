@@ -12,6 +12,11 @@ module.exports = {
         },
         background: "#E5E5E5",
         highlight: "#EF8F5A",
+        success: {
+          100: "#EDF9F3",
+          500: "#48BD84",
+          600: "#3A976A",
+        },
       },
       width: {
         "6xl": "72rem",

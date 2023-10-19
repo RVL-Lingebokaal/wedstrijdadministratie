@@ -11,6 +11,7 @@ import { ClassRow } from "../../atoms/class-row/classRow";
 import { GroupingButton } from "../grouping-button/groupingButton";
 import { useSaveSettings } from "../../../hooks/settings/useSaveSettings";
 import { RemoveGroupingButton } from "../remove-grouping-button/removeGroupingButton";
+import toast from "react-hot-toast";
 
 interface ClassSectionProps {
   teams: Team[];
@@ -31,7 +32,10 @@ export function ClassSection({
   ownClassItems,
   refetch,
 }: ClassSectionProps) {
-  const { mutate } = useSaveSettings();
+  const { mutate } = useSaveSettings({
+    onSuccess: () =>
+      toast.success("De wijzigingen in de klassen zijn opgeslagen!"),
+  });
   const [selectedIndexes, setSelectedIndexes] = useState<Set<number>>(
     new Set()
   );
