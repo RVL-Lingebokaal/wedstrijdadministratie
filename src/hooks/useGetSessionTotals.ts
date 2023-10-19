@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { Team } from "../models/team";
-import { BoatType } from "../models/settings";
+import { AgeItem, BoatType } from "../models/settings";
 
-export function useGetSessionTotals(teams?: Team[]) {
+export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
   return useMemo(() => {
     const basicMap = new Map<number, Map<BoatType, Team[]>>();
     const blocksMap = new Map<number, number>([
@@ -44,6 +44,12 @@ export function useGetSessionTotals(teams?: Team[]) {
         teams = [];
       }
       teams.push(team);
+      //First sort on age class
+      teams.sort((ta, tb) =>
+        ta.getAgeClass(ageItems).localeCompare(tb.getAgeClass(ageItems))
+      );
+      //Secondly, sort on place
+      teams.sort((ta, tb) => ta.getPlace() - tb.getPlace());
 
       boatTypes.set(teamBoatType, teams);
       return acc.set(blockId, boatTypes);
