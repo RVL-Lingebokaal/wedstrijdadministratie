@@ -29,6 +29,7 @@ interface TeamCreation {
   boatType: BoatType;
   gender: Gender;
   helm: Participant | null;
+  place?: number;
 }
 
 interface UpdateTeamParticipants {
@@ -51,6 +52,7 @@ export class Team {
   private gender: null | Gender = null;
   private helm: null | Participant = null;
   private block: null | number = null;
+  private place = 0;
 
   constructor({
     name,
@@ -66,6 +68,7 @@ export class Team {
     boatType,
     gender,
     helm,
+    place,
   }: TeamCreation) {
     this.name = name;
     this.id = id;
@@ -80,6 +83,7 @@ export class Team {
     this.boatType = boatType;
     this.gender = gender;
     this.helm = helm ?? null;
+    this.place = place ?? this.place;
   }
 
   getId() {
@@ -146,6 +150,10 @@ export class Team {
     return this.remarks;
   }
 
+  getPlace() {
+    return this.place;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -161,7 +169,12 @@ export class Team {
       boatType: this.boatType,
       gender: this.gender,
       helm: this.helm?.getId() ?? null,
+      place: this.place,
     };
+  }
+
+  setPlace(place: number) {
+    this.place = place;
   }
 
   setPreferredBlock(block: number) {

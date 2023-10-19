@@ -11,7 +11,10 @@ export default function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
   const { data: teamData, isLoading, refetch } = useGetTeams();
   const { data: settingsData } = useGetSettings();
-  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(teamData);
+  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(
+    settingsData?.ages ?? [],
+    teamData
+  );
 
   const ageClasses = settingsData?.ages ?? [];
 
@@ -46,26 +49,3 @@ export default function SessionPage() {
     </>
   );
 }
-
-// const { source, destination } = result;
-//
-// // dropped outside the list
-// if (!destination) {
-//   return;
-// }
-// const sInd = +source.droppableId;
-// const dInd = +destination.droppableId;
-//
-// if (sInd === dInd) {
-//   const items = reorder(state[sInd], source.index, destination.index);
-//   const newState = [...state];
-//   newState[sInd] = items;
-//   setState(newState);
-// } else {
-//   const result = move(state[sInd], state[dInd], source, destination);
-//   const newState = [...state];
-//   newState[sInd] = result[sInd];
-//   newState[dInd] = result[dInd];
-//
-//   setState(newState.filter(group => group.length));
-// }

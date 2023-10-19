@@ -98,6 +98,7 @@ export class TeamService {
           helm: docData.helm
             ? (participants.get(docData.helm) as Participant)
             : null,
+          place: parseInt(docData.place),
         });
         return acc.set(team.getId(), team);
       }, new Map());

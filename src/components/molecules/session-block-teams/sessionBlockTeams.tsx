@@ -11,6 +11,7 @@ import {
 } from "@hello-pangea/dnd";
 import { useUpdateBlockTeam } from "../../../hooks/teams/useUpdateBlockTeam";
 import ErrorModal from "../../atoms/error-modal/errorModal";
+import { useUpdatePlaceTeam } from "../../../hooks/teams/useUpdatePlaceTeam";
 
 interface SessionBlockTeamsProps {
   teams?: Team[];
@@ -30,9 +31,10 @@ export function SessionBlockTeams({
   totalBlocks,
 }: SessionBlockTeamsProps) {
   const [showError, setShowError] = useState(false);
-  const { mutate, error } = useUpdateBlockTeam({
+  const { mutate: updateBlock, error } = useUpdateBlockTeam({
     onError: () => setShowError(true),
   });
+  const { mutate: updatePlace } = useUpdatePlaceTeam();
 
   const onClick = useCallback(
     async (result: DropResult) => {
@@ -49,11 +51,27 @@ export function SessionBlockTeams({
         const team = teams?.find((t) => t.getId() === draggableId);
         if (!team) return;
 
-        await mutate({ teamId: team.getId(), destBlock });
-        refetch();
+        await updateBlock({ teamId: team.getId(), destBlock });
+      } else {
+        const selectedBlock = blockTeams.get(destBlock);
+
+        if (!selectedBlock) return;
+
+        const selectedTeams = selectedBlock.get(boatType);
+        if (!selectedTeams) return;
+
+        const [removed] = selectedTeams.splice(source.index, 1);
+        selectedTeams.splice(destination.index, 0, removed);
+        const teamsWithPlace = selectedTeams.map((t) => t.getId());
+        selectedBlock.set(boatType, selectedTeams);
+        blockTeams.set(destBlock, selectedBlock);
+
+        await updatePlace({ teamsWithPlace });
       }
+
+      refetch();
     },
-    [mutate, refetch, teams]
+    [refetch, teams, updateBlock, blockTeams, boatType, updatePlace]
   );
 
   return (

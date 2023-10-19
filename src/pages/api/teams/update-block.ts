@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
-import { BlockError } from "../../../models/error";
-import boatService from "../../../services/boatService.server";
 
 export interface UpdateBlockArgs {
   teamId: string;
