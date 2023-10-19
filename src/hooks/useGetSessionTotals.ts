@@ -10,9 +10,14 @@ export function useGetSessionTotals(teams?: Team[]) {
       [2, 0],
       [3, 0],
     ]);
+    const boatSet = new Set<BoatType>();
 
     if (!teams || teams.length === 0) {
-      return { blockTeams: basicMap, totalBlocks: blocksMap };
+      return {
+        blockTeams: basicMap,
+        totalBlocks: blocksMap,
+        boatTypes: boatSet,
+      };
     }
 
     teams.reduce((acc, team) => {
@@ -21,6 +26,7 @@ export function useGetSessionTotals(teams?: Team[]) {
         return acc;
       }
 
+      boatSet.add(teamBoatType);
       const blockId = team.getBlock();
 
       let totalBlock = blocksMap.get(blockId);
@@ -43,6 +49,6 @@ export function useGetSessionTotals(teams?: Team[]) {
       return acc.set(blockId, boatTypes);
     }, basicMap);
 
-    return { blockTeams: basicMap, totalBlocks: blocksMap };
+    return { blockTeams: basicMap, totalBlocks: blocksMap, boatTypes: boatSet };
   }, [teams]);
 }

@@ -87,8 +87,6 @@ export class Participant {
   }
 
   addBlock(block: number, reset?: boolean) {
-    console.log(this.blocks, this.name);
-
     if (!reset && this.blocks.has(block)) {
       throw new Error("This block is already taken");
     }
@@ -100,8 +98,8 @@ export class Participant {
   }
 
   updateBlock(toRemove: number, toAdd: number, reset?: boolean) {
-    this.removeBlock(toRemove);
     this.addBlock(toAdd, reset);
+    this.removeBlock(toRemove);
   }
 
   private calculateAgeType(ages: AgeItem[]) {

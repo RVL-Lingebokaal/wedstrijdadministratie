@@ -39,7 +39,7 @@ export class BondService {
       const boat = new Boat({
         club: record[TEAM_CLUB],
         name: record[BOAT_NAME],
-        blocks: [record[TEAM_PREFFERED_BLOCK]],
+        blocks: [parseInt(record[TEAM_PREFFERED_BLOCK])],
       });
       const boatId = boat.getId();
       if (boats.has(boatId)) {

@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
+import { BlockError } from "../../../models/error";
+import boatService from "../../../services/boatService.server";
 
 export interface UpdateBlockArgs {
   teamId: string;
@@ -25,10 +27,27 @@ export default async function handler(
   try {
     team.setPreferredBlock(args.destBlock);
     await teamService.saveTeam(team);
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    let errorMessage;
+    switch (error.name) {
+      case "PARTICIPANT_BLOCK":
+        errorMessage = `Een van de deelnemers roeit of stuurt al in blok ${args.destBlock}.`;
+        break;
+      case "HELM_BLOCK":
+        errorMessage = `De stuur roeit of stuurt al in blok ${args.destBlock}.`;
+        break;
+      case "BOAT_BLOCK":
+        errorMessage = `De boot wordt al gebruikt in blok ${args.destBlock}.`;
+        break;
+    }
 
-    return res.status(500).json({ error });
+    if (errorMessage) {
+      return res.status(200).json({ errorMessage });
+    }
+
+    return res.status(500).json({
+      errorMessage: "Er is een probleem met het updaten van dit team.",
+    });
   }
 
   return res.status(200).send({ success: true });

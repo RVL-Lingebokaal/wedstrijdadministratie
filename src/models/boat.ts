@@ -54,7 +54,7 @@ export class Boat {
   }
 
   updateBlock(toRemove: number, toAdd: number, reset?: boolean) {
-    this.blocks.delete(toRemove);
     this.addBlock(toAdd, reset);
+    this.blocks.delete(toRemove);
   }
 }

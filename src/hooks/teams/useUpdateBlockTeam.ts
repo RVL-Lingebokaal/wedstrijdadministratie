@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateBlockArgs } from "../../pages/api/teams/update-block";
 
-export function useUpdateBlockTeam() {
+interface UseUpdateBlockTeamProps {
+  onError: () => void;
+}
+
+export function useUpdateBlockTeam({ onError }: UseUpdateBlockTeamProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -12,16 +16,18 @@ export function useUpdateBlockTeam() {
         body: JSON.stringify(args),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not update the team");
+      const result = (await response.json()) as any;
+
+      if (result.errorMessage) {
+        return Promise.reject(result.errorMessage);
       }
-      console.log(response);
 
       return { success: true };
     },
     {
       onSuccess: () =>
         queryClient.invalidateQueries({ queryKey: ["get-teams"] }),
+      onError,
     }
   );
 }

@@ -5,17 +5,19 @@ import { LoadingSpinner } from "../../../atoms/loading-spinner/loadingSpinner";
 import { Select } from "../../../atoms/select/select";
 import { BoatType } from "../../../../models/settings";
 import { SessionBlockTeams } from "../../../molecules/session-block-teams/sessionBlockTeams";
+import { useGetSessionTotals } from "../../../../hooks/useGetSessionTotals";
 
 export default function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
   const { data: teamData, isLoading, refetch } = useGetTeams();
   const { data: settingsData } = useGetSettings();
+  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(teamData);
 
   const ageClasses = settingsData?.ages ?? [];
 
   const boatTypeSelectItems = useMemo(() => {
-    return Array.from(Object.values(BoatType).map((id) => ({ id })));
-  }, []);
+    return Array.from(boatTypes.values()).map((id) => ({ id }));
+  }, [boatTypes]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -37,6 +39,8 @@ export default function SessionPage() {
           ageClasses={ageClasses}
           teams={teamData}
           refetch={refetch}
+          totalBlocks={totalBlocks}
+          blockTeams={blockTeams}
         />
       </div>
     </>

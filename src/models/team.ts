@@ -166,16 +166,18 @@ export class Team {
 
   setPreferredBlock(block: number) {
     //First try the participants
+    let participantIndex = undefined;
     try {
-      this.participants.forEach((p) =>
-        p.updateBlock(this.preferredBlock, block)
-      );
+      this.participants.forEach((p, index) => {
+        p.updateBlock(this.preferredBlock, block);
+        participantIndex = index;
+      });
     } catch (e) {
-      this.participants.map((p) =>
-        p.updateBlock(block, this.preferredBlock, true)
-      );
-      console.log("error is gecatched");
-
+      if (participantIndex) {
+        for (let i = 0; i <= participantIndex; i++) {
+          this.participants[i].updateBlock(block, this.preferredBlock, true);
+        }
+      }
       throw new BlockError({
         name: "PARTICIPANT_BLOCK",
         message: "Participant is already in this block",
@@ -187,14 +189,30 @@ export class Team {
       try {
         this.helm.updateBlock(this.preferredBlock, block);
       } catch (e) {
-        this.helm.updateBlock(block, this.preferredBlock, true);
-        console.log("error is gecatched");
+        this.participants.forEach((p) =>
+          p.updateBlock(block, this.preferredBlock, true)
+        );
 
         throw new BlockError({
           name: "HELM_BLOCK",
           message: "Helm is already in this block",
         });
       }
+    }
+
+    //Finally, try to update the boat
+    try {
+      this.boat?.updateBlock(this.preferredBlock, block);
+    } catch (e) {
+      this.participants.forEach((p) =>
+        p.updateBlock(block, this.preferredBlock, true)
+      );
+      this.helm?.updateBlock(block, this.preferredBlock, true);
+
+      throw new BlockError({
+        name: "BOAT_BLOCK",
+        message: "Boat is already in this block",
+      });
     }
 
     this.preferredBlock = block;

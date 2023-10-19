@@ -12,7 +12,6 @@ export function useGetTeams() {
       if (!response.ok) throw new Error("Could not get teams");
 
       const result = (await response.json()) as any[];
-      console.log(result);
       return result.map((team) => {
         return new Team({
           ...team,
