@@ -42,8 +42,8 @@ export class Boat {
     this.club = club ?? this.club;
   }
 
-  addBlocks(blocks: Set<number>) {
-    Array.from(blocks.values()).forEach((block) => this.addBlock(block));
+  addBlocks(blocks: Set<number>, reset?: boolean) {
+    Array.from(blocks.values()).forEach((block) => this.addBlock(block, reset));
   }
 
   addBlock(block: number, reset?: boolean) {
