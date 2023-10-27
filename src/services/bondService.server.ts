@@ -45,7 +45,7 @@ export class BondService {
       if (boats.has(boatId)) {
         const oldBoat = boats.get(boatId);
         if (oldBoat) {
-          boat.addBlocks(oldBoat.getBlocks());
+          boat.addBlocks(oldBoat.getBlocks(), true);
         }
       }
       boats.set(boatId, boat);
