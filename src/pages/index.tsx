@@ -45,11 +45,18 @@ export default function Home() {
       <h1 className="text-white text-7xl font-bold">RVL Lingebokaal</h1>
       <h2 className="text-white text-6xl">Wedstrijdadministratie</h2>
       <div className="flex flex-row gap-x-4 mt-48">
-        {elements.map(({ title, bottom, icon }) => (
-          <Block title={title} bottom={bottom} key={title} variant="small">
-            <Image src={icon} alt={title} className="py-2" />
-          </Block>
-        ))}
+        {!isLoading &&
+          elements.map(({ title, bottom, icon }) => (
+            <Block
+              title={title}
+              bottom={bottom}
+              key={title}
+              variant="small"
+              isLoading={isLoading}
+            >
+              <Image src={icon} alt={title} className="py-2" />
+            </Block>
+          ))}
       </div>
       <div className="mt-12">
         <Block variant="large">
