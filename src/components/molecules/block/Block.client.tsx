@@ -7,6 +7,7 @@ interface BlockProps {
   bottom?: string;
   children: ReactNode;
   variant: "small" | "large";
+  isLoading?: boolean;
 }
 
 export function Block({
