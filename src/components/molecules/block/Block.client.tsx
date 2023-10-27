@@ -7,16 +7,9 @@ interface BlockProps {
   bottom?: string;
   children: ReactNode;
   variant: "small" | "large";
-  isLoading?: boolean;
 }
 
-export function Block({
-  title,
-  bottom,
-  children,
-  variant,
-  isLoading,
-}: BlockProps) {
+export function Block({ title, bottom, children, variant }: BlockProps) {
   return (
     <div
       className={`place-items-center flex flex-col border-4 border-secondary-500 bg-white flex-1 ${
