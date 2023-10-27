@@ -71,6 +71,7 @@ export class TeamService {
   }
 
   async getTeams() {
+    console.log("teams", this.teams);
     if (this.teams.size === 0) {
       const dbInstance = collection(firestore, "ploeg");
       const data = await getDocs(dbInstance);
@@ -115,6 +116,7 @@ export class TeamService {
 let teamService: TeamService;
 
 if (process.env.NODE_ENV === "production") {
+  console.log("create new Teamservice");
   teamService = new TeamService();
 } else {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
