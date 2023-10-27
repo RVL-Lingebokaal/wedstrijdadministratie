@@ -57,7 +57,7 @@ export function AgesForm({ initialValues }: AgeFormProps) {
         {
           name: "strategy",
           input: (field) => (
-            <Select
+            <Select<string>
               selectedValue={field.value.toString()}
               onChange={field.onChange}
               items={Object.values(AgeStrategy).map((val) => ({ id: val }))}

@@ -3,23 +3,23 @@ import { Listbox, Transition } from "@headlessui/react";
 import { HiChevronUpDown, HiCheck } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
-export interface SelectItem {
+export interface SelectItem<T> {
   text?: string;
-  id: string | number;
+  id: T;
   disabled?: boolean;
 }
 
-interface SelectProps {
-  items: SelectItem[];
-  selectedValue: string;
-  onChange: (item: string) => void;
+interface SelectProps<T> {
+  items: SelectItem<T>[];
+  selectedValue: T;
+  onChange: (item: T) => void;
   topClassNames?: string;
   classNames?: string;
   label?: string;
   disabled?: boolean;
 }
 
-export function Select({
+export function Select<T>({
   items,
   selectedValue,
   onChange,
@@ -27,7 +27,7 @@ export function Select({
   label,
   topClassNames,
   disabled,
-}: SelectProps) {
+}: SelectProps<T>) {
   const selectedItem = items.find((i) => i.id === selectedValue);
   return (
     <Listbox value={selectedValue} onChange={onChange} disabled={disabled}>
@@ -40,7 +40,7 @@ export function Select({
           )}
         >
           <span className={`block truncate ${disabled ? "text-gray-600" : ""}`}>
-            {selectedItem?.text ?? selectedValue}
+            {`${selectedItem?.text ?? selectedValue}`}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <HiChevronUpDown
@@ -63,7 +63,7 @@ export function Select({
           >
             {items.map(({ text, id, disabled }) => (
               <Listbox.Option
-                key={id}
+                key={`${id}`}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
                     active
@@ -83,7 +83,7 @@ export function Select({
                         selected ? "font-medium" : "font-normal"
                       }`}
                     >
-                      {text ?? id}
+                      {`${text ?? id}`}
                     </span>
                     {selected ? (
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.16",
+    "@hello-pangea/dnd": "^16.3.0",
     "@hookform/resolvers": "^3.1.1",
     "@tanstack/react-query": "^4.32.6",
     "busboy": "^1.6.0",

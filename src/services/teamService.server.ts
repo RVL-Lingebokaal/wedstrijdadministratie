@@ -90,7 +90,7 @@ export class TeamService {
             (id: string) => participants.get(id) as Participant
           ),
           phoneNumber: docData.phoneNumber,
-          preferredBlock: docData.preferredBlock,
+          preferredBlock: parseInt(docData.preferredBlock),
           registrationFee: docData.registrationFee,
           remarks: docData.remarks,
           name: docData.name,
@@ -98,6 +98,7 @@ export class TeamService {
           helm: docData.helm
             ? (participants.get(docData.helm) as Participant)
             : null,
+          place: parseInt(docData.place),
         });
         return acc.set(team.getId(), team);
       }, new Map());

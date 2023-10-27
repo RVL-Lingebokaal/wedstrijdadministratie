@@ -7,6 +7,7 @@ import { UpdateTeamArgs } from "../hooks/teams/useUpdateTeam";
 import { TeamAddFormParticipant } from "../components/organisms/team/team-add-button/teamAddButton";
 import boatService from "../services/boatService.server";
 import teamService from "../services/teamService.server";
+import { BlockError } from "./error";
 
 export enum Gender {
   M = "male",
@@ -28,6 +29,7 @@ interface TeamCreation {
   boatType: BoatType;
   gender: Gender;
   helm: Participant | null;
+  place?: number;
 }
 
 interface UpdateTeamParticipants {
@@ -42,13 +44,15 @@ export class Team {
   private participants: Participant[] = [];
   private boat: null | Boat = null;
   private registrationFee = 0;
-  private preferredBlock = 0;
+  private preferredBlock = 1;
   private coach = "";
   private phoneNumber = "";
   private remarks = "";
   private boatType: null | BoatType = null;
   private gender: null | Gender = null;
   private helm: null | Participant = null;
+  private block: null | number = null;
+  private place = 0;
 
   constructor({
     name,
@@ -64,6 +68,7 @@ export class Team {
     boatType,
     gender,
     helm,
+    place,
   }: TeamCreation) {
     this.name = name;
     this.id = id;
@@ -78,6 +83,7 @@ export class Team {
     this.boatType = boatType;
     this.gender = gender;
     this.helm = helm ?? null;
+    this.place = place ?? this.place;
   }
 
   getId() {
@@ -136,6 +142,18 @@ export class Team {
     return this.preferredBlock;
   }
 
+  getBlock() {
+    return this.block ?? this.preferredBlock;
+  }
+
+  getRemarks() {
+    return this.remarks;
+  }
+
+  getPlace() {
+    return this.place;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -151,13 +169,77 @@ export class Team {
       boatType: this.boatType,
       gender: this.gender,
       helm: this.helm?.getId() ?? null,
+      place: this.place,
     };
+  }
+
+  setPlace(place: number) {
+    this.place = place;
+  }
+
+  setPreferredBlock(block: number) {
+    //First try the participants
+    let participantIndex = undefined;
+    try {
+      this.participants.forEach((p, index) => {
+        p.updateBlock(this.preferredBlock, block);
+        participantIndex = index;
+      });
+    } catch (e) {
+      if (participantIndex) {
+        for (let i = 0; i <= participantIndex; i++) {
+          this.participants[i].updateBlock(block, this.preferredBlock, true);
+        }
+      }
+      throw new BlockError({
+        name: "PARTICIPANT_BLOCK",
+        message: "Participant is already in this block",
+      });
+    }
+
+    //Then, try to update the helm in case the helm exists
+    if (this.helm) {
+      try {
+        this.helm.updateBlock(this.preferredBlock, block);
+      } catch (e) {
+        this.participants.forEach((p) =>
+          p.updateBlock(block, this.preferredBlock, true)
+        );
+
+        throw new BlockError({
+          name: "HELM_BLOCK",
+          message: "Helm is already in this block",
+        });
+      }
+    }
+
+    //Finally, try to update the boat
+    try {
+      this.boat?.updateBlock(this.preferredBlock, block);
+    } catch (e) {
+      this.participants.forEach((p) =>
+        p.updateBlock(block, this.preferredBlock, true)
+      );
+      this.helm?.updateBlock(block, this.preferredBlock, true);
+
+      throw new BlockError({
+        name: "BOAT_BLOCK",
+        message: "Boat is already in this block",
+      });
+    }
+
+    this.preferredBlock = block;
   }
 
   async updateTeam(args: UpdateTeamArgs) {
     const participants = await participantService.getParticipants();
     for (const key of Object.keys(args)) {
       switch (key) {
+        case "preferredBlock":
+          this.preferredBlock = args.preferredBlock
+            ? parseInt(args.preferredBlock.toString())
+            : this.preferredBlock;
+          break;
         case "helm":
           await this.updateHelm({ participants, args });
           break;
@@ -166,9 +248,6 @@ export class Team {
           break;
         case "name":
           this.name = args.name ?? this.name;
-          break;
-        case "preferredBlock":
-          this.preferredBlock = args.preferredBlock ?? this.preferredBlock;
           break;
         case "gender":
           this.gender = args.gender ?? this.gender;
@@ -181,7 +260,10 @@ export class Team {
             (await this.updateParticipants({ participants, args })) ?? [];
           break;
         case "boat":
-          this.boat = await this.updateBoat(args.boat ?? "");
+          this.boat = await this.updateBoat(
+            args.boat ?? "",
+            args.preferredBlock
+          );
           break;
       }
     }
@@ -224,7 +306,10 @@ export class Team {
   ) {
     let participant = id ? participants.get(id) : undefined;
     if (!participant) {
-      participant = await participantService.createParticipant(p);
+      participant = await participantService.createParticipant({
+        ...p,
+        blocks: new Set([this.preferredBlock]),
+      });
     } else {
       participant = await participantService.updateParticipant(participant, p);
     }
@@ -232,9 +317,10 @@ export class Team {
     return participant;
   }
 
-  private async updateBoat(name: string) {
+  private async updateBoat(name: string, block?: number) {
+    const preferredBlock = block ?? this.preferredBlock;
     return await boatService.updateBoat(
-      { name, club: this.club },
+      { name, club: this.club, blocks: [preferredBlock] },
       this.boat?.getId()
     );
   }

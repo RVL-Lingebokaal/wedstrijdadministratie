@@ -1,9 +1,7 @@
 import { Tabs } from "../../components/molecules/tabs/tabs";
 import { useState } from "react";
 import ClassPage from "../../components/organisms/administration/class/classPage";
-import { Select } from "../../components/atoms/select/select";
-import { Gender } from "../../models/team";
-import SelectGender from "../../components/atoms/select/selectGender";
+import SessionPage from "../../components/organisms/administration/session/sessionPage";
 
 export enum AdministrationTabs {
   class = "Klasseverdeling",
@@ -12,9 +10,8 @@ export enum AdministrationTabs {
 
 export default function Administration() {
   const [tab, setTab] = useState<AdministrationTabs[0]>(
-    AdministrationTabs.class
+    AdministrationTabs.session
   );
-  const [gender, setGender] = useState(Gender.M);
 
   return (
     <div className="flex">
@@ -25,12 +22,8 @@ export default function Administration() {
       />
 
       <div>
-        <SelectGender
-          selectedValue={gender}
-          onChange={(val: Gender) => setGender(val)}
-          classNames="bg-white w-40 ml-1 border-primary py-2 px-4"
-        />
-        {tab === AdministrationTabs.class && <ClassPage gender={gender} />}
+        {tab === AdministrationTabs.class && <ClassPage />}
+        {tab === AdministrationTabs.session && <SessionPage />}
       </div>
     </div>
   );

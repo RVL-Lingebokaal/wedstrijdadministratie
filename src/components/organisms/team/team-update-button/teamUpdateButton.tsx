@@ -68,7 +68,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
           panelClassNames="max-w-xl"
         >
           <Select
-            selectedValue={team ? team.getId().toString() : ""}
+            selectedValue={team ? team.getId() : ""}
             items={[
               { id: "", text: "Kies een team", disabled: true },
               ...teams.map((t) => ({ id: t.getId(), text: t.getNameAndId() })),

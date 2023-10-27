@@ -6,6 +6,7 @@ export interface ParticipantCreation {
   id: string;
   club: string;
   birthYear: number;
+  blocks: Set<number>;
 }
 
 export class Participant {
@@ -14,12 +15,14 @@ export class Participant {
   private club = "";
   private birthYear = 1900;
   private ageType: AgeType | undefined = undefined;
+  private blocks: Set<number> = new Set();
 
-  constructor({ name, id, club, birthYear }: ParticipantCreation) {
+  constructor({ name, id, club, birthYear, blocks }: ParticipantCreation) {
     this.birthYear = birthYear;
     this.id = id;
     this.name = name;
     this.club = club;
+    this.blocks = blocks;
   }
 
   updateParticipantData({
@@ -46,6 +49,7 @@ export class Participant {
       id: this.id,
       name: this.name,
       club: this.club,
+      blocks: JSON.stringify(Array.from(this.blocks.values())),
     };
   }
 
@@ -80,6 +84,22 @@ export class Participant {
     }
 
     return this.ageType as AgeType;
+  }
+
+  addBlock(block: number, reset?: boolean) {
+    if (!reset && this.blocks.has(block)) {
+      throw new Error("This block is already taken");
+    }
+    this.blocks.add(block);
+  }
+
+  removeBlock(block: number) {
+    this.blocks.delete(block);
+  }
+
+  updateBlock(toRemove: number, toAdd: number, reset?: boolean) {
+    this.addBlock(toAdd, reset);
+    this.removeBlock(toRemove);
   }
 
   private calculateAgeType(ages: AgeItem[]) {

@@ -11,6 +11,7 @@ import {
 } from "../../organisms/team/team-add-button/teamAddButton";
 import {
   Control,
+  FieldValues,
   useFieldArray,
   UseFormGetValues,
   UseFormSetValue,
@@ -56,7 +57,7 @@ export default function TeamForm({
   return (
     <>
       <div className="flex gap-x-3">
-        <SelectController
+        <SelectController<TeamAddForm, BoatType>
           path="boatType"
           control={control}
           label="Boottype"
@@ -69,7 +70,7 @@ export default function TeamForm({
               : undefined
           }
         />
-        <SelectController
+        <SelectController<TeamAddForm, number>
           path="preferredBlock"
           control={control}
           label="Voorkeursblok"

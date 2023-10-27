@@ -12,9 +12,6 @@ export default function Home() {
   const { data, isLoading } = useGetCounts();
 
   const elements = useMemo(() => {
-    if (isLoading) {
-      return [];
-    }
     const currentDate = DateTime.now();
     const eventDate = DateTime.fromISO("2023-11-11");
     const diff = eventDate.diff(currentDate, ["days"]);
@@ -41,7 +38,7 @@ export default function Home() {
         icon: Calendar,
       },
     ];
-  }, [data?.clubsSize, data?.participantsSize, data?.teamsSize, isLoading]);
+  }, [data?.clubsSize, data?.participantsSize, data?.teamsSize]);
 
   return (
     <div>

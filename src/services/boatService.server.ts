@@ -47,7 +47,11 @@ export class BoatService {
         (acc, doc) =>
           acc.set(
             doc.id,
-            new Boat({ name: doc.data().name, club: doc.data().club })
+            new Boat({
+              name: doc.data().name,
+              club: doc.data().club,
+              blocks: JSON.parse(doc.data().blocks),
+            })
           ),
         new Map<string, Boat>()
       );
