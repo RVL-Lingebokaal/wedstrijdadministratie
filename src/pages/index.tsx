@@ -46,7 +46,13 @@ export default function Home() {
       <h2 className="text-white text-6xl">Wedstrijdadministratie</h2>
       <div className="flex flex-row gap-x-4 mt-48">
         {elements.map(({ title, bottom, icon }) => (
-          <Block title={title} bottom={bottom} key={title} variant="small">
+          <Block
+            title={title}
+            bottom={bottom}
+            key={title}
+            variant="small"
+            isLoading={isLoading}
+          >
             <Image src={icon} alt={title} className="py-2" />
           </Block>
         ))}
