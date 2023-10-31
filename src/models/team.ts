@@ -30,6 +30,8 @@ interface TeamCreation {
   gender: Gender;
   helm: Participant | null;
   place?: number;
+  startPlace?: number;
+  isDisabled?: boolean;
 }
 
 interface UpdateTeamParticipants {
@@ -53,6 +55,7 @@ export class Team {
   private helm: null | Participant = null;
   private block: null | number = null;
   private place = 0;
+  private startPlace?: number = undefined;
 
   constructor({
     name,
@@ -69,6 +72,7 @@ export class Team {
     gender,
     helm,
     place,
+    startPlace,
   }: TeamCreation) {
     this.name = name;
     this.id = id;
@@ -84,6 +88,7 @@ export class Team {
     this.gender = gender;
     this.helm = helm ?? null;
     this.place = place ?? this.place;
+    this.startPlace = startPlace ?? this.startPlace;
   }
 
   getId() {
@@ -152,6 +157,16 @@ export class Team {
 
   getPlace() {
     return this.place;
+  }
+
+  getField(ages: AgeItem[]) {
+    const gender =
+      this.gender === Gender.F ? "D" : this.gender === Gender.M ? "H" : "Mix";
+    return `${gender}${this.boatType}${this.getAgeClass(ages)}`;
+  }
+
+  getStartPlace() {
+    return this.startPlace;
   }
 
   getDatabaseTeam() {

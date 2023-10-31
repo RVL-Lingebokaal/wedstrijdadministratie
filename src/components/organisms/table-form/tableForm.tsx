@@ -60,7 +60,7 @@ export function TableForm<T extends Form>({
         <div className="mx-4 w-full">
           <div className="flex">
             <GridHeader
-              items={gridHeaderItems}
+              items={gridHeaderItems.map((node) => ({ node }))}
               needsRounding
               classNames="w-4/5"
             />

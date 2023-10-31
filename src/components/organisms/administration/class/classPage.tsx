@@ -60,11 +60,13 @@ export default function ClassPage() {
               <Disclosure.Button className="w-3/4">
                 <GridHeader
                   items={[
-                    val,
-                    `${groups.get(val)?.length ?? 0} inschrijvingen`,
-                    `${classItems.length} ${
-                      classItems.length === 1 ? "groep" : "groepen"
-                    }`,
+                    { node: val },
+                    { node: `${groups.get(val)?.length ?? 0} inschrijvingen` },
+                    {
+                      node: `${classItems.length} ${
+                        classItems.length === 1 ? "groep" : "groepen"
+                      }`,
+                    },
                   ]}
                   needsRounding={index === 0}
                 />

@@ -50,7 +50,6 @@ export class ParticipantService {
   }
 
   async getParticipants(needsRefetch = false) {
-    console.log("participants", this.participants);
     if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, "deelnemer");
       const data = await getDocs(dbInstance);
@@ -130,7 +129,6 @@ export class ParticipantService {
 let participantService: ParticipantService;
 
 if (process.env.NODE_ENV === "production") {
-  console.log("create new participantservice");
   participantService = new ParticipantService();
 } else {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

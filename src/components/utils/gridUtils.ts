@@ -19,4 +19,6 @@ export const colsOptions: Record<number, string> = {
   3: "grid-cols-3",
   4: "grid-cols-4",
   5: "grid-cols-5",
+  7: "grid-cols-7",
+  10: "grid-cols-10",
 };

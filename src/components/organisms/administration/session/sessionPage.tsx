@@ -11,10 +11,10 @@ export default function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
   const { data: teamData, isLoading, refetch } = useGetTeams();
   const { data: settingsData } = useGetSettings();
-  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(
-    settingsData?.ages ?? [],
-    teamData
-  );
+  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals({
+    ageItems: settingsData?.ages ?? [],
+    teams: teamData,
+  });
 
   const ageClasses = settingsData?.ages ?? [];
 
