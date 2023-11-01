@@ -99,6 +99,10 @@ export class TeamService {
             ? (participants.get(docData.helm) as Participant)
             : null,
           place: parseInt(docData.place),
+          isDisabled: docData.isDisabled,
+          startPlace: docData.startPlace
+            ? parseInt(docData.startPlace)
+            : undefined,
         });
         return acc.set(team.getId(), team);
       }, new Map());

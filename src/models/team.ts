@@ -56,6 +56,7 @@ export class Team {
   private block: null | number = null;
   private place = 0;
   private startPlace?: number = undefined;
+  private isDisabled = false;
 
   constructor({
     name,
@@ -73,6 +74,7 @@ export class Team {
     helm,
     place,
     startPlace,
+    isDisabled,
   }: TeamCreation) {
     this.name = name;
     this.id = id;
@@ -89,6 +91,7 @@ export class Team {
     this.helm = helm ?? null;
     this.place = place ?? this.place;
     this.startPlace = startPlace ?? this.startPlace;
+    this.isDisabled = isDisabled ?? false;
   }
 
   getId() {
@@ -169,6 +172,10 @@ export class Team {
     return this.startPlace;
   }
 
+  getIsDisabled() {
+    return this.isDisabled;
+  }
+
   getDatabaseTeam() {
     return {
       id: this.id,
@@ -185,11 +192,17 @@ export class Team {
       gender: this.gender,
       helm: this.helm?.getId() ?? null,
       place: this.place,
+      startPlace: this.startPlace,
+      isDisabled: this.isDisabled,
     };
   }
 
   setPlace(place: number) {
     this.place = place;
+  }
+
+  setStartPlace(startPlace: number) {
+    this.startPlace = startPlace;
   }
 
   setPreferredBlock(block: number) {

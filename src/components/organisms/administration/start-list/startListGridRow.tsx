@@ -16,19 +16,22 @@ export function StartListGridRow({
   needsPaddingTop,
 }: StartListGridRowProps) {
   const helm = team.getHelm()?.getName() ?? team.getParticipants()[0].getName();
+  const classNames = team.getIsDisabled() ? "line-through" : "";
 
   return (
     <GridRow
       classNames={needsPaddingTop ? "mt-4" : undefined}
-      itemsCount={10}
+      itemsCount={9}
       items={[
-        { node: startNumber },
-        { node: team.getBlock() },
-        { node: team.getField(ageItems) },
-        { node: team.getName(), classNames: "col-span-2" },
-        { node: helm, classNames: "col-span-2" },
-        { node: team.getBoat()?.getName(), classNames: "col-span-2" },
-        { node: team.getId() },
+        { node: startNumber, classNames },
+        { node: team.getBlock(), classNames },
+        { node: team.getField(ageItems), classNames },
+        { node: team.getName(), classNames: `col-span-2 ${classNames}` },
+        { node: helm, classNames: `col-span-2 ${classNames}` },
+        {
+          node: team.getBoat()?.getName(),
+          classNames: `col-span-2 ${classNames}`,
+        },
       ]}
     />
   );
