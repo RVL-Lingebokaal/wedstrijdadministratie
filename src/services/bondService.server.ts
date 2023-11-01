@@ -36,19 +36,22 @@ export class BondService {
         participantMap
       );
 
-      const boat = new Boat({
-        club: record[TEAM_CLUB],
-        name: record[BOAT_NAME],
-        blocks: [parseInt(record[TEAM_PREFFERED_BLOCK])],
-      });
-      const boatId = boat.getId();
-      if (boats.has(boatId)) {
-        const oldBoat = boats.get(boatId);
-        if (oldBoat) {
-          boat.addBlocks(oldBoat.getBlocks(), true);
+      let boatId: null | string = null;
+      if (record[BOAT_NAME] !== "-") {
+        const boat = new Boat({
+          club: record[TEAM_CLUB],
+          name: record[BOAT_NAME],
+          blocks: [parseInt(record[TEAM_PREFFERED_BLOCK])],
+        });
+        boatId = boat.getId();
+        if (boats.has(boatId)) {
+          const oldBoat = boats.get(boatId);
+          if (oldBoat) {
+            boat.addBlocks(oldBoat.getBlocks(), true);
+          }
         }
+        boats.set(boatId, boat);
       }
-      boats.set(boatId, boat);
 
       const { gender, boatType } = this.getBoatType(
         record[TEAM_COMPETITION_CODE]
@@ -60,7 +63,7 @@ export class BondService {
           id: record[TEAM_ID],
           club: record[TEAM_CLUB],
           participants,
-          boat: boats.get(boatId) ?? boat,
+          boat: boatId ? boats.get(boatId) : null,
           registrationFee: record[TEAM_REGISTRATION_FEE],
           remarks: record[TEAM_REMARKS],
           coach: record[TEAM_COACH],
