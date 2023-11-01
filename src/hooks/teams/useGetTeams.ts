@@ -23,7 +23,7 @@ export function useGetTeams() {
                 blocks: new Set(JSON.parse(p.blocks)),
               })
           ),
-          boat: new Boat(team.boat),
+          boat: team.boat ? new Boat(team.boat) : null,
           helm: team.helm
             ? new Participant({
                 ...team.helm,

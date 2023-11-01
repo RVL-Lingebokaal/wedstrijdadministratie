@@ -20,7 +20,7 @@ interface TeamCreation {
   id: string;
   club: string;
   participants: Participant[];
-  boat: Boat;
+  boat?: Boat | null;
   registrationFee: number;
   preferredBlock: number;
   coach: string;
@@ -74,7 +74,7 @@ export class Team {
     this.id = id;
     this.club = club;
     this.participants = participants;
-    this.boat = boat;
+    this.boat = boat ?? null;
     this.registrationFee = registrationFee;
     this.coach = coach;
     this.phoneNumber = phoneNumber;
