@@ -1,60 +1,43 @@
-export interface BoatCreation {
+export interface Boat {
   name: string;
   club: string;
-  blocks: number[];
+  id: string;
+  blocks: Set<number>;
 }
 
-export class Boat {
-  private name = "";
-  private club = "";
-  private id = "";
-  private blocks = new Set<number>();
+interface AddBlockToBoatProps {
+  boat: Boat;
+  block: number;
+  reset?: boolean;
+}
 
-  constructor({ name, club, blocks }: BoatCreation) {
-    this.name = name;
-    this.club = club;
-    this.id = name.substring(0, 3) + club.substring(0, 3);
-    this.blocks = new Set(blocks);
+export function addBlockToBoat({ reset, boat, block }: AddBlockToBoatProps) {
+  if (!reset && boat.blocks.has(block)) {
+    throw new Error("This block is already taken");
   }
+  boat.blocks.add(block);
+  return boat;
+}
 
-  getId() {
-    return this.id;
-  }
+interface UpdateBlocksOfBoatProps {
+  boat: Boat;
+  toRemove: number;
+  toAdd: number;
+  reset?: boolean;
+}
 
-  getName() {
-    return this.name;
-  }
+export function updateBlocksOfBoat({
+  boat,
+  toAdd,
+  reset,
+  toRemove,
+}: UpdateBlocksOfBoatProps) {
+  boat = addBlockToBoat({ reset, boat, block: toAdd });
+  boat.blocks.delete(toRemove);
 
-  getBlocks() {
-    return this.blocks;
-  }
+  return boat;
+}
 
-  getDatabaseBoat() {
-    return {
-      name: this.name,
-      club: this.club,
-      blocks: JSON.stringify(Array.from(this.blocks.values())),
-    };
-  }
-
-  updateData({ name, club }: Partial<BoatCreation>) {
-    this.name = name ?? this.name;
-    this.club = club ?? this.club;
-  }
-
-  addBlocks(blocks: Set<number>, reset?: boolean) {
-    Array.from(blocks.values()).forEach((block) => this.addBlock(block, reset));
-  }
-
-  addBlock(block: number, reset?: boolean) {
-    if (!reset && this.blocks.has(block)) {
-      throw new Error("This block is already taken");
-    }
-    this.blocks.add(block);
-  }
-
-  updateBlock(toRemove: number, toAdd: number, reset?: boolean) {
-    this.addBlock(toAdd, reset);
-    this.blocks.delete(toRemove);
-  }
+export function getBoatId(name: string, club: string) {
+  return name.substring(0, 3) + club.substring(0, 3);
 }

@@ -1,4 +1,4 @@
-import { Boat, BoatCreation } from "../models/boat";
+import { Boat, getBoatId } from "../models/boat";
 import {
   collection,
   doc,
@@ -7,6 +7,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import firestore from "../firebase/firebase";
+import { WriteBatch } from "@firebase/firestore-types";
 
 export class BoatService {
   private boats: Map<string, Boat> = new Map();
@@ -15,9 +16,14 @@ export class BoatService {
     const batch = writeBatch(firestore);
 
     boats.forEach((boat) => {
-      const docRef = doc(firestore, "boot", boat.getId());
-      this.boats.set(boat.getId(), boat);
-      batch.set(docRef, boat.getDatabaseBoat(), { merge: true });
+      const { name, club, blocks, id } = boat;
+      const docRef = doc(firestore, "boot", id);
+      this.boats.set(id, boat);
+      batch.set(
+        docRef,
+        { name, club, blocks: JSON.stringify(Array.from(blocks.values())) },
+        { merge: true }
+      );
     });
 
     return await batch.commit();
@@ -45,32 +51,31 @@ export class BoatService {
       const data = await getDocs(dbInstance);
       this.boats = data.docs.reduce(
         (acc, doc) =>
-          acc.set(
-            doc.id,
-            new Boat({
-              name: doc.data().name,
-              club: doc.data().club,
-              blocks: JSON.parse(doc.data().blocks),
-            })
-          ),
+          acc.set(doc.id, {
+            id: doc.id,
+            name: doc.data().name,
+            club: doc.data().club,
+            blocks: JSON.parse(doc.data().blocks),
+          }),
         new Map<string, Boat>()
       );
     }
     return this.boats;
   }
 
-  async updateBoat(args: BoatCreation, id?: string) {
+  async updateBoat(args: Omit<Boat, "id">, id?: string) {
     let boat = id ? this.boats.get(id) : undefined;
     if (!boat) {
-      boat = new Boat(args);
-    } else {
-      boat.updateData(args);
+      boat = {
+        ...args,
+        id: getBoatId(args.name, args.club),
+      };
     }
 
-    this.boats.set(boat.getId(), boat);
+    this.boats.set(boat.id, boat);
 
-    const docRef = doc(firestore, "boot", boat.getId());
-    await setDoc(docRef, { ...boat.getDatabaseBoat() }, { merge: true });
+    const docRef = doc(firestore, "boot", boat.id);
+    await setDoc(docRef, args, { merge: true });
 
     return boat;
   }

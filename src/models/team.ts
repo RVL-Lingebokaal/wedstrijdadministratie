@@ -1,5 +1,5 @@
 import { Participant } from "./participant";
-import { Boat } from "./boat";
+import { Boat, updateBlocksOfBoat } from "./boat";
 import { AgeItem, BoatType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
 import participantService from "../services/participantService.server";
@@ -160,7 +160,7 @@ export class Team {
       name: this.name,
       club: this.club,
       participants: this.participants.map((participant) => participant.getId()),
-      boat: this.boat?.getId() ?? "",
+      boat: this.boat?.id ?? "",
       registrationFee: this.registrationFee,
       coach: this.coach,
       phoneNumber: this.phoneNumber,
@@ -215,7 +215,13 @@ export class Team {
 
     //Finally, try to update the boat
     try {
-      this.boat?.updateBlock(this.preferredBlock, block);
+      if (this.boat) {
+        this.boat = updateBlocksOfBoat({
+          boat: this.boat,
+          toRemove: this.preferredBlock,
+          toAdd: block,
+        });
+      }
     } catch (e) {
       this.participants.forEach((p) =>
         p.updateBlock(block, this.preferredBlock, true)
@@ -320,8 +326,8 @@ export class Team {
   private async updateBoat(name: string, block?: number) {
     const preferredBlock = block ?? this.preferredBlock;
     return await boatService.updateBoat(
-      { name, club: this.club, blocks: [preferredBlock] },
-      this.boat?.getId()
+      { name, club: this.club, blocks: new Set([preferredBlock]) },
+      this.boat?.id
     );
   }
 }

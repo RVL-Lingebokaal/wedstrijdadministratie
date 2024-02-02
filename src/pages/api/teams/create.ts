@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
 import { TeamAddForm } from "../../../components/organisms/team/team-add-button/teamAddButton";
 import { Team } from "../../../models/team";
-import { Boat } from "../../../models/boat";
 import participantService from "../../../services/participantService.server";
+import { getBoatId } from "../../../models/boat";
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,11 +33,12 @@ export default async function handler(
     name: args.name,
     id: "",
     club: args.club,
-    boat: new Boat({
+    boat: {
       name: args.boat,
       club: args.club,
-      blocks: [args.preferredBlock],
-    }),
+      blocks: new Set([args.preferredBlock]),
+      id: getBoatId(args.boat, args.club),
+    },
     registrationFee: 0,
     preferredBlock: parseInt(args.preferredBlock.toString()),
     coach: "",

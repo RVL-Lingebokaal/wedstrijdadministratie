@@ -15,7 +15,7 @@ import {
   HELM,
 } from "./constants";
 import { Stream } from "stream";
-import { Boat } from "../models/boat";
+import { addBlockToBoat, Boat, getBoatId } from "../models/boat";
 import { BoatType } from "../models/settings";
 
 const PARTICIPANT_KEYS = ["Slag", "2", "3", "4", "5", "6", "7", "Boeg"];
@@ -38,16 +38,20 @@ export class BondService {
 
       let boatId: null | string = null;
       if (record[BOAT_NAME] !== "-") {
-        const boat = new Boat({
+        let boat: Boat = {
           club: record[TEAM_CLUB],
           name: record[BOAT_NAME],
-          blocks: [parseInt(record[TEAM_PREFFERED_BLOCK])],
-        });
-        boatId = boat.getId();
+          blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
+          id: getBoatId(record[BOAT_NAME], record[TEAM_CLUB]),
+        };
+        boatId = boat.id;
         if (boats.has(boatId)) {
           const oldBoat = boats.get(boatId);
           if (oldBoat) {
-            boat.addBlocks(oldBoat.getBlocks(), true);
+            boat = Array.from(oldBoat.blocks).reduce(
+              (boat, block) => addBlockToBoat({ boat, block, reset: true }),
+              boat
+            );
           }
         }
         boats.set(boatId, boat);

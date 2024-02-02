@@ -16,7 +16,7 @@ export default async function handler(
     const team = {
       ...t.getDatabaseTeam(),
       participants: t.getParticipants().map((p) => p.getDatabaseParticipant()),
-      boat: t.getBoat()?.getDatabaseBoat(),
+      boat: t.getBoat(),
       helm: t.getHelm() ? t.getHelm()?.getDatabaseParticipant() : null,
     };
     jsonTeams.push(team);
