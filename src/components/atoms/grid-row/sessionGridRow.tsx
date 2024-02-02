@@ -12,7 +12,7 @@ export function SessionGridRow({ team, ageClasses }: SessionGridRowProps) {
       <div className="bg-white py-3 px-4">{team.getAgeClass(ageClasses)}</div>
       <div className="bg-white py-3 px-4 col-span-2">{team.getClub()}</div>
       <div className="bg-white py-3 px-4 col-span-3">
-        {team.getHelm()?.getName() ?? team.getParticipants()[0].getName()}
+        {team.getHelm()?.name ?? team.getParticipants()[0].name}
       </div>
       <div className="bg-white py-3 px-4 col-span-6 text-xs">
         {team.getRemarks()}

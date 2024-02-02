@@ -1,108 +1,27 @@
 import { AgeItem, AgeType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
 
-export interface ParticipantCreation {
+export interface Participant {
   name: string;
   id: string;
   club: string;
   birthYear: number;
   blocks: Set<number>;
+  ageType?: AgeType;
 }
 
-export class Participant {
-  private name = "";
-  private id = "";
-  private club = "";
-  private birthYear = 1900;
-  private ageType: AgeType | undefined = undefined;
-  private blocks: Set<number> = new Set();
+export function getAgeParticipant(participant: Participant) {
+  return new Date().getFullYear() - participant.birthYear;
+}
 
-  constructor({ name, id, club, birthYear, blocks }: ParticipantCreation) {
-    this.birthYear = birthYear;
-    this.id = id;
-    this.name = name;
-    this.club = club;
-    this.blocks = blocks;
+interface GetAgeTypesProps {
+  participant: Participant;
+  ages: AgeItem[];
+}
+export function getAgeType({ participant, ages }: GetAgeTypesProps) {
+  if (participant.ageType) {
+    return participant.ageType;
   }
-
-  updateParticipantData({
-    birthYear,
-    name,
-    club,
-  }: Partial<ParticipantCreation>) {
-    this.birthYear = birthYear ?? this.birthYear;
-    this.name = name ?? this.name;
-    this.club = club ?? this.club;
-  }
-
-  getId() {
-    return this.id;
-  }
-
-  setId(id: string) {
-    this.id = id;
-  }
-
-  getDatabaseParticipant() {
-    return {
-      birthYear: this.birthYear,
-      id: this.id,
-      name: this.name,
-      club: this.club,
-      blocks: JSON.stringify(Array.from(this.blocks.values())),
-    };
-  }
-
-  getAge() {
-    return new Date().getFullYear() - this.birthYear;
-  }
-
-  getName() {
-    return this.name;
-  }
-
-  getClub() {
-    return this.club;
-  }
-
-  getBirthYear() {
-    return this.birthYear;
-  }
-
-  getParticipantForm() {
-    return {
-      name: this.name,
-      club: this.club,
-      birthYear: this.birthYear,
-      id: this.id,
-    };
-  }
-
-  getAgeType(ages: AgeItem[]) {
-    if (!this.ageType) {
-      this.calculateAgeType(ages);
-    }
-
-    return this.ageType as AgeType;
-  }
-
-  addBlock(block: number, reset?: boolean) {
-    if (!reset && this.blocks.has(block)) {
-      throw new Error("This block is already taken");
-    }
-    this.blocks.add(block);
-  }
-
-  removeBlock(block: number) {
-    this.blocks.delete(block);
-  }
-
-  updateBlock(toRemove: number, toAdd: number, reset?: boolean) {
-    this.addBlock(toAdd, reset);
-    this.removeBlock(toRemove);
-  }
-
-  private calculateAgeType(ages: AgeItem[]) {
-    this.ageType = calculateAgeType(ages, this.getAge());
-  }
+  const age = new Date().getFullYear() - participant.birthYear;
+  return calculateAgeType(ages, age);
 }

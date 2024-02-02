@@ -1,4 +1,4 @@
-import { Participant, ParticipantCreation } from "../models/participant";
+import { Participant } from "../models/participant";
 import {
   addDoc,
   collection,
@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import firestore from "../firebase/firebase";
 import { TeamAddFormParticipant } from "../components/organisms/team/team-add-button/teamAddButton";
+import { stringifySet } from "../utils/blocks";
 
 export class ParticipantService {
   private participants: Map<string, Participant> = new Map();
@@ -17,9 +18,19 @@ export class ParticipantService {
     const batch = writeBatch(firestore);
 
     participants.forEach((participant) => {
-      const docRef = doc(firestore, "deelnemer", participant.getId());
-      this.participants.set(participant.getId(), participant);
-      batch.set(docRef, participant.getDatabaseParticipant(), { merge: true });
+      const { name, id, club, blocks, birthYear } = participant;
+      const docRef = doc(firestore, "deelnemer", id);
+      this.participants.set(id, participant);
+      batch.set(
+        docRef,
+        {
+          name,
+          club,
+          birthYear,
+          blocks: stringifySet(blocks),
+        },
+        { merge: true }
+      );
     });
 
     return await batch.commit();
@@ -56,16 +67,13 @@ export class ParticipantService {
 
       this.participants = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
-        return acc.set(
-          docData.id,
-          new Participant({
-            name: docData.name,
-            club: docData.club,
-            birthYear: docData.birthYear,
-            id: docData.id,
-            blocks: new Set(JSON.parse(docData.blocks)),
-          })
-        );
+        return acc.set(docData.id, {
+          name: docData.name,
+          club: docData.club,
+          birthYear: docData.birthYear,
+          id: docData.id,
+          blocks: new Set(JSON.parse(docData.blocks)),
+        });
       }, new Map<string, Participant>());
     }
     return this.participants;
@@ -76,34 +84,27 @@ export class ParticipantService {
     club,
     birthYear,
     blocks,
-  }: Omit<ParticipantCreation, "id">) {
+  }: Omit<Participant, "id">) {
     const participants = Array.from(this.participants.values());
     const foundParticipant = participants.find(
-      (p) =>
-        name === p.getName() &&
-        club === p.getClub() &&
-        birthYear === p.getBirthYear()
+      (p) => name === p.name && club === p.club && birthYear === p.birthYear
     );
 
     if (foundParticipant) {
       return foundParticipant;
     }
 
-    const participant = new Participant({
+    const participant = { name, id: "", club, birthYear, blocks };
+
+    const docRef = await addDoc(collection(firestore, "deelnemer"), {
       name,
-      id: "",
       club,
       birthYear,
-      blocks,
+      blocks: stringifySet(blocks),
     });
+    participant.id = docRef.id;
 
-    const docRef = await addDoc(
-      collection(firestore, "deelnemer"),
-      participant.getDatabaseParticipant()
-    );
-    participant.setId(docRef.id);
-
-    this.participants = this.participants.set(participant.getId(), participant);
+    this.participants = this.participants.set(participant.id, participant);
 
     return participant;
   }
@@ -112,13 +113,13 @@ export class ParticipantService {
     participant: Participant,
     args: TeamAddFormParticipant
   ) {
-    participant.updateParticipantData(args);
-    this.participants = this.participants.set(participant.getId(), participant);
+    participant = { ...participant, ...args };
+    this.participants = this.participants.set(participant.id, participant);
 
-    const docRef = doc(firestore, "deelnemer", participant.getId());
+    const docRef = doc(firestore, "deelnemer", participant.id);
     await setDoc(
       docRef,
-      { ...participant.getDatabaseParticipant() },
+      { ...participant, blocks: stringifySet(participant.blocks) },
       { merge: true }
     );
 

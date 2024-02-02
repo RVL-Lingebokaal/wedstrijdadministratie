@@ -7,7 +7,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import firestore from "../firebase/firebase";
-import { WriteBatch } from "@firebase/firestore-types";
+import { stringifySet } from "../utils/blocks";
 
 export class BoatService {
   private boats: Map<string, Boat> = new Map();
@@ -21,7 +21,7 @@ export class BoatService {
       this.boats.set(id, boat);
       batch.set(
         docRef,
-        { name, club, blocks: JSON.stringify(Array.from(blocks.values())) },
+        { name, club, blocks: stringifySet(blocks) },
         { merge: true }
       );
     });
@@ -75,7 +75,11 @@ export class BoatService {
     this.boats.set(boat.id, boat);
 
     const docRef = doc(firestore, "boot", boat.id);
-    await setDoc(docRef, args, { merge: true });
+    await setDoc(
+      docRef,
+      { ...args, blocks: stringifySet(args.blocks) },
+      { merge: true }
+    );
 
     return boat;
   }

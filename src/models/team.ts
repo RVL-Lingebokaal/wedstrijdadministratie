@@ -1,5 +1,5 @@
-import { Participant } from "./participant";
-import { Boat, updateBlocksOfBoat } from "./boat";
+import { getAgeParticipant, getAgeType, Participant } from "./participant";
+import { Boat } from "./boat";
 import { AgeItem, BoatType } from "./settings";
 import { calculateAgeType } from "../components/utils/ageUtils";
 import participantService from "../services/participantService.server";
@@ -8,6 +8,7 @@ import { TeamAddFormParticipant } from "../components/organisms/team/team-add-bu
 import boatService from "../services/boatService.server";
 import teamService from "../services/teamService.server";
 import { BlockError } from "./error";
+import { updateBlocks } from "../utils/blocks";
 
 export enum Gender {
   M = "male",
@@ -128,10 +129,10 @@ export class Team {
 
   getAgeClass(ages: AgeItem[]) {
     if (this.participants.length === 1) {
-      return this.participants[0].getAgeType(ages);
+      return getAgeType({ participant: this.participants[0], ages });
     }
     const total = this.participants.reduce(
-      (acc, participant) => acc + participant.getAge(),
+      (acc, participant) => acc + getAgeParticipant(participant),
       0
     );
     const age = total / this.participants.length;
@@ -159,7 +160,7 @@ export class Team {
       id: this.id,
       name: this.name,
       club: this.club,
-      participants: this.participants.map((participant) => participant.getId()),
+      participants: this.participants.map((participant) => participant.id),
       boat: this.boat?.id ?? "",
       registrationFee: this.registrationFee,
       coach: this.coach,
@@ -168,7 +169,7 @@ export class Team {
       preferredBlock: this.preferredBlock,
       boatType: this.boatType,
       gender: this.gender,
-      helm: this.helm?.getId() ?? null,
+      helm: this.helm?.id ?? null,
       place: this.place,
     };
   }
@@ -182,13 +183,23 @@ export class Team {
     let participantIndex = undefined;
     try {
       this.participants.forEach((p, index) => {
-        p.updateBlock(this.preferredBlock, block);
+        updateBlocks<Participant>({
+          object: p,
+          toRemove: this.preferredBlock,
+          toAdd: block,
+        });
+
         participantIndex = index;
       });
     } catch (e) {
       if (participantIndex) {
         for (let i = 0; i <= participantIndex; i++) {
-          this.participants[i].updateBlock(block, this.preferredBlock, true);
+          this.participants[i] = updateBlocks<Participant>({
+            object: this.participants[i],
+            toRemove: block,
+            toAdd: this.preferredBlock,
+            reset: true,
+          });
         }
       }
       throw new BlockError({
@@ -200,10 +211,19 @@ export class Team {
     //Then, try to update the helm in case the helm exists
     if (this.helm) {
       try {
-        this.helm.updateBlock(this.preferredBlock, block);
+        this.helm = updateBlocks<Participant>({
+          object: this.helm,
+          toRemove: this.preferredBlock,
+          toAdd: block,
+        });
       } catch (e) {
         this.participants.forEach((p) =>
-          p.updateBlock(block, this.preferredBlock, true)
+          updateBlocks<Participant>({
+            object: p,
+            toRemove: block,
+            toAdd: this.preferredBlock,
+            reset: true,
+          })
         );
 
         throw new BlockError({
@@ -216,17 +236,29 @@ export class Team {
     //Finally, try to update the boat
     try {
       if (this.boat) {
-        this.boat = updateBlocksOfBoat({
-          boat: this.boat,
+        this.boat = updateBlocks<Boat>({
+          object: this.boat,
           toRemove: this.preferredBlock,
           toAdd: block,
         });
       }
     } catch (e) {
       this.participants.forEach((p) =>
-        p.updateBlock(block, this.preferredBlock, true)
+        updateBlocks<Participant>({
+          object: p,
+          toRemove: block,
+          toAdd: this.preferredBlock,
+          reset: true,
+        })
       );
-      this.helm?.updateBlock(block, this.preferredBlock, true);
+      this.helm = this.helm
+        ? updateBlocks<Participant>({
+            object: this.helm,
+            toRemove: block,
+            toAdd: this.preferredBlock,
+            reset: true,
+          })
+        : null;
 
       throw new BlockError({
         name: "BOAT_BLOCK",
