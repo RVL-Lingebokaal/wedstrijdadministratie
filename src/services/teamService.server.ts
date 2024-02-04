@@ -1,4 +1,4 @@
-import { Team } from "../models/team";
+import { getDatabaseTeam, Team } from "../models/team";
 import {
   addDoc,
   collection,
@@ -20,38 +20,38 @@ export class TeamService {
     const batch = writeBatch(firestore);
 
     teams.forEach((team) => {
-      const docRef = doc(firestore, "ploeg", team.getId().toString());
-      this.teams.set(team.getId(), team);
-      batch.set(docRef, team.getDatabaseTeam(), { merge: true });
+      const docRef = doc(firestore, "ploeg", team.id);
+      this.teams.set(team.id, team);
+      batch.set(docRef, getDatabaseTeam(team), { merge: true });
     });
 
     return await batch.commit();
   }
 
   async saveTeam(team: Team) {
-    const db = doc(firestore, "ploeg", team.getId());
+    const db = doc(firestore, "ploeg", team.id);
 
-    const participants = team.getHelm()
-      ? ([...team.getParticipants(), team.getHelm()] as Participant[])
-      : team.getParticipants();
-    const boat = team.getBoat();
+    const participants = team.helm
+      ? [...team.participants, team.helm]
+      : team.participants;
+    const boat = team.boat;
 
     await participantService.saveParticipants(participants);
     if (boat) {
       await boatService.saveBoats([boat]);
     }
 
-    if (team.getId() === "") {
+    if (team.id === "") {
       const docRef = await addDoc(
-        collection(firestore, "cities"),
-        team.getDatabaseTeam()
+        collection(firestore, "ploeg"),
+        getDatabaseTeam(team)
       );
-      team.setId(docRef.id);
+      team.id = docRef.id;
     } else {
-      await setDoc(db, team.getDatabaseTeam());
+      await setDoc(db, getDatabaseTeam(team));
     }
 
-    this.teams.set(team.getId(), team);
+    this.teams.set(team.id, team);
   }
 
   async removeAllTeams() {
@@ -80,7 +80,7 @@ export class TeamService {
 
       this.teams = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
-        const team = new Team({
+        const team = {
           boat: boats.get(docData.boat) as Boat,
           boatType: docData.boatType,
           coach: docData.coach,
@@ -99,8 +99,8 @@ export class TeamService {
             ? (participants.get(docData.helm) as Participant)
             : null,
           place: parseInt(docData.place),
-        });
-        return acc.set(team.getId(), team);
+        };
+        return acc.set(team.id, team);
       }, new Map());
     }
     return this.teams;

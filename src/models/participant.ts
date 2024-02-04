@@ -25,3 +25,7 @@ export function getAgeType({ participant, ages }: GetAgeTypesProps) {
   const age = new Date().getFullYear() - participant.birthYear;
   return calculateAgeType(ages, age);
 }
+
+export function getParticipantForm({ name, birthYear, club, id }: Participant) {
+  return { id, name, birthYear, club };
+}

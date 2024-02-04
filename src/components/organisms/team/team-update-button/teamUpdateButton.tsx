@@ -10,6 +10,7 @@ import TeamForm from "../../../molecules/team-form/teamForm";
 import { Select } from "../../../atoms/select/select";
 import { addTeamSchema } from "../../../../schemas/addTeamSchema";
 import { useUpdateTeam } from "../../../../hooks/teams/useUpdateTeam";
+import { getParticipantForm } from "../../../../models/participant";
 
 interface TeamChangeButtonProps {
   refetch: () => void;
@@ -23,10 +24,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const { mutate } = useUpdateTeam();
   const teamsMap = useMemo(
     () =>
-      teams.reduce<Map<string, Team>>(
-        (acc, t) => acc.set(t.getId(), t),
-        new Map()
-      ),
+      teams.reduce<Map<string, Team>>((acc, t) => acc.set(t.id, t), new Map()),
     [teams]
   );
   const onClick = useCallback(() => setShowModal(true), []);
@@ -52,7 +50,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
         obj[key] = val[key as keyof TeamAddForm];
         return obj;
       }, {}) as Partial<TeamAddForm>;
-      mutate({ teamId: team?.getId() ?? "", ...updatedObject });
+      mutate({ teamId: team?.id ?? "", ...updatedObject });
       refetch();
     },
     [formState.dirtyFields, mutate, refetch, team]
@@ -68,10 +66,10 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
           panelClassNames="max-w-xl"
         >
           <Select
-            selectedValue={team ? team.getId() : ""}
+            selectedValue={team ? team.id : ""}
             items={[
               { id: "", text: "Kies een team", disabled: true },
-              ...teams.map((t) => ({ id: t.getId(), text: t.getNameAndId() })),
+              ...teams.map((t) => ({ id: t.id, text: `${t.id} - ${t.name}` })),
             ]}
             onChange={(val) => {
               const selectedTeam = teamsMap.get(val);
@@ -98,14 +96,13 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
 
 function getTeamFormValues(team?: Team): TeamAddForm {
   return {
-    name: team?.getName() ?? "",
-    club: team?.getClub() ?? "",
-    participants:
-      team?.getParticipants().map((p) => p.getParticipantForm()) ?? [],
-    helm: team?.getHelm()?.getParticipantForm() ?? null,
-    boat: team?.getBoat()?.getName() ?? "",
-    preferredBlock: team?.getPreferredBlock() ?? 1,
-    boatType: team?.getBoatType() ?? BoatType.skiff,
-    gender: team?.getGender() ?? Gender.MIX,
+    name: team?.name ?? "",
+    club: team?.club ?? "",
+    participants: team?.participants.map((p) => getParticipantForm(p)) ?? [],
+    helm: team?.helm ? getParticipantForm(team.helm) : null,
+    boat: team?.boat?.name ?? "",
+    preferredBlock: team?.preferredBlock ?? 1,
+    boatType: team?.boatType ?? BoatType.skiff,
+    gender: team?.gender ?? Gender.MIX,
   };
 }

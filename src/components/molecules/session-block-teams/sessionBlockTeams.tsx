@@ -48,10 +48,10 @@ export function SessionBlockTeams({
       const sourceBlock = parseInt(source.droppableId);
 
       if (destBlock !== sourceBlock) {
-        const team = teams?.find((t) => t.getId() === draggableId);
+        const team = teams?.find((t) => t.id === draggableId);
         if (!team) return;
 
-        await updateBlock({ teamId: team.getId(), destBlock });
+        await updateBlock({ teamId: team.id, destBlock });
       } else {
         const selectedBlock = blockTeams.get(destBlock);
 
@@ -62,7 +62,7 @@ export function SessionBlockTeams({
 
         const [removed] = selectedTeams.splice(source.index, 1);
         selectedTeams.splice(destination.index, 0, removed);
-        const teamsWithPlace = selectedTeams.map((t) => t.getId());
+        const teamsWithPlace = selectedTeams.map((t) => t.id);
         selectedBlock.set(boatType, selectedTeams);
         blockTeams.set(destBlock, selectedBlock);
 
@@ -100,9 +100,9 @@ export function SessionBlockTeams({
                     ?.get(boatType)
                     ?.map((team, index) => (
                       <Draggable
-                        draggableId={team.getId()}
+                        draggableId={team.id}
                         index={index}
-                        key={team.getId()}
+                        key={team.id}
                       >
                         {(provided) => (
                           <div
