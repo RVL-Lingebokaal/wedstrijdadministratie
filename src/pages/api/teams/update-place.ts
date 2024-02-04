@@ -28,7 +28,7 @@ export default async function handler(
           .json({ error: "Er bestaat geen team met dit ID" });
       }
 
-      team.setPlace(index);
+      team.place = index;
       teams.push(team);
     })
   );

@@ -1,4 +1,4 @@
-import { Team } from "../../../models/team";
+import { getAgeClassTeam, Team } from "../../../models/team";
 import { AgeItem } from "../../../models/settings";
 
 interface SessionGridRowProps {
@@ -9,13 +9,15 @@ interface SessionGridRowProps {
 export function SessionGridRow({ team, ageClasses }: SessionGridRowProps) {
   return (
     <div className="grid grid-cols-12 m-1">
-      <div className="bg-white py-3 px-4">{team.getAgeClass(ageClasses)}</div>
-      <div className="bg-white py-3 px-4 col-span-2">{team.getClub()}</div>
+      <div className="bg-white py-3 px-4">
+        {getAgeClassTeam({ ages: ageClasses, team })}
+      </div>
+      <div className="bg-white py-3 px-4 col-span-2">{team.club}</div>
       <div className="bg-white py-3 px-4 col-span-3">
-        {team.getHelm()?.name ?? team.getParticipants()[0].name}
+        {team.helm?.name ?? team.participants[0].name}
       </div>
       <div className="bg-white py-3 px-4 col-span-6 text-xs">
-        {team.getRemarks()}
+        {team.remarks}
       </div>
     </div>
   );

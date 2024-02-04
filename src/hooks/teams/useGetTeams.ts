@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Team } from "../../models/team";
 
 export function useGetTeams() {
   return useQuery(
@@ -11,7 +10,7 @@ export function useGetTeams() {
 
       const result = (await response.json()) as any[];
       return result.map((team) => {
-        return new Team({
+        return {
           ...team,
           preferredBlock: parseInt(team.preferredBlock),
           participants: team.participants.map((p: any) => ({
@@ -25,7 +24,7 @@ export function useGetTeams() {
                 blocks: new Set(JSON.parse(team.helm.blocks)),
               }
             : null,
-        });
+        };
       });
     },
     {

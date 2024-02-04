@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Team } from "../models/team";
+import { getAgeClassTeam, Team } from "../models/team";
 import { AgeItem, BoatType } from "../models/settings";
 
 export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
@@ -21,13 +21,13 @@ export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
     }
 
     teams.reduce((acc, team) => {
-      const teamBoatType = team.getBoatType();
+      const teamBoatType = team.boatType;
       if (!teamBoatType) {
         return acc;
       }
 
       boatSet.add(teamBoatType);
-      const blockId = team.getBlock();
+      const blockId = team.block ?? team.preferredBlock;
 
       let totalBlock = blocksMap.get(blockId);
       blocksMap.set(blockId, totalBlock ? ++totalBlock : 1);
@@ -46,15 +46,17 @@ export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
       teams.push(team);
       //First sort on age class
       teams.sort((ta, tb) =>
-        ta.getAgeClass(ageItems).localeCompare(tb.getAgeClass(ageItems))
+        getAgeClassTeam({ ages: ageItems, team: ta }).localeCompare(
+          getAgeClassTeam({ ages: ageItems, team: tb })
+        )
       );
       //Secondly, sort on place
-      teams.sort((ta, tb) => ta.getPlace() - tb.getPlace());
+      teams.sort((ta, tb) => ta.place - tb.place);
 
       boatTypes.set(teamBoatType, teams);
       return acc.set(blockId, boatTypes);
     }, basicMap);
 
     return { blockTeams: basicMap, totalBlocks: blocksMap, boatTypes: boatSet };
-  }, [teams]);
+  }, [ageItems, teams]);
 }

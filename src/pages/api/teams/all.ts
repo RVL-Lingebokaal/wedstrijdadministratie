@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
+import { stringifySet } from "../../../utils/blocks";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,10 +15,13 @@ export default async function handler(
   const jsonTeams: any[] = [];
   arrayTeams.forEach((t) => {
     const team = {
-      ...t.getDatabaseTeam(),
-      participants: t.getParticipants().map((p) => p.getDatabaseParticipant()),
-      boat: t.getBoat(),
-      helm: t.getHelm() ? t.getHelm()?.getDatabaseParticipant() : null,
+      ...t,
+      participants: t.participants.map((p) => ({
+        ...p,
+        blocks: stringifySet(p.blocks),
+      })),
+      boat: t.boat,
+      helm: t.helm ? { ...t.helm, blocks: stringifySet(t.helm.blocks) } : null,
     };
     jsonTeams.push(team);
   });

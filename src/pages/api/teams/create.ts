@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import teamService from "../../../services/teamService.server";
 import { TeamAddForm } from "../../../components/organisms/team/team-add-button/teamAddButton";
-import { Team } from "../../../models/team";
 import participantService from "../../../services/participantService.server";
 import { getBoatId } from "../../../models/boat";
 
@@ -29,7 +28,7 @@ export default async function handler(
     });
     participants.push(participant);
   }
-  const team = new Team({
+  const team = {
     name: args.name,
     id: "",
     club: args.club,
@@ -48,7 +47,8 @@ export default async function handler(
     gender: args.gender,
     helm,
     participants,
-  });
+    place: 0,
+  };
 
   await teamService.saveTeam(team);
   return res.status(200).send({ success: true });

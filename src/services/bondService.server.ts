@@ -63,23 +63,22 @@ export class BondService {
         record[TEAM_COMPETITION_CODE]
       );
 
-      teams.add(
-        new Team({
-          name: record[TEAM_NAME],
-          id: record[TEAM_ID],
-          club: record[TEAM_CLUB],
-          participants,
-          boat: boatId ? boats.get(boatId) : null,
-          registrationFee: record[TEAM_REGISTRATION_FEE],
-          remarks: record[TEAM_REMARKS],
-          coach: record[TEAM_COACH],
-          preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
-          phoneNumber: record[TEAM_PHONE_NUMBER],
-          boatType,
-          gender,
-          helm,
-        })
-      );
+      teams.add({
+        name: record[TEAM_NAME],
+        id: record[TEAM_ID],
+        club: record[TEAM_CLUB],
+        participants,
+        boat: boatId ? boats.get(boatId) : null,
+        registrationFee: record[TEAM_REGISTRATION_FEE],
+        remarks: record[TEAM_REMARKS],
+        coach: record[TEAM_COACH],
+        preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
+        phoneNumber: record[TEAM_PHONE_NUMBER],
+        boatType,
+        gender,
+        helm,
+        place: 0,
+      });
     }
     return {
       teams: Array.from(teams),
