@@ -1,7 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Team } from "../../models/team";
-import { Participant } from "../../models/participant";
-import { Boat } from "../../models/boat";
 
 export function useGetTeams() {
   return useQuery(
@@ -13,24 +10,21 @@ export function useGetTeams() {
 
       const result = (await response.json()) as any[];
       return result.map((team) => {
-        return new Team({
+        return {
           ...team,
           preferredBlock: parseInt(team.preferredBlock),
-          participants: team.participants.map(
-            (p: any) =>
-              new Participant({
-                ...p,
-                blocks: new Set(JSON.parse(p.blocks)),
-              })
-          ),
-          boat: team.boat ? new Boat(team.boat) : null,
+          participants: team.participants.map((p: any) => ({
+            ...p,
+            blocks: new Set(JSON.parse(p.blocks)),
+          })),
+          boat: team.boat ?? null,
           helm: team.helm
-            ? new Participant({
+            ? {
                 ...team.helm,
                 blocks: new Set(JSON.parse(team.helm.blocks)),
-              })
+              }
             : null,
-        });
+        };
       });
     },
     {

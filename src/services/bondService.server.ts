@@ -15,8 +15,9 @@ import {
   HELM,
 } from "./constants";
 import { Stream } from "stream";
-import { Boat } from "../models/boat";
+import { Boat, getBoatId } from "../models/boat";
 import { BoatType } from "../models/settings";
+import { addBlock } from "../utils/blocks";
 
 const PARTICIPANT_KEYS = ["Slag", "2", "3", "4", "5", "6", "7", "Boeg"];
 
@@ -38,16 +39,21 @@ export class BondService {
 
       let boatId: null | string = null;
       if (record[BOAT_NAME] !== "-") {
-        const boat = new Boat({
+        let boat: Boat = {
           club: record[TEAM_CLUB],
           name: record[BOAT_NAME],
-          blocks: [parseInt(record[TEAM_PREFFERED_BLOCK])],
-        });
-        boatId = boat.getId();
+          blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
+          id: getBoatId(record[BOAT_NAME], record[TEAM_CLUB]),
+        };
+        boatId = boat.id;
         if (boats.has(boatId)) {
           const oldBoat = boats.get(boatId);
           if (oldBoat) {
-            boat.addBlocks(oldBoat.getBlocks(), true);
+            boat = Array.from(oldBoat.blocks).reduce(
+              (boat, block) =>
+                addBlock<Boat>({ object: boat, block, reset: true }),
+              boat
+            );
           }
         }
         boats.set(boatId, boat);
@@ -57,23 +63,22 @@ export class BondService {
         record[TEAM_COMPETITION_CODE]
       );
 
-      teams.add(
-        new Team({
-          name: record[TEAM_NAME],
-          id: record[TEAM_ID],
-          club: record[TEAM_CLUB],
-          participants,
-          boat: boatId ? boats.get(boatId) : null,
-          registrationFee: record[TEAM_REGISTRATION_FEE],
-          remarks: record[TEAM_REMARKS],
-          coach: record[TEAM_COACH],
-          preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
-          phoneNumber: record[TEAM_PHONE_NUMBER],
-          boatType,
-          gender,
-          helm,
-        })
-      );
+      teams.add({
+        name: record[TEAM_NAME],
+        id: record[TEAM_ID],
+        club: record[TEAM_CLUB],
+        participants,
+        boat: boatId ? boats.get(boatId) : null,
+        registrationFee: record[TEAM_REGISTRATION_FEE],
+        remarks: record[TEAM_REMARKS],
+        coach: record[TEAM_COACH],
+        preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
+        phoneNumber: record[TEAM_PHONE_NUMBER],
+        boatType,
+        gender,
+        helm,
+        place: 0,
+      });
     }
     return {
       teams: Array.from(teams),
@@ -108,18 +113,20 @@ export class BondService {
     map: Map<string, Participant>
   ) {
     const id = record[`NKODE ${path}`];
-    const participant =
-      map.get(id) ??
-      new Participant({
-        name: record[path],
-        birthYear: parseInt(
-          record[`geb${isNaN(parseInt(path)) ? "" : " "}${path}`]
-        ),
-        id,
-        club: record[`VKODE ${path}`],
-        blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
-      });
-    participant.addBlock(parseInt(record[TEAM_PREFFERED_BLOCK]), true);
+    let participant = map.get(id) ?? {
+      name: record[path],
+      birthYear: parseInt(
+        record[`geb${isNaN(parseInt(path)) ? "" : " "}${path}`]
+      ),
+      id,
+      club: record[`VKODE ${path}`],
+      blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
+    };
+    participant = addBlock<Participant>({
+      object: participant,
+      block: parseInt(record[TEAM_PREFFERED_BLOCK]),
+      reset: true,
+    });
     map.set(id, participant);
     return participant;
   }

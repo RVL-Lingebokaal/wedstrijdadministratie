@@ -13,7 +13,7 @@ export default async function handler(
   const teams = await teamService.getTeams();
   const participants = await participantService.getParticipants();
   const clubs = Array.from(teams.values()).reduce<Set<string>>(
-    (acc, team) => acc.add(team.getClub()),
+    (acc, team) => acc.add(team.club),
     new Set()
   );
 

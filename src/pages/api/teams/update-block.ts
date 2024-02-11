@@ -23,7 +23,7 @@ export default async function handler(
   }
 
   try {
-    team.setPreferredBlock(args.destBlock);
+    team.preferredBlock = args.destBlock;
     await teamService.saveTeam(team);
   } catch (error: any) {
     let errorMessage;
