@@ -16,6 +16,7 @@ export class SettingsService {
     ) {
       const docRef = doc(firestore, "settings", "items");
       const data = await getDoc(docRef);
+
       if (data.exists()) {
         this.settings = data.data() as Settings;
       }

@@ -3,6 +3,8 @@ import { Gender, Team } from "../models/team";
 import { Participant } from "../models/participant";
 import {
   BOAT_NAME,
+  HELM,
+  TEAM_CLUB,
   TEAM_COACH,
   TEAM_COMPETITION_CODE,
   TEAM_ID,
@@ -11,13 +13,12 @@ import {
   TEAM_PREFFERED_BLOCK,
   TEAM_REGISTRATION_FEE,
   TEAM_REMARKS,
-  TEAM_CLUB,
-  HELM,
 } from "./constants";
 import { Stream } from "stream";
 import { Boat, getBoatId } from "../models/boat";
 import { BoatType } from "../models/settings";
 import { addBlock } from "../utils/blocks";
+import { BoatTypeError, BondFileError } from "../models/error";
 
 const PARTICIPANT_KEYS = ["Slag", "2", "3", "4", "5", "6", "7", "Boeg"];
 
@@ -31,13 +32,18 @@ export class BondService {
 
     const parser = parse({ delimiter: ",", trim: true, columns: true });
     const records = stream.pipe(parser);
+    let row = 1;
     for await (const record of records) {
+      row++;
       const { participants, helm } = this.addParticipants(
         record,
         participantMap
       );
 
       let boatId: null | string = null;
+
+      this.checkRecord(record, row);
+
       if (record[BOAT_NAME] !== "-") {
         let boat: Boat = {
           club: record[TEAM_CLUB],
@@ -60,7 +66,9 @@ export class BondService {
       }
 
       const { gender, boatType } = this.getBoatType(
-        record[TEAM_COMPETITION_CODE]
+        record[TEAM_COMPETITION_CODE],
+        participants.length,
+        Boolean(helm)
       );
 
       teams.add({
@@ -131,7 +139,37 @@ export class BondService {
     return participant;
   }
 
-  private getBoatType(type: string): { boatType: BoatType; gender: Gender } {
+  private checkRecord(record: any, row: number) {
+    if (!record[BOAT_NAME]) {
+      throw new BondFileError({
+        name: BOAT_NAME,
+        message: "Er is geen bootnaam ingevuld",
+        row,
+      });
+    }
+
+    if (!record[TEAM_CLUB]) {
+      throw new BondFileError({
+        name: TEAM_CLUB,
+        message: "Er is geen verenigingsnaam ingevuld",
+        row,
+      });
+    }
+
+    if (!record[TEAM_COMPETITION_CODE]) {
+      throw new BondFileError({
+        name: TEAM_COMPETITION_CODE,
+        message: "Er is geen wedstrijdcode ingevuld",
+        row,
+      });
+    }
+  }
+
+  private getBoatType(
+    type: string,
+    amountOfParticipants: number,
+    helm: boolean
+  ): { boatType: BoatType; gender: Gender } {
     const typeWithoutSpaces = type.replaceAll(" ", "").toLowerCase();
     const gender = typeWithoutSpaces.includes("h")
       ? Gender.M
@@ -142,41 +180,104 @@ export class BondService {
     switch (typeWithoutSpaces) {
       case "h1x":
       case "d1x":
-        return { gender, boatType: BoatType.skiff };
+        if (amountOfParticipants === 1 && !helm) {
+          return { gender, boatType: BoatType.skiff };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.skiff,
+          helm,
+          amountOfParticipants,
+        });
       case "mixc4+":
       case "dc4+":
       case "hc4+":
-        return { gender, boatType: BoatType.boardFourWithC };
+        if (amountOfParticipants === 4 && helm) {
+          return { gender, boatType: BoatType.boardFourWithC };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.boardFourWithC,
+          helm,
+          amountOfParticipants,
+        });
       case "mixc4x":
       case "dc4x":
       case "hc4x":
-        return { gender, boatType: BoatType.boardFourWithC };
+        if (amountOfParticipants === 4 && helm) {
+          return { gender, boatType: BoatType.boardFourWithC };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.boardFourWithC,
+          helm,
+          amountOfParticipants,
+        });
       case "mixc4*":
       case "dc4*":
       case "hc4*":
-        return { gender, boatType: BoatType.scullFourWithC };
+        if (amountOfParticipants === 4 && helm) {
+          return { gender, boatType: BoatType.scullFourWithC };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.scullFourWithC,
+          helm,
+          amountOfParticipants,
+        });
       case "mix2x":
       case "d2x":
       case "h2x":
-        return { gender, boatType: BoatType.scullTwoWithout };
+        if (amountOfParticipants === 2 && !helm) {
+          return { gender, boatType: BoatType.scullTwoWithout };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.scullTwoWithout,
+          helm,
+          amountOfParticipants,
+        });
       case "mix4+":
       case "d4+":
       case "h4+":
-        return { gender, boatType: BoatType.boardFourWith };
+        if (amountOfParticipants === 4 && helm) {
+          return { gender, boatType: BoatType.boardFourWith };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.boardFourWith,
+          helm,
+          amountOfParticipants,
+        });
       case "mix4*":
       case "d4*":
       case "h4*":
-        return { gender, boatType: BoatType.scullFourWith };
+        if (amountOfParticipants === 4 && helm) {
+          return { gender, boatType: BoatType.scullFourWith };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.scullFourWith,
+          helm,
+          amountOfParticipants,
+        });
       case "mix8+":
       case "d8+":
       case "d8":
       case "h8+":
       case "h8":
-        return { gender, boatType: BoatType.boardEightWith };
+        if (amountOfParticipants === 8 && helm) {
+          return { gender, boatType: BoatType.boardEightWith };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.boardEightWith,
+          helm,
+          amountOfParticipants,
+        });
       case "mix8*":
       case "d8*":
       case "h8*":
-        return { gender, boatType: BoatType.scullEightWith };
+        if (amountOfParticipants === 8 && helm) {
+          return { gender, boatType: BoatType.scullEightWith };
+        }
+        throw new BoatTypeError({
+          boatType: BoatType.scullEightWith,
+          helm,
+          amountOfParticipants,
+        });
       default:
         throw Error(`Could not translate: ${type}`);
     }

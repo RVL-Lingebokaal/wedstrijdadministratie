@@ -17,7 +17,7 @@ export interface Team {
   boat?: Boat | null;
   registrationFee: number;
   preferredBlock: number;
-  coach: string;
+  coach?: string;
   phoneNumber: string;
   remarks: string;
   boatType: BoatType;

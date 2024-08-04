@@ -46,7 +46,6 @@ export class ParticipantService {
 
     let batch = writeBatch(firestore);
     const batchSize = 500;
-
     for (let i = 0; i < data.size; i++) {
       batch.delete(data.docs[i].ref);
       if (i % batchSize === 0) {
