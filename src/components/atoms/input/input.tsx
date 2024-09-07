@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef } from "react";
+import { ForwardedRef, forwardRef, InputHTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 const borderColor = {
@@ -6,7 +6,7 @@ const borderColor = {
   error: "border-red-600",
 };
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   onChange: () => void;
   label?: string;
   hasError?: boolean;

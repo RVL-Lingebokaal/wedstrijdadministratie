@@ -11,6 +11,7 @@ import {
   BoatType,
 } from "../../models/settings";
 import { LoadingSpinner } from "../../components/atoms/loading-spinner/loadingSpinner";
+import { SettingsForm } from "../../components/organisms/settings/settings/settingsForm";
 
 export enum SettingsTabs {
   type = "Boottype",
@@ -55,6 +56,7 @@ export default function Settings() {
           }}
         />
       )}
+      {tab === SettingsTabs.instellingen && <SettingsForm />}
     </div>
   );
 }

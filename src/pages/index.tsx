@@ -13,7 +13,7 @@ export default function Home() {
 
   const elements = useMemo(() => {
     const currentDate = DateTime.now();
-    const eventDate = DateTime.fromISO("2023-11-11");
+    const eventDate = DateTime.fromISO(data?.date || "");
     const diff = eventDate.diff(currentDate, ["days"]);
 
     return [
@@ -38,7 +38,7 @@ export default function Home() {
         icon: Calendar,
       },
     ];
-  }, [data?.clubsSize, data?.participantsSize, data?.teamsSize]);
+  }, [data?.clubsSize, data?.date, data?.participantsSize, data?.teamsSize]);
 
   return (
     <div>

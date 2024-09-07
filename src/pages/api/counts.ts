@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import participantService from "../../services/participantService.server";
 import teamService from "../../services/teamService.server";
+import settingsService from "../../services/settingsService.server";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,6 +9,7 @@ export default async function handler(
     teamsSize: number;
     participantsSize: number;
     clubsSize: number;
+    date: string;
   }>
 ) {
   const teams = await teamService.getTeams();
@@ -16,10 +18,12 @@ export default async function handler(
     (acc, team) => acc.add(team.club),
     new Set()
   );
+  const date = await settingsService.getGeneralSettings();
 
   res.status(200).send({
     teamsSize: teams.size,
     participantsSize: participants.size,
     clubsSize: clubs.size,
+    date: date.date,
   });
 }

@@ -89,4 +89,7 @@ export interface Settings {
   boats: BoatItem[];
   ages: AgeItem[];
   classes: ClassItem[];
+  general: {
+    date: string;
+  };
 }

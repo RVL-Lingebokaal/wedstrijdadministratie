@@ -6,7 +6,12 @@ export type ItemsToSave = AgeItem[] | BoatItem[] | ClassItem[];
 export type SettingsType = keyof Settings;
 
 export class SettingsService {
-  private settings: Settings = { boats: [], ages: [], classes: [] };
+  private settings: Settings = {
+    boats: [],
+    ages: [],
+    classes: [],
+    general: { date: "" },
+  };
 
   async getSettings() {
     if (
@@ -18,10 +23,25 @@ export class SettingsService {
       const data = await getDoc(docRef);
 
       if (data.exists()) {
-        this.settings = data.data() as Settings;
+        const items = data.data() as Settings;
+        this.settings.boats = items.boats;
+        this.settings.classes = items.classes;
+        this.settings.ages = items.ages;
       }
     }
     return this.settings;
+  }
+
+  async getGeneralSettings() {
+    if (!this.settings.general.date) {
+      const docRef = doc(firestore, "settings", "general");
+      const data = await getDoc(docRef);
+
+      if (data.exists()) {
+        this.settings.general = data.data() as { date: string };
+      }
+    }
+    return this.settings.general;
   }
 
   async saveSettings(type: SettingsType, items: ItemsToSave) {
@@ -38,6 +58,12 @@ export class SettingsService {
     this.settings.classes.splice(index, 1);
     const newItems = this.settings.classes;
     await this.saveSettings("classes", newItems);
+  }
+
+  async saveGeneralSettings(settings: { date: string }) {
+    this.settings.general = settings;
+    const docRef = doc(firestore, "settings", "general");
+    return await setDoc(docRef, settings, { merge: true });
   }
 }
 

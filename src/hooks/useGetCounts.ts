@@ -12,6 +12,7 @@ export function useGetCounts() {
         teamsSize: number;
         participantsSize: number;
         clubsSize: number;
+        date: string;
       };
     },
     {

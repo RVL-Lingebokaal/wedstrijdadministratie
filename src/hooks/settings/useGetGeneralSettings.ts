@@ -1,17 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { Settings } from "../../models/settings";
 
-export function useGetSettings() {
+export function useGetGeneralSettings() {
   return useQuery(
-    ["retrieve-settings"],
+    ["retrieve-general-settings"],
     async () => {
-      const response = await fetch("/api/settings?type=items", {
+      const response = await fetch("/api/settings?type=general", {
         method: "GET",
       });
 
       if (!response.ok) throw new Error("Could not get settings");
 
-      return (await response.json()) as Settings;
+      return (await response.json()) as { date: string };
     },
     { keepPreviousData: false }
   );
