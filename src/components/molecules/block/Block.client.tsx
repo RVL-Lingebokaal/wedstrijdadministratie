@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { LoadingSpinner } from "../../atoms/loading-spinner/loadingSpinner";
 
 interface BlockProps {
   title?: string;

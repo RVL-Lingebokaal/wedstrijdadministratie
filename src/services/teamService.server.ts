@@ -4,7 +4,10 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
+  query,
   setDoc,
+  where,
   writeBatch,
 } from "firebase/firestore";
 import firestore from "../firebase/firebase";
@@ -99,6 +102,7 @@ export class TeamService {
             ? (participants.get(docData.helm) as Participant)
             : null,
           place: parseInt(docData.place),
+          result: docData.result,
         };
         return acc.set(team.id, team);
       }, new Map());
@@ -109,6 +113,25 @@ export class TeamService {
   async getTeam(teamId: string) {
     const teams = await this.getTeams();
     return teams.get(teamId);
+  }
+
+  async getResults() {
+    const dbInstance = collection(firestore, "ploeg");
+    const q = query(dbInstance, where("result", "!=", null), orderBy("result"));
+    const data = await getDocs(q);
+
+    if (data.empty) {
+      return [];
+    }
+
+    return data.docs.map((doc) => {
+      const docData = doc.data();
+      return {
+        id: docData.id,
+        name: docData.name,
+        result: docData.result,
+      };
+    });
   }
 }
 

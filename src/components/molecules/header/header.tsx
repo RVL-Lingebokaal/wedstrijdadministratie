@@ -8,6 +8,7 @@ const navLinks = [
   { title: "Upload", target: "/upload" },
   { title: "Data", target: "/data" },
   { title: "Administratie", target: "/administration" },
+  { title: "Uitslagen", target: "/results" },
 ];
 
 export function Header() {
@@ -28,7 +29,7 @@ export function Header() {
         <div className="flex justify-end gap-6">
           {navLinks.map(({ title, target }) => (
             <Link
-              className={`text-white text-2xl my-auto ${
+              className={`text-white text-1xl my-auto ${
                 pathname === target
                   ? "underline decoration-secondary decoration-[3px] underline-offset-8"
                   : ""

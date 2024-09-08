@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { colsOptions, getRoundedClass } from "../../utils/gridUtils";
 import { twMerge } from "tailwind-merge";
 
-interface Item {
+export interface Item {
   node: string | ReactNode;
   isInput?: boolean;
 }

@@ -18,6 +18,7 @@ export default async function handler(
 
   const args = JSON.parse(req.body) as UpdateBlockArgs;
   const team = await teamService.getTeam(args.teamId);
+
   if (!team) {
     return res.status(500).json({ error: "Er bestaat geen team met dit ID" });
   }

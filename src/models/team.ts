@@ -9,9 +9,20 @@ export enum Gender {
   MIX = "mix",
 }
 
-export interface Team {
+export interface TeamTimes {
+  startTimeA?: string;
+  startTimeB?: string;
+  finishTimeA?: string;
+  finishTimeB?: string;
+}
+
+export interface TeamResult {
   name: string;
   id: string;
+  result?: TeamTimes;
+}
+
+export interface Team extends TeamResult {
   club: string;
   participants: Participant[];
   boat?: Boat | null;
@@ -30,9 +41,10 @@ export interface Team {
 export function getDatabaseTeam(team: Team) {
   return {
     ...team,
-    helm: team.helm?.id,
-    boat: team.boat?.id,
+    helm: team.helm?.id ?? null,
+    boat: team.boat?.id ?? null,
     participants: team.participants.map(({ id }) => id),
+    result: team.result ?? null,
   };
 }
 

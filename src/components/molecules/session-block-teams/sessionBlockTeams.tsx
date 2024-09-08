@@ -66,7 +66,7 @@ export function SessionBlockTeams({
         selectedBlock.set(boatType, selectedTeams);
         blockTeams.set(destBlock, selectedBlock);
 
-        await updatePlace({ teamsWithPlace });
+        updatePlace({ teamsWithPlace });
       }
 
       refetch();
