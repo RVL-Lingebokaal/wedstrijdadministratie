@@ -48,11 +48,15 @@ export function AgesForm({ initialValues }: AgeFormProps) {
         { name: "age", getValue: (field) => field.age },
         {
           name: "correctionMale",
-          input: (field) => <Input classNames="m-0" {...field} />,
+          input: (field) => (
+            <Input classNames="m-0" {...field} value={field.value as string} />
+          ),
         },
         {
           name: "correctionFemale",
-          input: (field) => <Input classNames="m-0" {...field} />,
+          input: (field) => (
+            <Input classNames="m-0" {...field} value={field.value as string} />
+          ),
         },
         {
           name: "strategy",

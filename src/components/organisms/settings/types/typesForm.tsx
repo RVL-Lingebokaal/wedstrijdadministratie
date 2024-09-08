@@ -32,11 +32,15 @@ export function TypesForm({ initialValues }: TypesFormProps) {
         { name: "type", getValue: (field) => field.type },
         {
           name: "correction",
-          input: (field) => <Input classNames="m-0" {...field} />,
+          input: (field) => (
+            <Input classNames="m-0" {...field} value={field.value as string} />
+          ),
         },
         {
           name: "price",
-          input: (field) => <Input classNames="m-0" {...field} />,
+          input: (field) => (
+            <Input classNames="m-0" {...field} value={field.value as string} />
+          ),
         },
       ]}
     />

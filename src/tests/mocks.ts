@@ -87,6 +87,7 @@ export const mockSettings: Settings = {
   classes: [
     { name: "name", gender: Gender.M, boatType: BoatType.skiff, ages: [] },
   ],
+  general: { date: "1900-01-01" },
 };
 
 export const mockTeam: Team = {
