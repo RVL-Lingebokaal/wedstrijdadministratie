@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2021", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components": ["libs/components/src/index.ts"],
+      "@components/server": ["libs/components/src/server.ts"],
+      "@hooks": ["libs/hooks/src/index.ts"],
+      "@models": ["libs/models/src/index.ts"],
+      "@schemas": ["libs/schemas/src/index.ts"],
+      "@services": ["libs/services/src/index.ts"],
+      "@utils": ["libs/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

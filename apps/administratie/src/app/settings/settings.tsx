@@ -1,0 +1,75 @@
+'use client';
+import { useState } from 'react';
+import { AgesForm, SettingsForm, TypesForm } from '@components';
+import { LoadingSpinner, Tabs } from '@components/server';
+import {
+  AgeItem,
+  AgeStrategy,
+  AgeType,
+  BoatItem,
+  BoatType,
+  SettingsTabs,
+} from '@models';
+import { useGetSettings } from '@hooks';
+
+export default function SettingsPage() {
+  const { data, isLoading } = useGetSettings();
+  const [tab, setTab] = useState<SettingsTabs[0]>(SettingsTabs.type);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!data) {
+    return <h2>Er is geen data gevonden. Probeer het later nog een keer.</h2>;
+  }
+
+  return (
+    <div className="flex">
+      <Tabs
+        tabs={Object.values(SettingsTabs)}
+        currentTab={tab}
+        setTab={setTab}
+      />
+      {tab === SettingsTabs.type && (
+        <TypesForm
+          initialValues={{
+            items:
+              data && data.boats && data.boats.length > 0
+                ? data.boats
+                : getDefaultvaluesBoats(),
+          }}
+        />
+      )}
+      {tab === SettingsTabs.leeftijd && (
+        <AgesForm
+          initialValues={{
+            items:
+              data && data.ages && data.ages.length > 0
+                ? data.ages
+                : getDefaultvaluesAges(),
+          }}
+        />
+      )}
+      {tab === SettingsTabs.instellingen && <SettingsForm />}
+    </div>
+  );
+}
+
+const getDefaultvaluesBoats = (): BoatItem[] => {
+  return Object.values(BoatType).map((key) => ({
+    type: key,
+    correction: 1,
+    price: 10,
+  }));
+};
+
+const getDefaultvaluesAges = (): AgeItem[] => {
+  return Object.values(AgeType).map((key) => ({
+    type: key,
+    age: key,
+    correctionFemale: 1,
+    correctionMale: 1,
+    strategy: AgeStrategy.average,
+  }));
+};
