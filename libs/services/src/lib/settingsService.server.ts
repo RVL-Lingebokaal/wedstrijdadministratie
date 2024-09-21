@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import firestore from './firebase/firebase';
-import { AgeItem, BoatItem, ClassItem, Settings } from '@models';
+import { AgeItem, BoatItem, ClassItem, SettingData, Settings } from '@models';
 
 export type ItemsToSave = AgeItem[] | BoatItem[] | ClassItem[];
 export type SettingsType = keyof Settings;
@@ -38,7 +38,10 @@ export class SettingsService {
       const data = await getDoc(docRef);
 
       if (data.exists()) {
-        this.settings.general = data.data() as { date: string };
+        this.settings.general = data.data() as {
+          date: string;
+          missingNumbers: number[];
+        };
       }
     }
     return this.settings.general;
@@ -60,7 +63,7 @@ export class SettingsService {
     await this.saveSettings('classes', newItems);
   }
 
-  async saveGeneralSettings(settings: { date: string }) {
+  async saveGeneralSettings(settings: SettingData) {
     this.settings.general = settings;
     const docRef = doc(firestore, 'settings', 'general');
     return await setDoc(docRef, settings, { merge: true });

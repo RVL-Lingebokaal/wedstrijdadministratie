@@ -1,37 +1,47 @@
 'use client';
-import { useForm } from 'react-hook-form';
-import { Button, DatePicker } from '@components/server';
+import { useFieldArray, useForm } from 'react-hook-form';
+import {
+  Button,
+  DatePicker,
+  IconButton,
+  InputController,
+} from '@components/server';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { settingFormSchema } from '@schemas';
-import { useGetGeneralSettings, useSaveGeneralSettings } from '@hooks';
-import { useEffect } from 'react';
+import { useSaveGeneralSettings } from '@hooks';
+import { SettingData } from '@models';
+import { FaMinus, FaPlus } from 'react-icons/fa';
 
-interface SettingForm {
+interface SettingsForm {
   date: string;
+  missingNumbers: { value: number }[];
+  currentNumber?: number | '';
 }
 
-export function SettingsForm() {
-  const { data, isLoading: dataIsLoading } = useGetGeneralSettings();
+export function SettingsForm({ initialData }: { initialData: SettingData }) {
   const { mutate, isLoading } = useSaveGeneralSettings();
   const {
     handleSubmit,
     control,
     formState: { isValid },
+    getValues,
     setValue,
-  } = useForm<SettingForm>({
-    defaultValues: { date: data?.date || '' },
+  } = useForm<SettingsForm>({
+    defaultValues: {
+      ...initialData,
+      missingNumbers: initialData.missingNumbers?.map((value) => ({ value })),
+      currentNumber: '',
+    },
     resolver: yupResolver(settingFormSchema),
   });
-
-  const onSubmit = (values: SettingForm) => {
-    void mutate(values);
+  const onSubmit = (values: SettingsForm) => {
+    const missingNumbers = values.missingNumbers.map((value) => value.value);
+    void mutate({ ...values, missingNumbers });
   };
-
-  useEffect(() => {
-    if (!dataIsLoading) {
-      setValue('date', data?.date || '');
-    }
-  }, [data?.date, dataIsLoading, setValue]);
+  const { append, fields, remove } = useFieldArray({
+    name: 'missingNumbers',
+    control,
+  });
 
   return (
     <div className="w-full flex">
@@ -43,6 +53,39 @@ export function SettingsForm() {
             </div>
             <div>
               <DatePicker path="date" control={control} />
+            </div>
+            <div>
+              <p className="font-bold text-xl">Missende startnummers</p>
+            </div>
+            <div>
+              {fields.map((field, index) => (
+                <div className="flex gap-4">
+                  <InputController
+                    key={field.id}
+                    path={`missingNumbers.${index}.value`}
+                    control={control}
+                  />
+                  <IconButton
+                    icon={<FaMinus color="#0E294B" />}
+                    type="button"
+                    onClick={() => remove(index)}
+                  />
+                </div>
+              ))}
+              <div className="flex gap-4">
+                <InputController path="currentNumber" control={control} />
+                <IconButton
+                  type="button"
+                  icon={<FaPlus color="#0E294B" />}
+                  onClick={() => {
+                    const currentNumber = getValues('currentNumber');
+                    if (currentNumber) {
+                      append({ value: currentNumber });
+                      setValue('currentNumber', '');
+                    }
+                  }}
+                />
+              </div>
             </div>
             <div>
               <Button

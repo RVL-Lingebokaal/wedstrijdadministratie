@@ -10,17 +10,19 @@ import {
   BoatType,
   SettingsTabs,
 } from '@models';
-import { useGetSettings } from '@hooks';
+import { useGetGeneralSettings, useGetSettings } from '@hooks';
 
 export default function SettingsPage() {
   const { data, isLoading } = useGetSettings();
+  const { data: generalData, isLoading: generalIsLoading } =
+    useGetGeneralSettings();
   const [tab, setTab] = useState<SettingsTabs[0]>(SettingsTabs.type);
 
-  if (isLoading) {
+  if (isLoading || generalIsLoading) {
     return <LoadingSpinner />;
   }
 
-  if (!data) {
+  if (!data || !generalData) {
     return <h2>Er is geen data gevonden. Probeer het later nog een keer.</h2>;
   }
 
@@ -51,7 +53,14 @@ export default function SettingsPage() {
           }}
         />
       )}
-      {tab === SettingsTabs.instellingen && <SettingsForm />}
+      {tab === SettingsTabs.instellingen && (
+        <SettingsForm
+          initialData={{
+            date: generalData.date,
+            missingNumbers: generalData.missingNumbers ?? [],
+          }}
+        />
+      )}
     </div>
   );
 }

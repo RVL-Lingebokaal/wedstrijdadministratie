@@ -1,12 +1,13 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { SettingData } from '@models';
 
 export function useSaveGeneralSettings() {
   const queryClient = useQueryClient();
 
   return useMutation(
     ['save-general-settings'],
-    async (args: { date: string }) => {
+    async (args: SettingData) => {
       const response = await fetch('/api/settings', {
         method: 'POST',
         body: JSON.stringify({ ...args, type: 'general' }),

@@ -1,12 +1,12 @@
 'use client';
 import { AgeItem, AgeType, BoatType, ClassItem, Gender, Team } from '@models';
-import { getTeamsByClass } from '@utils';
 import { useCallback, useMemo, useState } from 'react';
 import { ClassRow } from '@components/server';
 import { GroupingButton } from '../grouping-button/groupingButton';
 import { useSaveSettings } from '@hooks';
 import { RemoveGroupingButton } from '../remove-grouping-button/removeGroupingButton';
 import toast from 'react-hot-toast';
+import { useGetTeamsByClass } from '../../../../../hooks/src/lib/administration/useGetTeamsByClass';
 
 interface ClassSectionProps {
   teams: Team[];
@@ -34,7 +34,7 @@ export function ClassSection({
   const [selectedIndexes, setSelectedIndexes] = useState<Set<number>>(
     new Set()
   );
-  const teamsByClass = getTeamsByClass(teams, ages);
+  const teamsByClass = useGetTeamsByClass(teams, ages);
 
   const keys = Array.from(teamsByClass.keys());
   const sortedKeys = keys.sort((a, b) => a.localeCompare(b));

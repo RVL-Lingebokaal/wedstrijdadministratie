@@ -124,10 +124,12 @@ export class TeamService {
 
     return data.docs.map((doc) => {
       const docData = doc.data();
+      console.log(docData);
       return {
         id: docData['id'],
         name: docData['name'],
         result: docData['result'],
+        doc: docData,
       };
     });
   }

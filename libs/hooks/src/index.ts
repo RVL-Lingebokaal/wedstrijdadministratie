@@ -12,3 +12,6 @@ export * from './lib/useGetResults';
 export * from './lib/useGetCounts';
 export * from './lib/useGetSessionTotals';
 export * from './lib/useUploadFile';
+export * from './lib/administration/useGetClassMap';
+export * from './lib/administration/useGetGroups';
+export * from './lib/administration/useGetFinishedRow';
