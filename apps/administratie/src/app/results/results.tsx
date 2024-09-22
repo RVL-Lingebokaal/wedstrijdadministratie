@@ -3,8 +3,9 @@
 import { useGetResults, useGetSettings, useGetTeams } from '@hooks';
 import { GridHeader, GridRow, LoadingSpinner } from '@components/server';
 import { allAgesAreProcessed, getConvertedResults } from '@utils';
+import { Disclosure } from '@headlessui/react';
 
-const headerItems = ['Team', 'Start', 'Finish', 'Resultaat', 'Gecorrigeerd'];
+const headerItems = ['Start', 'Finish', 'Resultaat', 'Gecorrigeerd'];
 
 export default function ResultsPage() {
   const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
@@ -30,14 +31,29 @@ export default function ResultsPage() {
     );
   }
 
-  const convertedData = getConvertedResults(data);
+  const { rowsMap, headers } = getConvertedResults(
+    settingsData?.classes ?? [],
+    settingsData?.ages ?? [],
+    data
+  );
 
   return (
     <div className="flex w-full">
       <div className="w-full">
-        <GridHeader items={headerItems} needsRounding />
-        {convertedData?.map((item, index) => (
-          <GridRow items={item} key={index} />
+        {headers.map((header, index) => (
+          <Disclosure key={header} defaultOpen>
+            <Disclosure.Button className="w-full">
+              <GridHeader
+                items={[header, ...headerItems]}
+                needsRounding={index === 0}
+              />
+            </Disclosure.Button>
+            <Disclosure.Panel>
+              {rowsMap.get(header)?.map((item, index) => (
+                <GridRow items={item} key={index} />
+              ))}
+            </Disclosure.Panel>
+          </Disclosure>
         ))}
       </div>
     </div>

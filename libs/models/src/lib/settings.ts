@@ -25,16 +25,16 @@ export enum AgeStrategy {
 }
 
 export enum BoatType {
+  boardEightWith = '8+',
+  scullEightWith = '8*',
   scullFourWith = '4*',
-  scullFourWithout = '4x-',
-  scullFourWithC = 'C4*',
-  boardFourWithC = 'C4+',
   boardFourWithout = '4-',
   boardFourWith = '4+',
-  scullEightWith = '8*',
-  boardEightWith = '8+',
+  scullFourWithout = '4x-',
   boardTwoWithout = '2-',
   scullTwoWithout = '2x',
+  scullFourWithC = 'C4*',
+  boardFourWithC = 'C4+',
   skiff = '1x',
 }
 
@@ -98,4 +98,20 @@ export interface Settings {
 export interface SettingData {
   date: string;
   missingNumbers: number[];
+}
+
+interface TranslateClassProps {
+  gender: Gender;
+  boatType: BoatType;
+  className: string;
+}
+
+export function translateClass({
+  gender,
+  boatType,
+  className,
+}: TranslateClassProps) {
+  const translatedGender =
+    gender === Gender.F ? 'D' : gender === Gender.M ? 'H' : 'Mix';
+  return `${translatedGender}${boatType}${className}`;
 }

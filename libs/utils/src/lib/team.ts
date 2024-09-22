@@ -1,6 +1,15 @@
-import { TeamResult } from '@models';
+import {
+  AgeItem,
+  AgeType,
+  BoatType,
+  ClassItem,
+  Gender,
+  getAgeClassTeam,
+  translateClass,
+} from '@models';
 import { DateTime } from 'luxon';
 import { ReactNode } from 'react';
+import { GetTeamResult } from '@hooks';
 
 interface Item {
   node: string | ReactNode;
@@ -34,12 +43,58 @@ function getDifference(startTime: DateTime, finishTime: DateTime) {
   return diff.toISOTime();
 }
 
-export function getConvertedResults(results?: TeamResult[]) {
+export function getConvertedResults(
+  classItems: ClassItem[],
+  ages: AgeItem[],
+  results?: GetTeamResult[]
+) {
   if (!results) {
-    return [];
+    return { rowsMap: new Map<string, Item[][]>(), headers: [] };
   }
+  const classMap = classItems.reduce((map, c) => {
+    c.ages.forEach((age) => {
+      map.set(
+        JSON.stringify({ age, gender: c.gender, boatType: c.boatType }),
+        c.name
+      );
+    });
+    return map;
+  }, new Map<string, string>());
+  const doneSet = new Map<string, string>();
+  const ageTypes = Object.values(AgeType);
+  const genders = Object.values(Gender);
+  const headers: string[] = [];
 
-  return results.reduce<Item[][]>((acc, { name, result }) => {
+  Object.values(BoatType).forEach((boatType) => {
+    ageTypes.forEach((age) => {
+      genders.forEach((gender) => {
+        const key = JSON.stringify({ age, gender, boatType });
+        const className = classMap.get(key);
+        if (className && !doneSet.has(className)) {
+          const translatedClass = translateClass({
+            gender,
+            boatType,
+            className,
+          });
+          doneSet.set(className, translatedClass);
+          headers.push(translatedClass);
+        }
+      });
+    });
+  });
+
+  const rowsMap = new Map<string, Item[][]>();
+
+  results.forEach(({ name, result, gender, boatType, participants }) => {
+    const key = JSON.stringify({
+      age: getAgeClassTeam({ ages, participants }),
+      gender,
+      boatType,
+    });
+    const className = classMap.get(key) ?? '';
+    const translatedClassName = doneSet.get(className) ?? '';
+    const rows = rowsMap.get(translatedClassName) ?? [];
+
     const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
     const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
     const start = convertTimeToObject(startTimeMillis);
@@ -58,7 +113,9 @@ export function getConvertedResults(results?: TeamResult[]) {
       { node: 'CorrectedTimeResult' },
     ];
 
-    acc.push(row);
-    return acc;
-  }, []);
+    rows.push(row);
+    rowsMap.set(translatedClassName, rows);
+  });
+
+  return { rowsMap, headers };
 }

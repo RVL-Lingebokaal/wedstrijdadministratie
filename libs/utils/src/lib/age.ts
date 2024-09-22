@@ -39,5 +39,8 @@ export function allAgesAreProcessed(
     });
   });
 
-  return { processed: teamAges.size === 0, missing: teamAges.size };
+  return {
+    processed: teamAges.size === 0,
+    missing: teamAges.size,
+  };
 }

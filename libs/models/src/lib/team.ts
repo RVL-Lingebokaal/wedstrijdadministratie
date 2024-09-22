@@ -5,8 +5,8 @@ import { calculateAgeType } from '@utils';
 
 export enum Gender {
   M = 'male',
-  F = 'female',
   MIX = 'mix',
+  F = 'female',
 }
 
 export interface TeamTimes {
