@@ -9,7 +9,7 @@ export function SessionGridRow({ team, ageClasses }: SessionGridRowProps) {
   return (
     <div className="grid grid-cols-12 m-1">
       <div className="bg-white py-3 px-4">
-        {getAgeClassTeam({ ages: ageClasses, team })}
+        {getAgeClassTeam({ ages: ageClasses, participants: team.participants })}
       </div>
       <div className="bg-white py-3 px-4 col-span-2">{team.club}</div>
       <div className="bg-white py-3 px-4 col-span-3">

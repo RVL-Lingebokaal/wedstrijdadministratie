@@ -122,14 +122,18 @@ export class TeamService {
       return [];
     }
 
+    const teams = await this.getTeams();
+
     return data.docs.map((doc) => {
       const docData = doc.data();
-      console.log(docData);
+      const team = teams.get(docData['id']);
       return {
         id: docData['id'],
         name: docData['name'],
         result: docData['result'],
-        doc: docData,
+        participants: team?.participants ?? [],
+        boatType: team?.boatType,
+        gender: team?.gender,
       };
     });
   }

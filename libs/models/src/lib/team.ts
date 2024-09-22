@@ -50,17 +50,17 @@ export function getDatabaseTeam(team: Team) {
 
 interface GetAgeClassTeamsProps {
   ages: AgeItem[];
-  team: Team;
+  participants: Participant[];
 }
 
-export function getAgeClassTeam({ ages, team }: GetAgeClassTeamsProps) {
-  if (team.participants.length === 1) {
-    return getAgeType({ participant: team.participants[0], ages });
+export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
+  if (participants.length === 1) {
+    return getAgeType({ participant: participants[0], ages });
   }
-  const total = team.participants.reduce(
+  const total = participants.reduce(
     (acc, participant) => acc + getAgeParticipant(participant),
     0
   );
-  const age = total / team.participants.length;
+  const age = total / participants.length;
   return calculateAgeType(ages, age);
 }

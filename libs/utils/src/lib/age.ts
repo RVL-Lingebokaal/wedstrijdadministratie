@@ -1,4 +1,5 @@
-import { AgeItem, AgeType } from '@models';
+import { AgeItem, AgeType, ClassItem, getAgeClassTeam } from '@models';
+import { GetTeamResult } from '@hooks';
 
 export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   const type = ages.find(({ age }) => {
@@ -9,4 +10,34 @@ export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   })?.type;
 
   return type ?? AgeType.open;
+}
+
+export function allAgesAreProcessed(
+  ages: AgeItem[],
+  teams: GetTeamResult[],
+  classes: ClassItem[]
+) {
+  const teamAges = teams.reduce(
+    (set, team) =>
+      set.add(
+        JSON.stringify({
+          age: getAgeClassTeam({ ages, participants: team.participants }),
+          gender: team.gender,
+          boatType: team.boatType,
+        })
+      ),
+    new Set<string>()
+  );
+  classes.forEach((c) => {
+    c.ages.forEach((age) => {
+      const key = JSON.stringify({
+        age,
+        gender: c.gender,
+        boatType: c.boatType,
+      });
+      teamAges.delete(key);
+    });
+  });
+
+  return { processed: teamAges.size === 0, missing: teamAges.size };
 }

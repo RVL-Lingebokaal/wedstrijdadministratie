@@ -1,5 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
+import { Team } from '@models';
 
 export function useGetTeams() {
   return useQuery(
@@ -10,7 +11,7 @@ export function useGetTeams() {
       if (!response.ok) throw new Error('Could not get teams');
 
       const result = (await response.json()) as any[];
-      return result.map((team) => {
+      return result.map<Team>((team) => {
         return {
           ...team,
           preferredBlock: parseInt(team.preferredBlock),

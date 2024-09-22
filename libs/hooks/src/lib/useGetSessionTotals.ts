@@ -46,8 +46,11 @@ export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
       teams.push(team);
       //First sort on age class
       teams.sort((ta, tb) =>
-        getAgeClassTeam({ ages: ageItems, team: ta }).localeCompare(
-          getAgeClassTeam({ ages: ageItems, team: tb })
+        getAgeClassTeam({
+          ages: ageItems,
+          participants: ta.participants,
+        }).localeCompare(
+          getAgeClassTeam({ ages: ageItems, participants: tb.participants })
         )
       );
       //Secondly, sort on place

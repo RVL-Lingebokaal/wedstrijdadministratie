@@ -11,6 +11,7 @@ import {
 } from '@hooks';
 import { ClassSection } from '../../../molecules/class-section/classSection';
 import { ClassGridHeader } from '../../../atoms/grid-header/classGridHeader';
+import { allAgesAreProcessed } from '@utils';
 
 export function ClassPage() {
   const [gender, setGender] = useState(Gender.M);
@@ -21,6 +22,11 @@ export function ClassPage() {
   const keys = Array.from(groups.keys()).sort();
 
   const classMap = useGetClassMap(settingsData);
+  const { missing } = allAgesAreProcessed(
+    settingsData?.ages ?? [],
+    teamData ?? [],
+    settingsData?.classes ?? []
+  );
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -28,11 +34,14 @@ export function ClassPage() {
 
   return (
     <>
-      <SelectGender
-        selectedValue={gender}
-        onChange={(val: Gender) => setGender(val)}
-        classNames="bg-white w-40 ml-1 border-primary py-2 px-4"
-      />
+      <div className="flex justify-between items-center w-3/4">
+        <SelectGender
+          selectedValue={gender}
+          onChange={(val: Gender) => setGender(val)}
+          classNames="bg-white w-40 ml-1 border-primary py-2 px-4"
+        />
+        {missing > 0 && <h2>Nog niet alle teams zitten in een klasse.</h2>}
+      </div>
       <div className="w-full">
         {keys.map((val, index) => {
           const classItems =
