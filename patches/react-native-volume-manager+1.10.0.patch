@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-volume-manager/android/src/main/java/com/reactnativevolumemanager/VolumeManagerModule.java b/node_modules/react-native-volume-manager/android/src/main/java/com/reactnativevolumemanager/VolumeManagerModule.java
+index b081cfa..57c3a19 100644
+--- a/node_modules/react-native-volume-manager/android/src/main/java/com/reactnativevolumemanager/VolumeManagerModule.java
++++ b/node_modules/react-native-volume-manager/android/src/main/java/com/reactnativevolumemanager/VolumeManagerModule.java
+@@ -86,6 +86,8 @@ public class VolumeManagerModule
+ 
+   private void setupKeyListener() {
+     runOnUiThread(() -> {
++      if (mContext.getCurrentActivity() == null) return;
++
+       View rootView =
+         ((ViewGroup) mContext.getCurrentActivity().getWindow().getDecorView());
+       rootView.setFocusableInTouchMode(true);
