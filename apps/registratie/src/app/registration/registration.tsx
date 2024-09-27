@@ -1,28 +1,28 @@
 import { NavigationProps } from '../interfaces';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Page } from '../../components/atoms/page/page';
-// import { VolumeManager } from 'react-native-volume-manager';
 import { MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
 import { View } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
+import { VolumeManager } from 'react-native-volume-manager';
 
 export function Registration({ navigation }: NavigationProps<'registration'>) {
   const [isFinish, setIsFinish] = React.useState(false);
   const [isA, setIsA] = React.useState(false);
-  const [time, setTime] = React.useState('');
+  const [time, setTime] = React.useState(0);
 
-  // useEffect(() => {
-  //   void VolumeManager.showNativeVolumeUI({ enabled: false });
-  //   const volumeListener = VolumeManager.addVolumeListener(() => {
-  //     console.log('Volume button pressed');
-  //     setTime(new Date().getTime());
-  //   });
-  //
-  //   return function () {
-  //     volumeListener.remove();
-  //   };
-  // }, []);
+  useEffect(() => {
+    void VolumeManager.showNativeVolumeUI({ enabled: false });
+    const volumeListener = VolumeManager.addVolumeListener(() => {
+      console.log('Volume button pressed');
+      setTime(new Date().getTime());
+    });
+
+    return function () {
+      volumeListener.remove();
+    };
+  }, []);
 
   return (
     <Page title="Tijdsregistratie">
@@ -51,7 +51,7 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
           />
         </MultipleInputsContainer>
         <MainText text="Je bent nu helemaal klaar om tijden te registreren. Om een tijd te registreren, druk op de volumeknop van je telefoon. Het maakt hierbij niet uit of je het volume harder of zachter zet. In beide gevallen wordt er een tijd geregistreerd." />
-        <MainText text={time} />
+        <MainText text={time.toString()} />
       </View>
     </Page>
   );
