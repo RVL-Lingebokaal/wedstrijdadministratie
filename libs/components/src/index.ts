@@ -14,6 +14,7 @@ export * from './lib/molecules/header/header';
 //Organisms
 export * from './lib/organisms/administration/class/classPage';
 export * from './lib/organisms/administration/session/sessionPage';
+export * from './lib/organisms/administration/startNumbers/startNumbersPage';
 export * from './lib/organisms/settings/settings/settingsForm';
 export * from './lib/organisms/settings/age/ageForm';
 export * from './lib/organisms/settings/types/typesForm';
