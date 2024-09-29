@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1041726875496",
+    "project_id": "rvllingebokaal",
+    "storage_bucket": "rvllingebokaal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041726875496:android:f936a48dec01132f3fd8dd",
+        "android_client_info": {
+          "package_name": "com.vermaas.developers.registratie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041726875496-obspsktrq0j2elbaf6ovnhomcosib36f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkIKaNbMConCCoFi1_sItPXvO1YR6XTyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041726875496-obspsktrq0j2elbaf6ovnhomcosib36f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
