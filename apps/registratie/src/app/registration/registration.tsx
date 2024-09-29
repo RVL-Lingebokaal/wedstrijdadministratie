@@ -22,7 +22,7 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
     return function () {
       volumeListener.remove();
     };
-  }, []);
+  }, [time]);
 
   return (
     <Page title="Tijdsregistratie">
