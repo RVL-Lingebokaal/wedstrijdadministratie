@@ -91,7 +91,7 @@ export interface Settings {
   classes: ClassItem[];
   general: {
     date: string;
-    missingNumbers?: number[];
+    missingNumbers: number[];
   };
 }
 

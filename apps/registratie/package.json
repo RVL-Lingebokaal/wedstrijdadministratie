@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@expo/metro-config": "~0.18.1",
+    "@expo/metro-runtime": "~3.2.1",
     "@react-native-firebase/app": "^21.0.0",
     "@react-native-firebase/firestore": "^21.0.0",
     "@react-navigation/native": "6.1.18",

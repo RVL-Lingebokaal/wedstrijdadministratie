@@ -16,20 +16,22 @@ import { useUpdateBlockTeam, useUpdatePlaceTeam } from '@hooks';
 
 interface SessionBlockTeamsProps {
   teams?: Team[];
-  boatType: BoatType;
   ageClasses: AgeItem[];
   refetch: () => void;
   totalBlocks: Map<number, number>;
-  blockTeams: Map<number, Map<BoatType, Team[]>>;
+  blockTeams: Map<number, Map<string, Team[]>>;
+  blockKey: string;
+  boatType: BoatType;
 }
 
 export function SessionBlockTeams({
   teams,
   ageClasses,
-  boatType,
   refetch,
   blockTeams,
   totalBlocks,
+  blockKey,
+  boatType,
 }: SessionBlockTeamsProps) {
   const [showError, setShowError] = useState(false);
   const { mutate: updateBlock, error } = useUpdateBlockTeam({
@@ -52,19 +54,19 @@ export function SessionBlockTeams({
         const team = teams?.find((t) => t.id === draggableId);
         if (!team) return;
 
-        await updateBlock({ teamId: team.id, destBlock });
+        updateBlock({ teamId: team.id, destBlock });
       } else {
         const selectedBlock = blockTeams.get(destBlock);
 
         if (!selectedBlock) return;
 
-        const selectedTeams = selectedBlock.get(boatType);
+        const selectedTeams = selectedBlock.get(blockKey);
         if (!selectedTeams) return;
 
         const [removed] = selectedTeams.splice(source.index, 1);
         selectedTeams.splice(destination.index, 0, removed);
         const teamsWithPlace = selectedTeams.map((t) => t.id);
-        selectedBlock.set(boatType, selectedTeams);
+        selectedBlock.set(blockKey, selectedTeams);
         blockTeams.set(destBlock, selectedBlock);
 
         updatePlace({ teamsWithPlace });
@@ -72,7 +74,7 @@ export function SessionBlockTeams({
 
       refetch();
     },
-    [refetch, teams, updateBlock, blockTeams, boatType, updatePlace]
+    [refetch, teams, updateBlock, blockTeams, blockKey, updatePlace]
   );
 
   return (
@@ -92,13 +94,13 @@ export function SessionBlockTeams({
                   <SessionGridHeader
                     block={block}
                     totalTeams={totalBlocks.get(block) ?? 0}
-                    teams={blockTeams.get(block)?.get(boatType)?.length ?? 0}
+                    teams={blockTeams.get(block)?.get(blockKey)?.length ?? 0}
                     boatType={boatType}
                     isFirst={block === 1}
                   />
                   {blockTeams
                     .get(block)
-                    ?.get(boatType)
+                    ?.get(blockKey)
                     ?.map((team, index) => (
                       <Draggable
                         draggableId={team.id}

@@ -24,7 +24,6 @@ export function useIsGetFinishedRow({
       return set;
     }, new Set<string>());
 
-    console.log(keysAgesTeams);
     for (let age of keysAgesTeams) {
       if (!setClassItems.has(age)) return false;
     }

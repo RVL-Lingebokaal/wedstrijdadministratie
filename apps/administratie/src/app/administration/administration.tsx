@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Tabs } from '@components/server';
-import { ClassPage, SessionPage } from '@components';
+import { ClassPage, SessionPage, StartNumbersPage } from '@components';
 
 import { AdministrationTabs } from '@models';
 
@@ -18,9 +18,10 @@ export function AdministrationPage() {
         setTab={setTab}
       />
 
-      <div>
+      <div className="w-full">
         {tab === AdministrationTabs.class && <ClassPage />}
         {tab === AdministrationTabs.session && <SessionPage />}
+        {tab === AdministrationTabs.startNumbers && <StartNumbersPage />}
       </div>
     </div>
   );

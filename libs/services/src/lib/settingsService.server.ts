@@ -10,7 +10,7 @@ export class SettingsService {
     boats: [],
     ages: [],
     classes: [],
-    general: { date: '' },
+    general: { date: '', missingNumbers: [] },
   };
 
   async getSettings() {

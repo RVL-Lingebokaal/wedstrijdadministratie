@@ -8,8 +8,9 @@ import {
   translateClass,
 } from '@models';
 import { DateTime } from 'luxon';
-import { ReactNode } from 'react';
 import { GetTeamResult } from '@hooks';
+import { getClassMap } from './age';
+import { ReactNode } from 'react';
 
 interface Item {
   node: string | ReactNode;
@@ -51,15 +52,7 @@ export function getConvertedResults(
   if (!results) {
     return { rowsMap: new Map<string, Item[][]>(), headers: [] };
   }
-  const classMap = classItems.reduce((map, c) => {
-    c.ages.forEach((age) => {
-      map.set(
-        JSON.stringify({ age, gender: c.gender, boatType: c.boatType }),
-        c.name
-      );
-    });
-    return map;
-  }, new Map<string, string>());
+  const classMap = getClassMap(classItems);
   const doneSet = new Map<string, string>();
   const ageTypes = Object.values(AgeType);
   const genders = Object.values(Gender);
@@ -68,7 +61,7 @@ export function getConvertedResults(
   Object.values(BoatType).forEach((boatType) => {
     ageTypes.forEach((age) => {
       genders.forEach((gender) => {
-        const key = JSON.stringify({ age, gender, boatType });
+        const key = `${age}${gender}${boatType}`;
         const className = classMap.get(key);
         if (className && !doneSet.has(className)) {
           const translatedClass = translateClass({
@@ -86,11 +79,10 @@ export function getConvertedResults(
   const rowsMap = new Map<string, Item[][]>();
 
   results.forEach(({ name, result, gender, boatType, participants }) => {
-    const key = JSON.stringify({
-      age: getAgeClassTeam({ ages, participants }),
-      gender,
-      boatType,
-    });
+    const key = `${getAgeClassTeam({
+      ages,
+      participants,
+    })}${gender}${boatType}`;
     const className = classMap.get(key) ?? '';
     const translatedClassName = doneSet.get(className) ?? '';
     const rows = rowsMap.get(translatedClassName) ?? [];

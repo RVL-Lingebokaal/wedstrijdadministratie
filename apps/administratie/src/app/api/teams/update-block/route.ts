@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    team.preferredBlock = args.destBlock;
+    team.block = args.destBlock;
+    team.startNumber = undefined;
     await teamService.saveTeam(team);
   } catch (error: any) {
     let errorMessage;

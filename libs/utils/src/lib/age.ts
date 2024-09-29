@@ -44,3 +44,12 @@ export function allAgesAreProcessed(
     missing: teamAges.size,
   };
 }
+
+export function getClassMap(classItems: ClassItem[]) {
+  return classItems.reduce((map, c) => {
+    c.ages.forEach((age) => {
+      map.set(`${age}${c.gender}${c.boatType}`, c.name);
+    });
+    return map;
+  }, new Map<string, string>());
+}
