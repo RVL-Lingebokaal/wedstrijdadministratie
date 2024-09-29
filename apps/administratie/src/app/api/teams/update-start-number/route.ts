@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const toBeSavedTeams = teams.reduce((acc, team) => {
     const existingTeam = existingTeams.get(team.id);
     if (existingTeam) {
-      existingTeam.startNumber = Number.parseInt(team.startNumber);
+      existingTeam.startNumber = Number.parseInt(team.startNumber.toString());
       acc.push(existingTeam);
     }
     return acc;
