@@ -6,16 +6,17 @@ import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
 import { View } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
 import { VolumeManager } from 'react-native-volume-manager';
+import { timeService } from '../../services/timeService';
 
 export function Registration({ navigation }: NavigationProps<'registration'>) {
-  const [isFinish, setIsFinish] = React.useState(false);
+  const [isStart, setIsStart] = React.useState(false);
   const [isA, setIsA] = React.useState(false);
   const [time, setTime] = React.useState(0);
 
   useEffect(() => {
     void VolumeManager.showNativeVolumeUI({ enabled: false });
     const volumeListener = VolumeManager.addVolumeListener(() => {
-      console.log('Volume button pressed');
+      void timeService.saveTime(new Date().getTime(), isA, isStart);
       setTime(new Date().getTime());
     });
 
@@ -31,13 +32,13 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
         <MultipleInputsContainer>
           <CustomCheckbox
             label="Finish"
-            checked={isFinish}
-            onChange={setIsFinish}
+            checked={!isStart}
+            onChange={() => setIsStart(!isStart)}
           />
           <CustomCheckbox
             label="Start"
-            checked={!isFinish}
-            onChange={() => setIsFinish(!isFinish)}
+            checked={isStart}
+            onChange={setIsStart}
           />
         </MultipleInputsContainer>
 
