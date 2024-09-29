@@ -1,7 +1,7 @@
 import { ClassItem, Settings } from '@models';
 import { useMemo } from 'react';
 
-export function useGetClassMap(settingsData?: Settings) {
+export function useGetClassMap(settingsData?: Omit<Settings, 'general'>) {
   return useMemo(() => {
     const map = new Map<string, ClassItem[]>();
     if (settingsData?.classes === null || settingsData?.classes.length === 0) {
