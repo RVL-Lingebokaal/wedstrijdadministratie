@@ -5,6 +5,7 @@ import { teamService } from '@services';
 export async function POST(req: NextRequest) {
   const { teamsWithPlace } = (await req.json()) as UpdatePlaceArgs;
   const teams: Team[] = [];
+  console.log(teamsWithPlace);
   await Promise.all(
     teamsWithPlace.map(async (teamId, index) => {
       const team = await teamService.getTeam(teamId);
@@ -14,6 +15,7 @@ export async function POST(req: NextRequest) {
       }
 
       team.place = index;
+      team.startNumber = undefined;
       teams.push(team);
     })
   );

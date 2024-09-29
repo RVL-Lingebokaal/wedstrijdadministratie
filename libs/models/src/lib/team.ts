@@ -36,6 +36,7 @@ export interface Team extends TeamResult {
   helm: Participant | null;
   place: number;
   block?: null | number;
+  startNumber?: number;
 }
 
 export function getDatabaseTeam(team: Team) {

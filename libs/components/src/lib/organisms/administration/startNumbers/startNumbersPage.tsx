@@ -1,12 +1,19 @@
 import { useGetSettings, useGetTeams } from '@hooks';
-import { LoadingSpinner } from '@components/server';
+import { GridHeader, GridRow, LoadingSpinner } from '@components/server';
 import { allAgesAreProcessed } from '@utils';
 import { useMemo } from 'react';
-import { getBlocksForStartNumbers } from '../../../utils/startNumbersUtils';
+import {
+  getTeamsForStartNumbers,
+  sortTeamsWithStartNumber,
+} from '../../../utils/startNumbersUtils';
+import { useUpdateStartNumbers } from '../../../../../../hooks/src/lib/teams/useUpdateStartNumbers';
+
+const headerItems = ['Startnr', 'Blok', 'Veld', 'Ploegnaam', 'Slag', 'Boot'];
 
 export function StartNumbersPage() {
   const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
   const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
+  const { mutate } = useUpdateStartNumbers();
 
   if (settingsIsLoading || teamIsLoading) {
     return <LoadingSpinner />;
@@ -26,15 +33,29 @@ export function StartNumbersPage() {
       </h2>
     );
   }
-  const { block1, block2, block3 } = useMemo(
-    () => getBlocksForStartNumbers(teamData),
-    [teamData]
+  const hasTeamsWithoutStartNumber = teamData?.some(
+    (team) => !team.startNumber
   );
-  const missingNumbers = settingsData?.general.missingNumbers ?? [];
+  const rows = useMemo(() => {
+    const props = {
+      teamData,
+      ages: settingsData?.ages ?? [],
+      classes: settingsData?.classes ?? [],
+      missingNumbers: settingsData?.general.missingNumbers ?? [],
+    };
+    return hasTeamsWithoutStartNumber
+      ? getTeamsForStartNumbers({ ...props, saveData: mutate })
+      : sortTeamsWithStartNumber(props);
+  }, [teamData, settingsData]);
 
   return (
-    <div>
-      <h2>Startnummers</h2>
+    <div className="flex w-full">
+      <div className="w-full">
+        <GridHeader items={headerItems} needsRounding classNames="mt-0" />
+        {rows.map((row) => (
+          <GridRow items={row} key={row[0]?.node?.toString() ?? ''} />
+        ))}
+      </div>
     </div>
   );
 }

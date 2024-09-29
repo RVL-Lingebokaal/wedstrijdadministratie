@@ -11,6 +11,7 @@ export function useGetTeams() {
       if (!response.ok) throw new Error('Could not get teams');
 
       const result = (await response.json()) as any[];
+
       return result.map<Team>((team) => {
         return {
           ...team,
@@ -26,6 +27,7 @@ export function useGetTeams() {
                 blocks: new Set(JSON.parse(team.helm.blocks)),
               }
             : null,
+          block: parseInt(team.block ?? team.preferredBlock),
         };
       });
     },

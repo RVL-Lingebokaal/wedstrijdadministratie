@@ -6,3 +6,12 @@ export interface UpdateBlockArgs {
 export interface UpdatePlaceArgs {
   teamsWithPlace: string[];
 }
+
+export interface UseUpdateStartNumberTeam {
+  id: string;
+  startNumber: number;
+}
+
+export interface UseUpdateStartNumberTeamArgs {
+  teams: UseUpdateStartNumberTeam[];
+}
