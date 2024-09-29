@@ -15,3 +15,4 @@ export * from './lib/useUploadFile';
 export * from './lib/administration/useGetClassMap';
 export * from './lib/administration/useGetGroups';
 export * from './lib/administration/useGetFinishedRow';
+export * from './lib/teams/useUpdateStartNumbers';

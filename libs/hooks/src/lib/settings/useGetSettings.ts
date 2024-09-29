@@ -12,7 +12,7 @@ export function useGetSettings() {
 
       if (!response.ok) throw new Error('Could not get settings');
 
-      return (await response.json()) as Settings;
+      return (await response.json()) as Omit<Settings, 'general'>;
     },
     { keepPreviousData: false }
   );

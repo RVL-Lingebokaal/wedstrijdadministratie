@@ -14,7 +14,7 @@ import { getClassMap } from '@utils';
 import { Item } from '@components/server';
 
 interface GetTeamsForStartNumbersProps {
-  teamData?: Team[];
+  teams?: Team[];
   ages: AgeItem[];
   classes: ClassItem[];
   missingNumbers: number[];
@@ -22,14 +22,14 @@ interface GetTeamsForStartNumbersProps {
 }
 
 export function getTeamsForStartNumbers({
-  teamData,
+  teams,
   ages,
   classes,
   missingNumbers,
   saveData,
 }: GetTeamsForStartNumbersProps) {
   const rows: Item[][] = [];
-  if (!teamData) return rows;
+  if (!teams) return rows;
   const missingNumbersSet = new Set<number>(missingNumbers);
 
   const classMap = getClassMap(classes);
@@ -38,7 +38,7 @@ export function getTeamsForStartNumbers({
   const genderTypes = Object.values(Gender);
   const toBeSaved: UseUpdateStartNumberTeam[] = [];
 
-  teamData.sort((a, b) => {
+  teams.sort((a, b) => {
     const ageA = getAgeClassTeam({ ages, participants: a.participants });
     const ageB = getAgeClassTeam({ ages, participants: b.participants });
     let sortBlock;
@@ -58,7 +58,7 @@ export function getTeamsForStartNumbers({
 
   let startNr = 1;
   let boatAndGenderBlock: Team[] = [];
-  teamData.forEach((team) => {
+  teams.forEach((team) => {
     if (
       boatAndGenderBlock.length === 0 ||
       (boatAndGenderBlock[0].boatType === team.boatType &&
@@ -92,6 +92,7 @@ export function getTeamsForStartNumbers({
 
   rows.push(...sortedRows);
 
+  console.log('toBeSaved', toBeSaved);
   saveData({ teams: toBeSaved });
 
   return rows;
@@ -110,7 +111,7 @@ export function sortTeamsWithStartNumber({
   ages,
   missingNumbers,
 }: SortTeamsWithStartNumberProps) {
-  if (!teams || teams.length) return [];
+  if (!teams || teams.length === 0) return [];
 
   const missingNumbersSet = new Set<number>(missingNumbers);
 

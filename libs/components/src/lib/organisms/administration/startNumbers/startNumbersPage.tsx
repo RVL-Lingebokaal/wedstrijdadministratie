@@ -1,22 +1,20 @@
-import { useGetSettings, useGetTeams } from '@hooks';
-import { GridHeader, GridRow, LoadingSpinner } from '@components/server';
+import { useGetGeneralSettings, useGetSettings, useGetTeams } from '@hooks';
+import { LoadingSpinner } from '@components/server';
 import { allAgesAreProcessed } from '@utils';
-import { useMemo } from 'react';
-import {
-  getTeamsForStartNumbers,
-  sortTeamsWithStartNumber,
-} from '../../../utils/startNumbersUtils';
-import { useUpdateStartNumbers } from '../../../../../../hooks/src/lib/teams/useUpdateStartNumbers';
-
-const headerItems = ['Startnr', 'Blok', 'Veld', 'Ploegnaam', 'Slag', 'Boot'];
+import { StartNumbersGrid } from './startNumbersGrid';
 
 export function StartNumbersPage() {
   const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
   const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
-  const { mutate } = useUpdateStartNumbers();
+  const { data: generalSettingsData, isLoading: generalSettingsIsLoading } =
+    useGetGeneralSettings();
 
-  if (settingsIsLoading || teamIsLoading) {
+  if (settingsIsLoading || teamIsLoading || generalSettingsIsLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!teamData || !settingsData || !generalSettingsData) {
+    return 'Er is geen data gevonden';
   }
 
   const { processed } = allAgesAreProcessed(
@@ -33,29 +31,12 @@ export function StartNumbersPage() {
       </h2>
     );
   }
-  const hasTeamsWithoutStartNumber = teamData?.some(
-    (team) => !team.startNumber
-  );
-  const rows = useMemo(() => {
-    const props = {
-      teamData,
-      ages: settingsData?.ages ?? [],
-      classes: settingsData?.classes ?? [],
-      missingNumbers: settingsData?.general.missingNumbers ?? [],
-    };
-    return hasTeamsWithoutStartNumber
-      ? getTeamsForStartNumbers({ ...props, saveData: mutate })
-      : sortTeamsWithStartNumber(props);
-  }, [teamData, settingsData]);
 
   return (
-    <div className="flex w-full">
-      <div className="w-full">
-        <GridHeader items={headerItems} needsRounding classNames="mt-0" />
-        {rows.map((row) => (
-          <GridRow items={row} key={row[0]?.node?.toString() ?? ''} />
-        ))}
-      </div>
-    </div>
+    <StartNumbersGrid
+      generalSettingsData={generalSettingsData}
+      settingsData={settingsData}
+      teamData={teamData}
+    />
   );
 }
