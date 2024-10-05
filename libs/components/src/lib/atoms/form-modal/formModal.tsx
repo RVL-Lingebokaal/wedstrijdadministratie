@@ -1,5 +1,10 @@
 'use client';
-import { Dialog } from '@headlessui/react';
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/react';
 import { Button } from '../button/button';
 import React, { FormEvent } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -28,17 +33,15 @@ export function FormModal<T extends FormEvent<HTMLFormElement>>({
         onSubmit={onSubmit}
         className="fixed inset-0 flex w-screen items-center justify-center"
       >
-        <Dialog.Panel
+        <DialogPanel
           className={twMerge(
             'mx-auto max-w-md rounded bg-white p-6',
             panelClassNames
           )}
         >
-          <Dialog.Title className="text-2xl mb-3">{title}</Dialog.Title>
+          <DialogTitle className="text-2xl mb-3">{title}</DialogTitle>
           {description && (
-            <Dialog.Description className="mb-3">
-              {description}
-            </Dialog.Description>
+            <Description className="mb-3">{description}</Description>
           )}
           <div className="mb-4">{children}</div>
           <div className="flex justify-between">
@@ -50,7 +53,7 @@ export function FormModal<T extends FormEvent<HTMLFormElement>>({
             />
             <Button name="Bevestigen" color="primary" type="submit" />
           </div>
-        </Dialog.Panel>
+        </DialogPanel>
       </form>
     </Dialog>
   );

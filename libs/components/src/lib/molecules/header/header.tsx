@@ -10,6 +10,7 @@ const navLinks = [
   { title: 'Upload', target: '/upload' },
   { title: 'Data', target: '/data' },
   { title: 'Administratie', target: '/administration' },
+  { title: 'Koppelen', target: '/koppelen' },
   { title: 'Uitslagen', target: '/results' },
 ];
 

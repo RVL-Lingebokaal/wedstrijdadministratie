@@ -1,5 +1,9 @@
 'use client';
-import { Disclosure } from '@headlessui/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react';
 import { LoadingSpinner, SelectGender } from '@components/server';
 import { Gender } from '@models';
 import { useState } from 'react';
@@ -48,7 +52,7 @@ export function ClassPage() {
             classMap.get(JSON.stringify({ gender, boat: val })) ?? [];
           return (
             <Disclosure key={val}>
-              <Disclosure.Button className="w-3/4">
+              <DisclosureButton className="w-3/4">
                 <ClassGridHeader
                   boatType={val}
                   classItems={classItems}
@@ -56,8 +60,8 @@ export function ClassPage() {
                   teams={groups.get(val)}
                   ages={settingsData?.ages ?? []}
                 />
-              </Disclosure.Button>
-              <Disclosure.Panel>
+              </DisclosureButton>
+              <DisclosurePanel>
                 <ClassSection
                   teams={groups.get(val) ?? []}
                   ages={settingsData?.ages ?? []}
@@ -67,7 +71,7 @@ export function ClassPage() {
                   ownClassItems={classItems}
                   refetch={refetch}
                 />
-              </Disclosure.Panel>
+              </DisclosurePanel>
             </Disclosure>
           );
         })}

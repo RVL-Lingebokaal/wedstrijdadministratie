@@ -1,6 +1,13 @@
 'use client';
 import { Fragment } from 'react';
-import { Listbox, Transition } from '@headlessui/react';
+import {
+  Label,
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react';
 import { HiCheck, HiChevronUpDown } from 'react-icons/hi2';
 import { twMerge } from 'tailwind-merge';
 
@@ -33,8 +40,8 @@ export function Select<T>({
   return (
     <Listbox value={selectedValue} onChange={onChange} disabled={disabled}>
       <div className={topClassNames}>
-        {label && <Listbox.Label className="font-bold">{label}</Listbox.Label>}
-        <Listbox.Button
+        {label && <Label className="font-bold">{label}</Label>}
+        <ListboxButton
           className={twMerge(
             'relative w-full cursor-default border-gray-400 border rounded-lg px-2 py-1.5 text-left',
             classNames
@@ -49,25 +56,27 @@ export function Select<T>({
               aria-hidden="true"
             />
           </span>
-        </Listbox.Button>
+        </ListboxButton>
         <Transition
           as={Fragment}
           leave="transition ease-in duration-100"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options
+          <ListboxOptions
+            as="ul"
             className={twMerge(
               'z-10 absolute max-h-60 w-auto overflow-auto rounded-md bg-white py-1 text-base',
               classNames
             )}
           >
             {items.map(({ text, id, disabled }) => (
-              <Listbox.Option
+              <ListboxOption
+                as="li"
                 key={`${id}`}
-                className={({ active }) =>
+                className={({ focus }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active
+                    focus
                       ? 'bg-secondary-100 text-primary'
                       : disabled
                       ? 'text-gray-400 italic'
@@ -93,9 +102,9 @@ export function Select<T>({
                     ) : null}
                   </>
                 )}
-              </Listbox.Option>
+              </ListboxOption>
             ))}
-          </Listbox.Options>
+          </ListboxOptions>
         </Transition>
       </div>
     </Listbox>

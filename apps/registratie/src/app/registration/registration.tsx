@@ -18,6 +18,7 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
     const volumeListener = VolumeManager.addVolumeListener(() => {
       void timeService.saveTime(new Date().getTime(), isA, isStart);
       setTime(new Date().getTime());
+      void VolumeManager.setVolume(0.5);
     });
 
     return function () {

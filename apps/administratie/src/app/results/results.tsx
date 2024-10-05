@@ -3,7 +3,11 @@
 import { useGetResults, useGetSettings, useGetTeams } from '@hooks';
 import { GridHeader, GridRow, LoadingSpinner } from '@components/server';
 import { allAgesAreProcessed, getConvertedResults } from '@utils';
-import { Disclosure } from '@headlessui/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from '@headlessui/react';
 
 const headerItems = ['Start', 'Finish', 'Resultaat', 'Gecorrigeerd'];
 
@@ -42,17 +46,17 @@ export default function ResultsPage() {
       <div className="w-full">
         {headers.map((header, index) => (
           <Disclosure key={header} defaultOpen>
-            <Disclosure.Button className="w-full">
+            <DisclosureButton className="w-full">
               <GridHeader
                 items={[header, ...headerItems]}
                 needsRounding={index === 0}
               />
-            </Disclosure.Button>
-            <Disclosure.Panel>
+            </DisclosureButton>
+            <DisclosurePanel>
               {rowsMap.get(header)?.map((item, index) => (
                 <GridRow items={item} key={index} />
               ))}
-            </Disclosure.Panel>
+            </DisclosurePanel>
           </Disclosure>
         ))}
       </div>
