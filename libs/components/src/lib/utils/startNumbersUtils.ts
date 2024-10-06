@@ -91,8 +91,6 @@ export function getTeamsForStartNumbers({
   });
 
   rows.push(...sortedRows);
-
-  console.log('toBeSaved', toBeSaved);
   saveData({ teams: toBeSaved });
 
   return rows;

@@ -10,6 +10,7 @@ export * from './lib/molecules/remove-grouping-button/removeGroupingButton';
 export * from './lib/molecules/session-block-teams/sessionBlockTeams';
 export * from './lib/molecules/team-form/teamForm';
 export * from './lib/molecules/header/header';
+export * from './lib/molecules/combobox/combobox';
 
 //Organisms
 export * from './lib/organisms/administration/class/classPage';
@@ -21,3 +22,7 @@ export * from './lib/organisms/settings/types/typesForm';
 export * from './lib/organisms/team/team-add-button/teamAddButton';
 export * from './lib/organisms/team/team-update-button/teamUpdateButton';
 export * from './lib/organisms/upload-button/UploadButton';
+export * from './lib/organisms/time/timePage';
+
+//Atoms
+export * from './lib/atoms/radio-group/radioGroup';

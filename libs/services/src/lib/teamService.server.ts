@@ -49,7 +49,7 @@ export class TeamService {
       );
       team.id = docRef.id;
     } else {
-      await setDoc(db, getDatabaseTeam(team));
+      await setDoc(db, getDatabaseTeam(team), { merge: true });
     }
 
     this.teams.set(team.id, team);
@@ -101,6 +101,7 @@ export class TeamService {
             : null,
           place: parseInt(docData['place']),
           result: docData['result'],
+          startNumber: docData['startNumber'],
         };
         return acc.set(team.id, team);
       }, new Map());

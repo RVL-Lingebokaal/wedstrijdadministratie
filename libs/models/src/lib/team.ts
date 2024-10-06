@@ -65,3 +65,35 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
   const age = total / participants.length;
   return calculateAgeType(ages, age);
 }
+
+export function getTimeResult(isA: boolean, isStart: boolean, time: string) {
+  if (isStart) {
+    if (isA) {
+      return { startTimeA: time };
+    } else {
+      return { startTimeB: time };
+    }
+  } else {
+    if (isA) {
+      return { finishTimeA: time };
+    } else {
+      return { finishTimeB: time };
+    }
+  }
+}
+
+export interface Time {
+  id: string;
+  time: string;
+}
+
+export interface StartNumberTime extends Time {
+  startNumber: number;
+  club: string;
+  teamId: string;
+}
+
+export interface SaveStartNumberTime extends StartNumberTime {
+  isA: boolean;
+  isStart: boolean;
+}

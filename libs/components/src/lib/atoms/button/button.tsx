@@ -1,60 +1,63 @@
-import { FaSpinner } from "react-icons/fa";
-import { twMerge } from "tailwind-merge";
+import { FaSpinner } from 'react-icons/fa';
+import { twMerge } from 'tailwind-merge';
 
 export type Color =
-  | "primary"
-  | "secondary"
-  | "highlight"
-  | "error"
-  | "white"
-  | "highlightReverse";
+  | 'primary'
+  | 'secondary'
+  | 'highlight'
+  | 'error'
+  | 'white'
+  | 'highlightReverse';
 
 interface ButtonProps {
   name: string;
   color: Color;
   onClick?: () => void;
-  type?: "submit" | "button" | "reset";
+  type?: 'submit' | 'button' | 'reset';
   classNames?: string;
   isLoading?: boolean;
   disabled?: boolean;
 }
 
 const colors = {
-  highlight: "bg-highlight",
-  primary: "bg-primary",
-  secondary: "bg-secondary-500",
-  error: "bg-red-600",
-  white: "bg-white",
-  highlightReverse: "bg-white",
+  highlight: 'bg-highlight',
+  primary: 'bg-primary',
+  secondary: 'bg-secondary-500',
+  error: 'bg-red-600',
+  white: 'bg-white',
+  highlightReverse: 'bg-white',
 };
 const borderColors = {
-  highlight: "border-highlight",
-  primary: "border-primary",
-  secondary: "border-secondary-500",
-  error: "border-red-600",
-  white: "border-primary",
-  highlightReverse: "border-highlight",
+  highlight: 'border-highlight',
+  primary: 'border-primary',
+  secondary: 'border-secondary-500',
+  error: 'border-red-600',
+  white: 'border-primary',
+  highlightReverse: 'border-highlight',
 };
 
 export function Button({
   name,
   color,
   onClick,
-  type = "button",
-  classNames = "",
+  type = 'button',
+  classNames = '',
   isLoading = false,
   disabled = false,
 }: ButtonProps) {
   return (
     <button
       className={twMerge([
-        "py-2 px-4 border-2 rounded-lg",
+        'py-2 px-4 border-2 rounded-lg',
         colors[color],
         borderColors[color],
-        disabled ? "opacity-50" : "",
+        disabled ? 'opacity-50' : '',
         classNames,
       ])}
-      onClick={onClick}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick?.();
+      }}
       type={type}
       disabled={disabled}
     >
@@ -63,11 +66,11 @@ export function Button({
       )}
       <span
         className={`${
-          color === "white"
-            ? "text-primary"
-            : color === "highlightReverse"
-            ? "text-highlight"
-            : "text-white"
+          color === 'white'
+            ? 'text-primary'
+            : color === 'highlightReverse'
+            ? 'text-highlight'
+            : 'text-white'
         }`}
       >
         {name}

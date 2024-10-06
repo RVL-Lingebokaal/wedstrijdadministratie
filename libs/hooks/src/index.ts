@@ -16,3 +16,6 @@ export * from './lib/administration/useGetClassMap';
 export * from './lib/administration/useGetGroups';
 export * from './lib/administration/useGetFinishedRow';
 export * from './lib/teams/useUpdateStartNumbers';
+export * from './lib/times/useInitiateUpdates';
+export * from './lib/times/useSaveTime';
+export * from './lib/times/useDeleteTime';

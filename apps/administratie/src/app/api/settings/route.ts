@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
     return Response.json({ success: true });
   }
 
-  console.log(args.type, args.items);
   await settingsService.saveSettings(args.type, args.items);
 
   return Response.json({ success: true });

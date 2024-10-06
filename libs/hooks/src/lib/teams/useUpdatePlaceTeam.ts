@@ -9,7 +9,6 @@ export function useUpdatePlaceTeam() {
   return useMutation(
     ['update-place-team'],
     async (args: UpdatePlaceArgs) => {
-      console.log('updating place', args);
       const response = await fetch('api/teams/update-place', {
         method: 'POST',
         body: JSON.stringify(args),
