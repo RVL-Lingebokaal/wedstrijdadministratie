@@ -27,6 +27,9 @@ export function useInitiateUpdates(
   }, [isA, isStart]);
 
   useEffect(() => {
+    if (sseConnection) {
+      sseConnection.close();
+    }
     listenToSSEUpdates();
     return () => {
       if (sseConnection) {

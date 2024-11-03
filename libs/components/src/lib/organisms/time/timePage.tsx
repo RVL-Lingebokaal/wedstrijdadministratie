@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StartNumberTime, Team, Time } from '@models';
 import { useInitiateUpdates, useSaveTime } from '@hooks';
 import {
@@ -24,6 +24,13 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
     []
   );
   const [selectedTime, setSelectedTime] = useState<Time | null>(times[0]);
+
+  useEffect(() => {
+    setSelected('');
+    setTimes([]);
+    setStartNumberTimes([]);
+    setSelectedTime(null);
+  }, [isA, isStart]);
 
   const updateTimes = useCallback(
     (newTimes: Time[]) =>
