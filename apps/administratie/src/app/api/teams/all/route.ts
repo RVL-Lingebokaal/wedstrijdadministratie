@@ -1,5 +1,6 @@
 import { teamService } from '@services';
 import { stringifySet } from '@utils';
+import { Participant } from '@models';
 
 export async function GET() {
   const teams = await teamService.getTeams();
@@ -9,7 +10,7 @@ export async function GET() {
   arrayTeams.forEach((t) => {
     const team = {
       ...t,
-      participants: t.participants.map((p) => ({
+      participants: t.participants.map((p: Participant) => ({
         ...p,
         blocks: stringifySet(p.blocks),
       })),
