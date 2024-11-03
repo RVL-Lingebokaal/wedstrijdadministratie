@@ -1,6 +1,5 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
   apiKey: process.env['FIREBASE_API_KEY'],
@@ -14,14 +13,14 @@ const firebaseConfig = {
 
 // Initialize only once to support hot reload during development
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6Ld8E3QqAAAAAK-OCfevnvhzo1UMGhK5s1Rio9fj'),
+// const appCheck = initializeAppCheck(app, {
+//   provider: new ReCaptchaV3Provider('6Ld8E3QqAAAAAK-OCfevnvhzo1UMGhK5s1Rio9fj'),
+//
+//   // Optional argument. If true, the SDK automatically refreshes App Check
+//   // tokens as needed.
+//   isTokenAutoRefreshEnabled: true,
+// });
 
-  // Optional argument. If true, the SDK automatically refreshes App Check
-  // tokens as needed.
-  isTokenAutoRefreshEnabled: true,
-});
-
-const firestore = getFirestore(appCheck.app);
+const firestore = getFirestore(app);
 
 export default firestore;
