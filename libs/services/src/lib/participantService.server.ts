@@ -66,11 +66,11 @@ export class ParticipantService {
 
       this.participants = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
-        return acc.set(docData['id'], {
+        return acc.set(doc.id, {
           name: docData['name'],
           club: docData['club'],
           birthYear: docData['birthYear'],
-          id: docData['id'],
+          id: doc.id,
           blocks: new Set(JSON.parse(docData['blocks'])),
         });
       }, new Map<string, Participant>());

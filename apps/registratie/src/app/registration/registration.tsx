@@ -1,5 +1,5 @@
 import { NavigationProps } from '../interfaces';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Page } from '../../components/atoms/page/page';
 import { MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
@@ -11,20 +11,21 @@ import { timeService } from '../../services/timeService';
 export function Registration({ navigation }: NavigationProps<'registration'>) {
   const [isStart, setIsStart] = React.useState(false);
   const [isA, setIsA] = React.useState(false);
-  const [time, setTime] = React.useState(0);
+
+  const volumeChanger = useCallback(async () => {
+    const now = new Date().getTime();
+    await timeService.saveTime(now, isA, isStart);
+    await VolumeManager.setVolume(0.5);
+  }, [isA, isStart]);
 
   useEffect(() => {
     void VolumeManager.showNativeVolumeUI({ enabled: false });
-    const volumeListener = VolumeManager.addVolumeListener(() => {
-      void timeService.saveTime(new Date().getTime(), isA, isStart);
-      setTime(new Date().getTime());
-      void VolumeManager.setVolume(0.5);
-    });
+    const volumeListener = VolumeManager.addVolumeListener(volumeChanger);
 
     return function () {
       volumeListener.remove();
     };
-  }, [time]);
+  }, [isA, isStart]);
 
   return (
     <Page title="Tijdsregistratie">
@@ -53,7 +54,6 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
           />
         </MultipleInputsContainer>
         <MainText text="Je bent nu helemaal klaar om tijden te registreren. Om een tijd te registreren, druk op de volumeknop van je telefoon. Het maakt hierbij niet uit of je het volume harder of zachter zet. In beide gevallen wordt er een tijd geregistreerd." />
-        <MainText text={time.toString()} />
       </View>
     </Page>
   );

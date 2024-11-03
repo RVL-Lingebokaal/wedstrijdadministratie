@@ -34,12 +34,13 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
       }),
     []
   );
+
   const possibleStartNumbers = useMemo(
-    () => getPossibleStartNumbers(teams),
+    () => getPossibleStartNumbers(teams, isA, isStart),
     [teams]
   );
 
-  useInitiateUpdates(updateTimes);
+  useInitiateUpdates(updateTimes, isA, isStart);
 
   return (
     <div className="p-4">
@@ -51,8 +52,8 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
           startnummer.
         </p>
       </div>
-      <div className="grid grid-cols-2 py-4 gap-6">
-        <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-3 py-4 gap-6">
+        <div className="grid grid-cols-2 gap-6 col-span-2">
           <Combobox
             values={possibleStartNumbers ?? []}
             selectedItem={selected}
@@ -86,6 +87,14 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
                   selectedTime={selectedTime}
                   setSelectedTime={setSelectedTime}
                   text={`${item.startNumber} - ${item.club}`}
+                  isA={isA}
+                  isStart={isStart}
+                  teamId={item.teamId}
+                  restoreFunc={(time) =>
+                    setStartNumberTimes((prev) =>
+                      prev.filter((startTime) => time.id !== startTime.id)
+                    )
+                  }
                 />
               ))}
             </div>
@@ -98,12 +107,17 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
               time={time}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
+              isStart={isStart}
+              isA={isA}
               deleteFunc={(time) => {
                 setTimes((prevState) => {
                   const filtered = prevState.filter((t) => t.id !== time.id);
                   setSelectedTime(filtered[0] ?? null);
                   return filtered;
                 });
+              }}
+              duplicateFunc={(time) => {
+                setTimes((prevState) => [...prevState, time]);
               }}
             />
           ))}

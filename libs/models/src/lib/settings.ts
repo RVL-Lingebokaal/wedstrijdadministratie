@@ -112,6 +112,12 @@ export function translateClass({
   className,
 }: TranslateClassProps) {
   const translatedGender =
-    gender === Gender.F ? 'D' : gender === Gender.M ? 'H' : 'Mix';
+    gender === Gender.F
+      ? 'D'
+      : gender === Gender.M
+      ? 'H'
+      : gender === Gender.O
+      ? 'Open'
+      : 'Mix';
   return `${translatedGender}${boatType}${className}`;
 }

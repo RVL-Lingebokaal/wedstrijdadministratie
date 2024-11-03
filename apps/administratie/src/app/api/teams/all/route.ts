@@ -1,8 +1,7 @@
-import { NextRequest } from 'next/server';
 import { teamService } from '@services';
 import { stringifySet } from '@utils';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const teams = await teamService.getTeams();
 
   const arrayTeams = Array.from(teams.values());

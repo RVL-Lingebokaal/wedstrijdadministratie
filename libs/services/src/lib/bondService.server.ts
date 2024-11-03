@@ -180,6 +180,8 @@ export class BondService {
       ? Gender.M
       : typeWithoutSpaces.includes('d')
       ? Gender.F
+      : typeWithoutSpaces.includes('o')
+      ? Gender.O
       : Gender.MIX;
 
     switch (typeWithoutSpaces) {
@@ -196,6 +198,7 @@ export class BondService {
       case 'mixc4+':
       case 'dc4+':
       case 'hc4+':
+      case 'oc4+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWithC };
         }
@@ -207,6 +210,7 @@ export class BondService {
       case 'mixc4x':
       case 'dc4x':
       case 'hc4x':
+      case 'oc4x':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWithC };
         }
@@ -218,6 +222,7 @@ export class BondService {
       case 'mixc4*':
       case 'dc4*':
       case 'hc4*':
+      case 'oc4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.scullFourWithC };
         }
@@ -240,6 +245,7 @@ export class BondService {
       case 'mix4+':
       case 'd4+':
       case 'h4+':
+      case 'o4+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWith };
         }
@@ -251,6 +257,7 @@ export class BondService {
       case 'mix4*':
       case 'd4*':
       case 'h4*':
+      case 'o4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.scullFourWith };
         }
@@ -264,6 +271,7 @@ export class BondService {
       case 'd8':
       case 'h8+':
       case 'h8':
+      case 'o8+':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: BoatType.boardEightWith };
         }
@@ -275,6 +283,7 @@ export class BondService {
       case 'mix8*':
       case 'd8*':
       case 'h8*':
+      case 'o8*':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: BoatType.scullEightWith };
         }

@@ -7,6 +7,7 @@ export enum Gender {
   M = 'male',
   MIX = 'mix',
   F = 'female',
+  O = 'open',
 }
 
 export interface TeamTimes {
@@ -46,6 +47,7 @@ export function getDatabaseTeam(team: Team) {
     boat: team.boat?.id ?? null,
     participants: team.participants.map(({ id }) => id),
     result: team.result ?? null,
+    startNumber: team.startNumber ?? null,
   };
 }
 
@@ -66,7 +68,7 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
   return calculateAgeType(ages, age);
 }
 
-export function getTimeResult(isA: boolean, isStart: boolean, time: string) {
+export function getTimeResult(isA: boolean, isStart: boolean, time?: string) {
   if (isStart) {
     if (isA) {
       return { startTimeA: time };
@@ -78,6 +80,34 @@ export function getTimeResult(isA: boolean, isStart: boolean, time: string) {
       return { finishTimeA: time };
     } else {
       return { finishTimeB: time };
+    }
+  }
+}
+
+export function getTimeKey(isA: boolean, isStart: boolean) {
+  if (isStart) {
+    return isA ? 'startTimeA' : 'startTimeB';
+  } else {
+    return isA ? 'finishTimeA' : 'finishTimeB';
+  }
+}
+
+export function getSpecificTimeResultFromTeam(
+  isA: boolean,
+  isStart: boolean,
+  team: Team
+) {
+  if (isStart) {
+    if (isA) {
+      return team.result?.startTimeA;
+    } else {
+      return team.result?.startTimeB;
+    }
+  } else {
+    if (isA) {
+      return team.result?.finishTimeA;
+    } else {
+      return team.result?.finishTimeB;
     }
   }
 }
@@ -96,4 +126,11 @@ export interface StartNumberTime extends Time {
 export interface SaveStartNumberTime extends StartNumberTime {
   isA: boolean;
   isStart: boolean;
+}
+
+export interface PostTimeProps extends Time {
+  type: 'restore' | 'delete' | 'duplicate';
+  teamId?: string;
+  isA?: boolean;
+  isStart?: boolean;
 }

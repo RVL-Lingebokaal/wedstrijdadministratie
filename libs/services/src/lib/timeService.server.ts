@@ -1,5 +1,11 @@
-import { getTimeResult, SaveStartNumberTime, Time } from '@models';
 import {
+  getSpecificTimeResultFromTeam,
+  getTimeResult,
+  SaveStartNumberTime,
+  Time,
+} from '@models';
+import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -60,6 +66,31 @@ export class TimeService {
 
   async deleteTime(time: Time) {
     return await deleteDoc(doc(firestore, 'time', time.id));
+  }
+
+  async restoreTime(teamId: string, isA: boolean, isStart: boolean) {
+    const team = await teamService.getTeam(teamId);
+
+    if (!team) {
+      return;
+    }
+
+    const time = getSpecificTimeResultFromTeam(isA, isStart, team);
+
+    if (!time) {
+      return;
+    }
+
+    await teamService.removeTimeFromTeam(teamId, isA, isStart);
+    return await setDoc(doc(firestore, 'time'), {
+      time,
+      isA: isA,
+      isStart: isStart,
+    });
+  }
+
+  async addTime(time: string, isA: boolean, isStart: boolean) {
+    return await addDoc(collection(firestore, 'time'), { time, isA, isStart });
   }
 }
 

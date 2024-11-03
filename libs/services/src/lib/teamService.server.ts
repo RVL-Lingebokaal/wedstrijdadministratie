@@ -1,4 +1,10 @@
-import { Boat, getDatabaseTeam, Participant, Team } from '@models';
+import {
+  Boat,
+  getDatabaseTeam,
+  getTimeResult,
+  Participant,
+  Team,
+} from '@models';
 import {
   addDoc,
   collection,
@@ -7,6 +13,7 @@ import {
   orderBy,
   query,
   setDoc,
+  updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -137,6 +144,19 @@ export class TeamService {
         gender: team?.gender,
       };
     });
+  }
+
+  async removeTimeFromTeam(teamId: string, isA: boolean, isStart: boolean) {
+    const team = await this.getTeam(teamId);
+
+    if (!team || !team.result) {
+      return;
+    }
+
+    const newResult = { ...team.result, ...getTimeResult(isA, isStart) };
+    const docRef = doc(firestore, 'ploeg', teamId);
+
+    return updateDoc(docRef, { result: newResult });
   }
 }
 
