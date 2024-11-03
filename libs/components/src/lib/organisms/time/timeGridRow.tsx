@@ -2,15 +2,20 @@ import { twMerge } from 'tailwind-merge';
 import { DateTime } from 'luxon';
 import { Time } from '@models';
 import { IconButton } from '@components/server';
-import { FaTrashAlt } from 'react-icons/fa';
-import { useDeleteTime } from '@hooks';
+import { FaClone, FaRedo, FaTrashAlt } from 'react-icons/fa';
+import { useDeleteTime, useDuplicateTime, useRestoreTime } from '@hooks';
 
 interface TimeGridRowProps {
   time: Time;
+  teamId?: string;
+  isA?: boolean;
+  isStart?: boolean;
   text?: string;
   selectedTime: Time | null;
   setSelectedTime: (time: Time) => void;
   deleteFunc?: (time: Time) => void;
+  duplicateFunc?: (time: Time) => void;
+  restoreFunc?: (time: Time) => void;
 }
 
 export function TimeGridRow({
@@ -19,10 +24,19 @@ export function TimeGridRow({
   selectedTime,
   text,
   deleteFunc,
+  duplicateFunc,
+  restoreFunc,
+  teamId,
+  isA,
+  isStart,
 }: TimeGridRowProps) {
   const isSelected = selectedTime?.id === time.id;
   const hasDelete = deleteFunc !== undefined;
-  const { mutate } = useDeleteTime();
+  const hasDuplicate = duplicateFunc !== undefined;
+  const hasRestore = restoreFunc !== undefined;
+  const { mutate: deleteTime } = useDeleteTime();
+  const { mutate: restoreTime } = useRestoreTime();
+  const { mutate: duplicateTime } = useDuplicateTime(duplicateFunc);
 
   return (
     <div
@@ -30,22 +44,41 @@ export function TimeGridRow({
       className={twMerge(
         'bg-white px-4 py-2 rounded cursor-point',
         isSelected ? 'border-2 border-primary' : '',
-        hasDelete ? 'flex justify-between items-center' : ''
+        hasDelete || hasDuplicate || hasRestore
+          ? 'flex justify-between items-center'
+          : ''
       )}
     >
       <span>{`${DateTime.fromMillis(parseInt(time.time)).toISOTime({
         includeOffset: false,
         includePrefix: false,
       })}${text ? ` - ${text}` : ''}`}</span>
-      {hasDelete && (
-        <IconButton
-          icon={<FaTrashAlt />}
-          onClick={() => {
-            void mutate(time);
-            deleteFunc(time);
-          }}
-        />
-      )}
+      <div className="flex gap-4">
+        {hasDuplicate && isA !== undefined && isStart !== undefined && (
+          <IconButton
+            icon={<FaClone />}
+            onClick={() => duplicateTime({ time: time.time, isA, isStart })}
+          />
+        )}
+        {hasRestore && teamId && isA !== undefined && isStart !== undefined && (
+          <IconButton
+            icon={<FaRedo />}
+            onClick={() => {
+              void restoreTime({ ...time, teamId, isA, isStart });
+              restoreFunc(time);
+            }}
+          />
+        )}
+        {hasDelete && (
+          <IconButton
+            icon={<FaTrashAlt />}
+            onClick={() => {
+              void deleteTime(time);
+              deleteFunc(time);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }

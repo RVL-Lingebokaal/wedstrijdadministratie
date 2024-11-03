@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Time } from '@models';
 
-export function useInitiateUpdates(updateFunction: (values: Time[]) => void) {
+export function useInitiateUpdates(
+  updateFunction: (values: Time[]) => void,
+  isA: boolean,
+  isStart: boolean
+) {
   const [sseConnection, setSSEConnection] = useState<EventSource | null>(null);
 
   const listenToSSEUpdates = useCallback(() => {
-    const eventSource = new EventSource('/api/teams/time');
+    const eventSource = new EventSource(
+      `/api/teams/time?isA=${isA}&isStart=${isStart}`
+    );
     eventSource.onopen = () => {
       console.log('SSE connection opened.');
     };
@@ -18,7 +24,7 @@ export function useInitiateUpdates(updateFunction: (values: Time[]) => void) {
     setSSEConnection(eventSource);
 
     return eventSource;
-  }, []);
+  }, [isA, isStart]);
 
   useEffect(() => {
     listenToSSEUpdates();
@@ -27,5 +33,5 @@ export function useInitiateUpdates(updateFunction: (values: Time[]) => void) {
         sseConnection.close();
       }
     };
-  }, []);
+  }, [isA, isStart]);
 }

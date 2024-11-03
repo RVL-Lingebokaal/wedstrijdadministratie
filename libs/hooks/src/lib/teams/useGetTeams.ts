@@ -13,7 +13,6 @@ export function useGetTeams() {
       const result = (await response.json()) as any[];
 
       return result.map<Team>((team) => {
-        console.log(team.startNumber);
         return {
           ...team,
           preferredBlock: parseInt(team.preferredBlock),

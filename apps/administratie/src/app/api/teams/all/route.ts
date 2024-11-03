@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { teamService } from '@services';
 import { stringifySet } from '@utils';
+import { Participant } from '@models';
 
 export async function GET(req: NextRequest) {
   const teams = await teamService.getTeams();
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
   arrayTeams.forEach((t) => {
     const team = {
       ...t,
-      participants: t.participants.map((p) => ({
+      participants: t.participants.map((p: Participant) => ({
         ...p,
         blocks: stringifySet(p.blocks),
       })),

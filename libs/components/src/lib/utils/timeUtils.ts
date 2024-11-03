@@ -1,4 +1,10 @@
-import { SaveStartNumberTime, StartNumberTime, Team, Time } from '@models';
+import {
+  getTimeKey,
+  SaveStartNumberTime,
+  StartNumberTime,
+  Team,
+  Time,
+} from '@models';
 import { Dispatch, SetStateAction } from 'react';
 
 export function getNewTimes(prevTimes: Time[], newTimes: Time[]) {
@@ -16,10 +22,16 @@ export function getNewTimes(prevTimes: Time[], newTimes: Time[]) {
   return result.sort((a, b) => parseInt(b.time) - parseInt(a.time));
 }
 
-export function getPossibleStartNumbers(teams: Team[]) {
+export function getPossibleStartNumbers(
+  teams: Team[],
+  isA: boolean,
+  isStart: boolean
+) {
+  const key = getTimeKey(isA, isStart);
+
   return teams
     .reduce((acc, team) => {
-      if (team.startNumber)
+      if (team.startNumber && !team.result?.[key])
         acc.push(`${team.startNumber.toString()} - ${team.club}`);
 
       return acc;
@@ -83,6 +95,6 @@ export function onClickKoppel({
     isStart,
     isA,
   });
-  console.log(selectedTeam.id);
+
   setSelected('');
 }

@@ -40,6 +40,8 @@ function translateGender(gender: Gender) {
       return 'Mannen';
     case Gender.F:
       return 'Vrouwen';
+    case Gender.O:
+      return 'Open';
     default:
       return 'Mix';
   }

@@ -19,3 +19,5 @@ export * from './lib/teams/useUpdateStartNumbers';
 export * from './lib/times/useInitiateUpdates';
 export * from './lib/times/useSaveTime';
 export * from './lib/times/useDeleteTime';
+export * from './lib/times/useDuplicateTime';
+export * from './lib/times/useRestoreTime';
