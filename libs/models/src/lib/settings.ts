@@ -28,14 +28,14 @@ export enum BoatType {
   boardEightWith = '8+',
   scullEightWith = '8*',
   scullFourWith = '4*',
-  boardFourWithout = '4-',
   boardFourWith = '4+',
+  boardFourWithout = '4-',
   scullFourWithout = '4x-',
   boardTwoWithout = '2-',
   scullTwoWithout = '2x',
+  skiff = '1x',
   scullFourWithC = 'C4*',
   boardFourWithC = 'C4+',
-  skiff = '1x',
 }
 
 export interface BoatItem {
