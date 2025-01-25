@@ -1,5 +1,5 @@
 import { NavigationProps } from '../interfaces';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Page } from '../../components/atoms/page/page';
 import { MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
@@ -7,15 +7,21 @@ import { View } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
 import { VolumeManager } from 'react-native-volume-manager';
 import { timeService } from '../../services/timeService';
+import { Snackbar } from '../../components/molecules/snackbar';
+import { AntDesign } from '@expo/vector-icons';
 
 export function Registration({ navigation }: NavigationProps<'registration'>) {
-  const [isStart, setIsStart] = React.useState(false);
-  const [isA, setIsA] = React.useState(false);
+  const [isStart, setIsStart] = useState(false);
+  const [isA, setIsA] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
   const volumeChanger = useCallback(async () => {
-    const now = new Date().getTime();
-    await timeService.saveTime(now, isA, isStart);
-    await VolumeManager.setVolume(0.5);
+    const now = new Date();
+    await timeService.saveTime(now.getTime(), isA, isStart);
+    await VolumeManager.setVolume(0.8);
+    setCurrentTime(now);
+    setShowSnackbar(true);
   }, [isA, isStart]);
 
   useEffect(() => {
@@ -29,7 +35,21 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
 
   return (
     <Page title="Tijdsregistratie">
-      <View style={{ display: 'flex', gap: 20 }}>
+      <Snackbar
+        message={
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <AntDesign name="exclamationcircleo" size={24} color="red" />
+            <MainText
+              text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
+            />
+          </div>
+        }
+        visible={showSnackbar}
+        onClose={() => setShowSnackbar(false)}
+      />
+      <View
+        style={{ display: 'flex', gap: 20, opacity: showSnackbar ? 0.6 : 1 }}
+      >
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
         <MultipleInputsContainer>
           <CustomCheckbox
@@ -43,7 +63,6 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
             onChange={setIsStart}
           />
         </MultipleInputsContainer>
-
         <MainText text="Geef hieronder aan of je de tijd registreert voor A of voor B" />
         <MultipleInputsContainer>
           <CustomCheckbox label="A" checked={isA} onChange={setIsA} />
@@ -57,4 +76,13 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
       </View>
     </Page>
   );
+}
+
+function getTimeString(date: Date) {
+  const hour = date.getHours() > 10 ? date.getHours() : `0${date.getHours()}`;
+  const minutes =
+    date.getMinutes() > 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+  const seconds =
+    date.getSeconds() > 10 ? date.getSeconds() : `0${date.getSeconds()}`;
+  return `${hour}:${minutes}:${seconds}`;
 }

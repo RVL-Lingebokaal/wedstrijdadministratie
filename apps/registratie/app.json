@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vermaas.developers.registratie"
     },
     "android": {
       "googleServicesFile": "./google-services.json",

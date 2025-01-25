@@ -32,6 +32,8 @@
     "@nx/expo": "19.7.3"
   },
   "scripts": {
-    "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/registratie"
+    "eas-build-post-install": "cd ../../ && node tools/scripts/eas-build-post-install.mjs . apps/registratie",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   }
 }

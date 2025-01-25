@@ -37,8 +37,6 @@ export class TeamService {
   }
 
   async saveTeam(team: Team) {
-    const db = doc(firestore, 'ploeg', team.id);
-
     const participants = team.helm
       ? [...team.participants, team.helm]
       : team.participants;
@@ -56,6 +54,7 @@ export class TeamService {
       );
       team.id = docRef.id;
     } else {
+      const db = doc(firestore, 'ploeg', team.id);
       await setDoc(db, getDatabaseTeam(team), { merge: true });
     }
 
