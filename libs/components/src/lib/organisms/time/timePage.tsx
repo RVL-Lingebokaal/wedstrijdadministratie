@@ -51,14 +51,6 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
 
   return (
     <div className="p-4">
-      <div>
-        <h1 className="text-2xl font-bold text-primary mb-2">Koppelen</h1>
-        <p>
-          Kies uit de onderste lijst een tijd. Vul vervolgens een startnummer in
-          de invoer in en druk op enter. De tijd is nu gekoppeld aan dit
-          startnummer.
-        </p>
-      </div>
       <div className="grid grid-cols-3 py-4 gap-6">
         <div className="grid grid-cols-2 gap-6 col-span-2">
           <Combobox

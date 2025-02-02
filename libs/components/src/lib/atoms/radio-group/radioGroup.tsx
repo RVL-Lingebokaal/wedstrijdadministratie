@@ -1,18 +1,29 @@
 import { Field, Label, Radio, RadioGroup } from '@headlessui/react';
+import { twMerge } from 'tailwind-merge';
 
-interface StyledRadioGroupProps {
-  items: { label: string; value: boolean }[];
-  selected: boolean;
-  onChange: (value: boolean) => void;
+const cols: Record<number, string> = {
+  2: 'grid-cols-2',
+  3: 'grid-cols-3',
+  4: 'grid-cols-4',
+};
+
+interface StyledRadioGroupProps<T> {
+  items: { label: string; value: T }[];
+  selected: T;
+  onChange: (value: T) => void;
 }
 
-export function StyledRadioGroup({
+export function StyledRadioGroup<T>({
   items,
   selected,
   onChange,
-}: StyledRadioGroupProps) {
+}: StyledRadioGroupProps<T>) {
   return (
-    <RadioGroup value={selected} onChange={onChange} className="flex gap-6">
+    <RadioGroup
+      value={selected}
+      onChange={onChange}
+      className={twMerge('grid gap-2', cols[items.length])}
+    >
       {items.map(({ label, value }) => (
         <Field key={label} className="flex items-center gap-2">
           <Radio
