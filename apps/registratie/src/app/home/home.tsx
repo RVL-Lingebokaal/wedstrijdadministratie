@@ -29,11 +29,6 @@ export function Home({ navigation }: NavigationProps<'home'>) {
             color="primary"
             onPress={() => navigation.navigate('registration')}
           />
-          <Button
-            title="Koppelen"
-            color="secondary"
-            onPress={() => console.log('')}
-          />
         </View>
       </View>
     </LinearGradient>

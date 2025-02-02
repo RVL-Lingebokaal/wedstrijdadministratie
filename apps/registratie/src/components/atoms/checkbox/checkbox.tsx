@@ -1,6 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Checkbox } from 'expo-checkbox';
-import { LabelText } from '../typography/text';
+import { colors } from '../../../theme/colors';
 
 interface CheckboxProps {
   checked: boolean;
@@ -16,7 +16,7 @@ export function CustomCheckbox({ checked, label, onChange }: CheckboxProps) {
         value={checked}
         onValueChange={onChange}
       />
-      <LabelText text={label} />
+      <Text style={{ fontSize: 16, color: colors.darkText }}>{label}</Text>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { Modal, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
 import React, { ReactNode } from 'react';
 
 interface SnackbarProps {
@@ -19,13 +19,11 @@ export function Snackbar({
   }, duration || 3000);
 
   return (
-    <SafeAreaView>
-      <Modal visible={visible} transparent>
-        <View style={styles.centeredView}>
-          <View style={styles.modal}>{message}</View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+    <Modal visible={visible} transparent>
+      <View style={styles.centeredView}>
+        <View style={styles.modal}>{message}</View>
+      </View>
+    </Modal>
   );
 }
 

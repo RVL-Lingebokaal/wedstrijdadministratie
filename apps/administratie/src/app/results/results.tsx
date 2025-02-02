@@ -16,6 +16,8 @@ export default function ResultsPage() {
   const { data, isLoading } = useGetResults();
   const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
 
+  console.log({ data });
+
   if (isLoading || settingsIsLoading || teamIsLoading) {
     return <LoadingSpinner />;
   }

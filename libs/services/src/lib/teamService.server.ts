@@ -134,6 +134,7 @@ export class TeamService {
     return data.docs.map((doc) => {
       const docData = doc.data();
       const team = teams.get(docData['id']);
+      console.log(docData['result']);
       return {
         id: docData['id'],
         name: docData['name'],

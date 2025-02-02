@@ -1,32 +1,37 @@
-import { NavigationProps } from '../interfaces';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Page } from '../../components/atoms/page/page';
 import { MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
 import { VolumeManager } from 'react-native-volume-manager';
 import { timeService } from '../../services/timeService';
 import { Snackbar } from '../../components/molecules/snackbar';
 import { AntDesign } from '@expo/vector-icons';
+import { Button } from '../../components/atoms/button/button';
 
-export function Registration({ navigation }: NavigationProps<'registration'>) {
+export function Registration() {
   const [isStart, setIsStart] = useState(false);
   const [isA, setIsA] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
-  const volumeChanger = useCallback(async () => {
-    const now = new Date();
-    await timeService.saveTime(now.getTime(), isA, isStart);
-    await VolumeManager.setVolume(0.8);
-    setCurrentTime(now);
-    setShowSnackbar(true);
-  }, [isA, isStart]);
+  const volumeChanger = useCallback(
+    async (fromButton = false) => {
+      const now = new Date();
+      await timeService.saveTime(now.getTime(), isA, isStart);
+      if (!fromButton) await VolumeManager.setVolume(0.8);
+      setCurrentTime(now);
+      setShowSnackbar(true);
+    },
+    [isA, isStart]
+  );
 
   useEffect(() => {
     void VolumeManager.showNativeVolumeUI({ enabled: false });
-    const volumeListener = VolumeManager.addVolumeListener(volumeChanger);
+    const volumeListener = VolumeManager.addVolumeListener(() =>
+      volumeChanger()
+    );
 
     return function () {
       volumeListener.remove();
@@ -35,21 +40,21 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
 
   return (
     <Page title="Tijdsregistratie">
-      <Snackbar
-        message={
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <AntDesign name="exclamationcircleo" size={24} color="red" />
-            <MainText
-              text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
-            />
-          </div>
-        }
-        visible={showSnackbar}
-        onClose={() => setShowSnackbar(false)}
-      />
-      <View
+      <ScrollView
         style={{ display: 'flex', gap: 20, opacity: showSnackbar ? 0.6 : 1 }}
       >
+        <Snackbar
+          message={
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <AntDesign name="exclamationcircleo" size={24} color="red" />
+              <MainText
+                text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
+              />
+            </div>
+          }
+          visible={showSnackbar}
+          onClose={() => setShowSnackbar(false)}
+        />
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
         <MultipleInputsContainer>
           <CustomCheckbox
@@ -72,8 +77,13 @@ export function Registration({ navigation }: NavigationProps<'registration'>) {
             onChange={() => setIsA(!isA)}
           />
         </MultipleInputsContainer>
-        <MainText text="Je bent nu helemaal klaar om tijden te registreren. Om een tijd te registreren, druk op de volumeknop van je telefoon. Het maakt hierbij niet uit of je het volume harder of zachter zet. In beide gevallen wordt er een tijd geregistreerd." />
-      </View>
+        <MainText text="Je bent nu helemaal klaar om tijden te registreren. Om een tijd te registreren, druk op de volumeknop omhoog van je telefoon. Een andere optie is om de knop hieronder te gebruiken." />
+        <Button
+          title="Registreer tijd"
+          color="primary"
+          onPress={() => volumeChanger(true)}
+        />
+      </ScrollView>
     </Page>
   );
 }
