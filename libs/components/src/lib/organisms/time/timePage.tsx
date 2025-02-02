@@ -123,9 +123,7 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
                   return filtered;
                 });
               }}
-              duplicateFunc={(time) => {
-                setTimes((prevState) => [...prevState, time]);
-              }}
+              hasDuplicate
             />
           ))}
         </div>

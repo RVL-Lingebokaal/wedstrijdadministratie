@@ -14,7 +14,7 @@ interface TimeGridRowProps {
   selectedTime: Time | null;
   setSelectedTime: (time: Time) => void;
   deleteFunc?: (time: Time) => void;
-  duplicateFunc?: (time: Time) => void;
+  hasDuplicate?: boolean;
   restoreFunc?: (time: Time) => void;
 }
 
@@ -24,7 +24,7 @@ export function TimeGridRow({
   selectedTime,
   text,
   deleteFunc,
-  duplicateFunc,
+  hasDuplicate,
   restoreFunc,
   teamId,
   isA,
@@ -32,11 +32,10 @@ export function TimeGridRow({
 }: TimeGridRowProps) {
   const isSelected = selectedTime?.id === time.id;
   const hasDelete = deleteFunc !== undefined;
-  const hasDuplicate = duplicateFunc !== undefined;
   const hasRestore = restoreFunc !== undefined;
   const { mutate: deleteTime } = useDeleteTime();
   const { mutate: restoreTime } = useRestoreTime();
-  const { mutate: duplicateTime } = useDuplicateTime(duplicateFunc);
+  const { mutate: duplicateTime } = useDuplicateTime();
 
   return (
     <div

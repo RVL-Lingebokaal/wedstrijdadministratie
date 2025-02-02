@@ -4,6 +4,7 @@ import { SaveStartNumberTime } from '@models';
 
 export function useSaveTime() {
   return useMutation(['save-time'], async (args: SaveStartNumberTime) => {
+    console.log('save time');
     const response = await fetch('/api/teams/time/koppel', {
       method: 'POST',
       body: JSON.stringify(args),
