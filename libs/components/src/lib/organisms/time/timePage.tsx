@@ -36,7 +36,7 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
     (newTimes: Time[]) =>
       setTimes((prevState) => {
         const t = getNewTimes(prevState, newTimes);
-        if (prevState.length === 0) setSelectedTime(t[0]);
+        setSelectedTime(t[0]);
         return t;
       }),
     []
