@@ -6,7 +6,7 @@ export function useDeleteTime() {
   return useMutation(['delete-time'], async (args: Time) => {
     const response = await fetch('/api/teams/time', {
       method: 'POST',
-      body: JSON.stringify(args),
+      body: JSON.stringify({ ...args, type: 'delete' }),
     });
 
     if (!response.ok) throw new Error('Could not save the time');
