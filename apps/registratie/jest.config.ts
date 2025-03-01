@@ -1,7 +1,7 @@
 module.exports = {
   displayName: 'registratie',
   resolver: '@nx/jest/plugins/resolver',
-  preset: './node_modules/jest-expo/jest-preset.js',
+  preset: 'jest-preset',
   moduleFileExtensions: ['ts', 'js', 'html', 'tsx', 'jsx'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   moduleNameMapper: {

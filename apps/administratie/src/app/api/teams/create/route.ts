@@ -1,10 +1,11 @@
 import { NextRequest } from 'next/server';
 import { TeamAddForm } from '@schemas';
-import { participantService, teamService } from '@services';
-import { getBoatId } from '@models';
+import { participantService, settingsService, teamService } from '@services';
+import { getAgeClassTeam, getBoatId } from '@models';
 
 export async function POST(req: NextRequest) {
   const args = (await req.json()) as TeamAddForm;
+  const settings = await settingsService.getSettings();
   const preferredBlock = parseInt(args.preferredBlock.toString());
   const helm = args.helm
     ? await participantService.createParticipant({
@@ -20,7 +21,9 @@ export async function POST(req: NextRequest) {
     });
     participants.push(participant);
   }
+  const ageClass = getAgeClassTeam({ ages: settings.ages, participants });
   const team = {
+    ageClass,
     name: args.name,
     id: '',
     club: args.club,
