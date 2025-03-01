@@ -16,14 +16,11 @@ export default function ResultsPage() {
   const { data, isLoading } = useGetResults();
   const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
 
-  console.log({ data });
-
   if (isLoading || settingsIsLoading || teamIsLoading) {
     return <LoadingSpinner />;
   }
 
   const { processed } = allAgesAreProcessed(
-    settingsData?.ages ?? [],
     teamData ?? [],
     settingsData?.classes ?? []
   );
@@ -40,6 +37,7 @@ export default function ResultsPage() {
   const { rowsMap, headers } = getConvertedResults(
     settingsData?.classes ?? [],
     settingsData?.ages ?? [],
+    settingsData?.boats ?? [],
     data
   );
 

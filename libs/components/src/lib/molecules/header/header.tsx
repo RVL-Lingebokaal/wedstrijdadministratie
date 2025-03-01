@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <div className="bg-primary flex justify-center">
-      <nav className="flex justify-between py-6 w-6xl">
+      <nav className="flex justify-between py-2 w-6xl">
         <Link href="/apps/administratie/public">
           <Image
             className="bg-white p-2"

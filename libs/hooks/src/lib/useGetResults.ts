@@ -1,11 +1,12 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { BoatType, Gender, Participant, TeamResult } from '@models';
+import { AgeType, BoatType, Gender, Participant, TeamResult } from '@models';
 
 export interface GetTeamResult extends TeamResult {
   boatType: BoatType;
   participants: Participant[];
   gender: Gender;
+  ageClass: AgeType;
 }
 
 export function useGetResults() {

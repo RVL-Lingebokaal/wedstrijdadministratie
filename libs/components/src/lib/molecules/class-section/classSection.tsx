@@ -34,6 +34,7 @@ export function ClassSection({
   const [selectedIndexes, setSelectedIndexes] = useState<Set<number>>(
     new Set()
   );
+
   const teamsByClass = useGetTeamsByClass(teams, ages);
 
   const keys = Array.from(teamsByClass.keys());
@@ -83,6 +84,9 @@ export function ClassSection({
         const group = ownClassItems.find(({ ages }) => ages.includes(val));
         const classIndex = group?.ages.findIndex((a) => a === val);
         const border = getBorder({ index: classIndex, ages: group?.ages });
+
+        //
+
         return (
           <div className="flex" key={index}>
             <ClassRow

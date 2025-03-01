@@ -15,10 +15,10 @@ export function Page({
   const pathname = usePathname();
 
   return (
-    <div className={`${className} min-h-screen`}>
+    <div className={`${className} min-h-full`}>
       <Header />
       <main
-        className={`min-h-[calc(100vh_-_231px)] flex justify-center py-6 ${
+        className={`min-h-[calc(100vh_-_138px)] flex justify-center py-6 ${
           pathname === '/' ? 'diagonal-theme-line' : 'bg-background'
         }`}
       >

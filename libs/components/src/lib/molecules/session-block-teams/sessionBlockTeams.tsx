@@ -1,5 +1,5 @@
 'use client';
-import { AgeItem, BoatType, Team } from '@models';
+import { BoatType, Team } from '@models';
 import {
   ErrorModal,
   SessionGridHeader,
@@ -16,7 +16,6 @@ import { useUpdateBlockTeam, useUpdatePlaceTeam } from '@hooks';
 
 interface SessionBlockTeamsProps {
   teams?: Team[];
-  ageClasses: AgeItem[];
   refetch: () => void;
   totalBlocks: Map<number, number>;
   blockTeams: Map<number, Map<string, Team[]>>;
@@ -26,7 +25,6 @@ interface SessionBlockTeamsProps {
 
 export function SessionBlockTeams({
   teams,
-  ageClasses,
   refetch,
   blockTeams,
   totalBlocks,
@@ -113,10 +111,7 @@ export function SessionBlockTeams({
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <SessionGridRow
-                              team={team}
-                              ageClasses={ageClasses}
-                            />
+                            <SessionGridRow team={team} />
                           </div>
                         )}
                       </Draggable>

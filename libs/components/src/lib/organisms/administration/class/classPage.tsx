@@ -27,7 +27,6 @@ export function ClassPage() {
 
   const classMap = useGetClassMap(settingsData);
   const { missing } = allAgesAreProcessed(
-    settingsData?.ages ?? [],
     teamData ?? [],
     settingsData?.classes ?? []
   );

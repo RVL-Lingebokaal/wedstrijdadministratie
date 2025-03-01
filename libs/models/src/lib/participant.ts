@@ -1,5 +1,6 @@
 import { AgeItem, AgeType } from './settings';
 import { calculateAgeType } from '@utils';
+import { DateTime } from 'luxon';
 
 export interface Participant {
   name: string;
@@ -11,7 +12,7 @@ export interface Participant {
 }
 
 export function getAgeParticipant(participant: Participant) {
-  return new Date().getFullYear() - participant.birthYear;
+  return DateTime.now().year - participant.birthYear;
 }
 
 interface GetAgeTypesProps {
@@ -22,7 +23,7 @@ export function getAgeType({ participant, ages }: GetAgeTypesProps) {
   if (participant.ageType) {
     return participant.ageType;
   }
-  const age = new Date().getFullYear() - participant.birthYear;
+  const age = 2024 - participant.birthYear; //new Date().getFullYear() - participant.birthYear;
   return calculateAgeType(ages, age);
 }
 

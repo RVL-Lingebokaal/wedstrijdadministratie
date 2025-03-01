@@ -1,11 +1,9 @@
 import { TeamService } from './teamService.server';
 import fireStore from 'firebase/firestore';
 import { mockTeam } from './tests/mocks';
-import boatService from './boatService.server';
-import participantService from './participantService.server';
-import { Boat } from '../../../models/src/lib/boat';
-import { Participant } from '../../../models/src/lib/participant';
-import { BoatType } from '../../../models/src/lib/settings';
+import { boatService } from './boatService.server';
+import { participantService } from './participantService.server';
+import { Boat, BoatType, Participant } from '@models';
 
 jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn(),

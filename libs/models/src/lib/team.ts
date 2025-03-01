@@ -1,13 +1,12 @@
 import { getAgeParticipant, getAgeType, Participant } from './participant';
 import { Boat } from './boat';
-import { AgeItem, BoatType } from './settings';
+import { AgeItem, AgeType, BoatType } from './settings';
 import { calculateAgeType } from '@utils';
 
 export enum Gender {
   M = 'male',
   MIX = 'mix',
   F = 'female',
-  O = 'open',
 }
 
 export interface TeamTimes {
@@ -38,6 +37,7 @@ export interface Team extends TeamResult {
   place: number;
   block?: null | number;
   startNumber?: number;
+  ageClass: AgeType;
 }
 
 export function getDatabaseTeam(team: Team) {
@@ -60,11 +60,20 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
   if (participants.length === 1) {
     return getAgeType({ participant: participants[0], ages });
   }
-  const total = participants.reduce(
-    (acc, participant) => acc + getAgeParticipant(participant),
-    0
-  );
+  let oneBelow22 = false;
+  const total = participants.reduce((acc, participant) => {
+    const age = getAgeParticipant(participant);
+
+    if (age < 22) {
+      oneBelow22 = true;
+    }
+
+    return acc + age;
+  }, 0);
   const age = total / participants.length;
+
+  if (oneBelow22 && age > 27) return AgeType.open;
+
   return calculateAgeType(ages, age);
 }
 

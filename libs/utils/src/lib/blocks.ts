@@ -23,22 +23,3 @@ export function addBlock<T extends BlockNarrowing>({
   object.blocks.add(block);
   return object;
 }
-
-interface UpdateBlocksProps<T extends BlockNarrowing> {
-  object: T;
-  toRemove: number;
-  toAdd: number;
-  reset?: boolean;
-}
-
-export function updateBlocks<T extends BlockNarrowing>({
-  object,
-  toAdd,
-  reset,
-  toRemove,
-}: UpdateBlocksProps<T>) {
-  object = addBlock<T>({ reset, object, block: toAdd });
-  object.blocks.delete(toRemove);
-
-  return object;
-}

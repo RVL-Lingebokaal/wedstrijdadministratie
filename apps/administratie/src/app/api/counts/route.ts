@@ -7,7 +7,6 @@ export async function GET() {
     (acc, team) => acc.add(team.club),
     new Set()
   );
-  console.log(teams);
   const date = await settingsService.getGeneralSettings();
 
   return Response.json({

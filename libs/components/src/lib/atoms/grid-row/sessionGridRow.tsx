@@ -1,16 +1,13 @@
-import { AgeItem, getAgeClassTeam, Team } from '@models';
+import { Team } from '@models';
 
 interface SessionGridRowProps {
   team: Team;
-  ageClasses: AgeItem[];
 }
 
-export function SessionGridRow({ team, ageClasses }: SessionGridRowProps) {
+export function SessionGridRow({ team }: SessionGridRowProps) {
   return (
     <div className="grid grid-cols-12 m-1">
-      <div className="bg-white py-3 px-4">
-        {getAgeClassTeam({ ages: ageClasses, participants: team.participants })}
-      </div>
+      <div className="bg-white py-3 px-4">{team.ageClass}</div>
       <div className="bg-white py-3 px-4 col-span-2">{team.name}</div>
       <div className="bg-white py-3 px-4 col-span-3">
         {team.helm?.name ?? team.participants[0].name}

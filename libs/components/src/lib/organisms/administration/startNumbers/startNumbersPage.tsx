@@ -18,7 +18,6 @@ export function StartNumbersPage() {
   }
 
   const { processed } = allAgesAreProcessed(
-    settingsData?.ages ?? [],
     teamData ?? [],
     settingsData?.classes ?? []
   );

@@ -1,8 +1,8 @@
 'use client';
 import { useMemo } from 'react';
-import { AgeItem, BoatType, getAgeClassTeam, Team } from '@models';
+import { BoatType, Team } from '@models';
 
-export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
+export function useGetSessionTotals(teams?: Team[]) {
   return useMemo(() => {
     const basicMap = new Map<number, Map<string, Team[]>>();
     const blocksMap = new Map<number, number>([
@@ -47,14 +47,7 @@ export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
       }
       teams.push(team);
       //First sort on age class
-      teams.sort((ta, tb) =>
-        getAgeClassTeam({
-          ages: ageItems,
-          participants: ta.participants,
-        }).localeCompare(
-          getAgeClassTeam({ ages: ageItems, participants: tb.participants })
-        )
-      );
+      teams.sort((ta, tb) => ta.ageClass.localeCompare(tb.ageClass));
       //Secondly, sort on place
       teams.sort((ta, tb) => ta.place - tb.place);
 
@@ -63,5 +56,5 @@ export function useGetSessionTotals(ageItems: AgeItem[], teams?: Team[]) {
     }, basicMap);
 
     return { blockTeams: basicMap, totalBlocks: blocksMap, boatTypes: boatSet };
-  }, [ageItems, teams]);
+  }, [teams]);
 }

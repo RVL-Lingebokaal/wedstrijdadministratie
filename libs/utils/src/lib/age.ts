@@ -1,4 +1,4 @@
-import { AgeItem, AgeType, ClassItem, getAgeClassTeam } from '@models';
+import { AgeItem, AgeType, ClassItem } from '@models';
 import { GetTeamResult } from '@hooks';
 
 export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
@@ -6,14 +6,14 @@ export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
     const splittedAge = age.split('t/m');
     const lower = parseInt(splittedAge[0].trim());
     const high = parseInt(splittedAge[1].trim());
-    return ageToBeFound >= lower && ageToBeFound <= high;
+
+    return ageToBeFound >= lower && ageToBeFound < high + 1;
   })?.type;
 
   return type ?? AgeType.open;
 }
 
 export function allAgesAreProcessed(
-  ages: AgeItem[],
   teams: GetTeamResult[],
   classes: ClassItem[]
 ) {
@@ -21,13 +21,14 @@ export function allAgesAreProcessed(
     (set, team) =>
       set.add(
         JSON.stringify({
-          age: getAgeClassTeam({ ages, participants: team.participants }),
+          age: team.ageClass,
           gender: team.gender,
           boatType: team.boatType,
         })
       ),
     new Set<string>()
   );
+
   classes.forEach((c) => {
     c.ages.forEach((age) => {
       const key = JSON.stringify({

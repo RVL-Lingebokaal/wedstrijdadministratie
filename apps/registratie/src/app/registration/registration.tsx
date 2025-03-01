@@ -6,9 +6,8 @@ import { ScrollView } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
 import { VolumeManager } from 'react-native-volume-manager';
 import { timeService } from '../../services/timeService';
-import { Snackbar } from '../../components/molecules/snackbar';
-import { AntDesign } from '@expo/vector-icons';
 import { Button } from '../../components/atoms/button/button';
+import SnackBar from 'react-native-snackbar-component';
 
 export function Registration() {
   const [isStart, setIsStart] = useState(false);
@@ -40,20 +39,14 @@ export function Registration() {
 
   return (
     <Page title="Tijdsregistratie">
-      <ScrollView
-        style={{ display: 'flex', gap: 20, opacity: showSnackbar ? 0.6 : 1 }}
-      >
-        <Snackbar
-          message={
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <AntDesign name="exclamationcircleo" size={24} color="red" />
-              <MainText
-                text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
-              />
-            </div>
-          }
+      <ScrollView style={{ display: 'flex', gap: 20 }}>
+        <SnackBar
           visible={showSnackbar}
-          onClose={() => setShowSnackbar(false)}
+          textMessage={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
+          actionHandler={() => setShowSnackbar(false)}
+          actionText="let's go"
+          position="top"
+          autoHidingTime={3000}
         />
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
         <MultipleInputsContainer>

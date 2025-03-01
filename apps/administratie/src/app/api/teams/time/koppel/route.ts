@@ -4,8 +4,7 @@ import { timeService } from '@services';
 export async function POST(req: NextRequest) {
   const args = await req.json();
 
-  const result = await timeService.saveTime(args);
-  console.log(result);
+  await timeService.saveTime(args);
 
   return Response.json({ success: true });
 }

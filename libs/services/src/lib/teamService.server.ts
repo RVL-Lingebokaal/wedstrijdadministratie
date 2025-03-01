@@ -88,6 +88,7 @@ export class TeamService {
       this.teams = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
         const team = {
+          ageClass: docData['ageClass'],
           boat: boats.get(docData['boat']) as Boat,
           boatType: docData['boatType'],
           coach: docData['coach'],
@@ -134,7 +135,7 @@ export class TeamService {
     return data.docs.map((doc) => {
       const docData = doc.data();
       const team = teams.get(docData['id']);
-      console.log(docData['result']);
+
       return {
         id: docData['id'],
         name: docData['name'],
@@ -142,6 +143,7 @@ export class TeamService {
         participants: team?.participants ?? [],
         boatType: team?.boatType,
         gender: team?.gender,
+        ageClass: docData['ageClass'],
       };
     });
   }

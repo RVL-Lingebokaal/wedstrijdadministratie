@@ -1,10 +1,8 @@
 import {
-  AgeItem,
   AgeType,
   BoatType,
   ClassItem,
   Gender,
-  getAgeClassTeam,
   Team,
   translateClass,
   UseUpdateStartNumberTeam,
@@ -15,7 +13,6 @@ import { Item } from '@components/server';
 
 interface GetTeamsForStartNumbersProps {
   teams?: Team[];
-  ages: AgeItem[];
   classes: ClassItem[];
   missingNumbers: number[];
   saveData: (val: UseUpdateStartNumberTeamArgs) => void;
@@ -23,7 +20,6 @@ interface GetTeamsForStartNumbersProps {
 
 export function getTeamsForStartNumbers({
   teams,
-  ages,
   classes,
   missingNumbers,
   saveData,
@@ -39,8 +35,6 @@ export function getTeamsForStartNumbers({
   const toBeSaved: UseUpdateStartNumberTeam[] = [];
 
   teams.sort((a, b) => {
-    const ageA = getAgeClassTeam({ ages, participants: a.participants });
-    const ageB = getAgeClassTeam({ ages, participants: b.participants });
     let sortBlock;
     if (!a.block || !b.block) {
       sortBlock = 0;
@@ -52,7 +46,7 @@ export function getTeamsForStartNumbers({
       sortBlock ||
       boatTypes.indexOf(a.boatType) - boatTypes.indexOf(b.boatType) ||
       genderTypes.indexOf(a.gender) - genderTypes.indexOf(b.gender) ||
-      ageTypes.indexOf(ageA) - ageTypes.indexOf(ageB)
+      ageTypes.indexOf(a.ageClass) - ageTypes.indexOf(b.ageClass)
     );
   });
 
@@ -69,7 +63,6 @@ export function getTeamsForStartNumbers({
       const { sortedRows, startNumber } = getSortedRowItems({
         teams: boatAndGenderBlock,
         initialStartNumber: startNr,
-        ages,
         classMap,
         missingNumbersSet,
         toBeSavedItems: toBeSaved,
@@ -83,7 +76,6 @@ export function getTeamsForStartNumbers({
   const { sortedRows } = getSortedRowItems({
     teams: boatAndGenderBlock,
     initialStartNumber: startNr,
-    ages,
     classMap,
     missingNumbersSet,
     isLastOne: true,
@@ -98,7 +90,6 @@ export function getTeamsForStartNumbers({
 
 interface SortTeamsWithStartNumberProps {
   teams?: Team[];
-  ages: AgeItem[];
   classes: ClassItem[];
   missingNumbers: number[];
 }
@@ -106,7 +97,6 @@ interface SortTeamsWithStartNumberProps {
 export function sortTeamsWithStartNumber({
   teams,
   classes,
-  ages,
   missingNumbers,
 }: SortTeamsWithStartNumberProps) {
   if (!teams || teams.length === 0) return [];
@@ -137,8 +127,7 @@ export function sortTeamsWithStartNumber({
       }
     }
 
-    const age = getAgeClassTeam({ ages, participants: team.participants });
-    const classKey = `${age}${team.gender}${team.boatType}`;
+    const classKey = `${team.ageClass}${team.gender}${team.boatType}`;
     const className = classMap.get(classKey) ?? '';
     const teamItems = [
       { node: team.startNumber?.toString() ?? '' },
@@ -195,7 +184,6 @@ function getStartNr(startNr: number, missingNumbersSet: Set<number>) {
 interface GetSortedRowItemsProps {
   teams: Team[];
   initialStartNumber: number;
-  ages: AgeItem[];
   classMap: Map<string, string>;
   missingNumbersSet: Set<number>;
   isLastOne?: boolean;
@@ -205,7 +193,6 @@ interface GetSortedRowItemsProps {
 function getSortedRowItems({
   teams,
   initialStartNumber,
-  ages,
   classMap,
   missingNumbersSet,
   isLastOne,
@@ -214,8 +201,7 @@ function getSortedRowItems({
   let startNumber = initialStartNumber;
   const sortedTeams = teams.sort((a, b) => a.place - b.place);
   const rows = sortedTeams.reduce((acc, team) => {
-    const age = getAgeClassTeam({ ages, participants: team.participants });
-    const classKey = `${age}${team.gender}${team.boatType}`;
+    const classKey = `${team.ageClass}${team.gender}${team.boatType}`;
     const className = classMap.get(classKey) ?? '';
     const teamItems = [
       { node: startNumber.toString() },

@@ -5,6 +5,7 @@ import {
   BoatTypeError,
   BondFileError,
   Gender,
+  getAgeClassTeam,
   getBoatId,
   Participant,
   Team,
@@ -24,6 +25,7 @@ import {
 } from './constants';
 import { Stream } from 'stream';
 import { addBlock } from '@utils';
+import { settingsService } from './settingsService.server';
 
 const PARTICIPANT_KEYS = ['Slag', '2', '3', '4', '5', '6', '7', 'Boeg'];
 
@@ -34,6 +36,7 @@ export class BondService {
     const teams = new Set<Team>();
     const participantMap = new Map<string, Participant>();
     const boats = new Map<string, Boat>();
+    const settings = await settingsService.getSettings();
 
     const parser = parse({ delimiter: ',', trim: true, columns: true });
     const records = stream.pipe(parser);
@@ -75,6 +78,7 @@ export class BondService {
         participants.length,
         Boolean(helm)
       );
+      const ageClass = getAgeClassTeam({ participants, ages: settings.ages });
 
       teams.add({
         name: record[TEAM_NAME],
@@ -91,6 +95,7 @@ export class BondService {
         gender,
         helm,
         place: 0,
+        ageClass,
       });
     }
     return {
@@ -180,8 +185,6 @@ export class BondService {
       ? Gender.M
       : typeWithoutSpaces.includes('d')
       ? Gender.F
-      : typeWithoutSpaces.includes('o')
-      ? Gender.O
       : Gender.MIX;
 
     switch (typeWithoutSpaces) {

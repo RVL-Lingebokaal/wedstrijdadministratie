@@ -36,6 +36,7 @@ export enum BoatType {
   skiff = '1x',
   scullFourWithC = 'C4*',
   boardFourWithC = 'C4+',
+  scullThreeWithC = 'C3x',
 }
 
 export interface BoatItem {
@@ -112,12 +113,6 @@ export function translateClass({
   className,
 }: TranslateClassProps) {
   const translatedGender =
-    gender === Gender.F
-      ? 'D'
-      : gender === Gender.M
-      ? 'H'
-      : gender === Gender.O
-      ? 'Open'
-      : 'Mix';
+    gender === Gender.F ? 'D' : gender === Gender.M ? 'H' : 'Mix';
   return `${translatedGender}${boatType}${className}`;
 }

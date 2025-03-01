@@ -27,7 +27,6 @@ export function StartNumbersGrid({
   const rows = useMemo(() => {
     const props = {
       teams: teamData,
-      ages: settingsData?.ages ?? [],
       classes: settingsData?.classes ?? [],
       missingNumbers: generalSettingsData?.missingNumbers ?? [],
     };

@@ -1,6 +1,6 @@
 'use client';
 import { useMemo, useState } from 'react';
-import { useGetSessionTotals, useGetSettings, useGetTeams } from '@hooks';
+import { useGetSessionTotals, useGetTeams } from '@hooks';
 import { LoadingSpinner, Select, SelectGender } from '@components/server';
 import { BoatType, Gender } from '@models';
 import { SessionBlockTeams } from '../../../molecules/session-block-teams/sessionBlockTeams';
@@ -9,13 +9,7 @@ export function SessionPage() {
   const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
   const [gender, setGender] = useState<Gender>(Gender.M);
   const { data: teamData, isLoading, refetch } = useGetTeams();
-  const { data: settingsData } = useGetSettings();
-  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(
-    settingsData?.ages ?? [],
-    teamData
-  );
-
-  const ageClasses = settingsData?.ages ?? [];
+  const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(teamData);
 
   const boatTypeSelectItems = useMemo(() => {
     return Array.from(boatTypes.values()).map((id) => ({ id }));
@@ -44,7 +38,6 @@ export function SessionPage() {
         <SessionBlockTeams
           blockKey={`${boatType}${gender}`}
           boatType={boatType}
-          ageClasses={ageClasses}
           teams={teamData}
           refetch={refetch}
           totalBlocks={totalBlocks}
