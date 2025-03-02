@@ -1,5 +1,6 @@
 import { settingsService, teamService } from '@services';
-import * as ExcelJS from 'exceljs';
+// @ts-ignore
+import ExcelJS from 'exceljs';
 import { AgeType, ClassItem, Team, translateClass } from '@models';
 
 export class DownloadService {
