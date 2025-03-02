@@ -21,3 +21,4 @@ export * from './lib/times/useSaveTime';
 export * from './lib/times/useDeleteTime';
 export * from './lib/times/useDuplicateTime';
 export * from './lib/times/useRestoreTime';
+export * from './lib/useDownload';

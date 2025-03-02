@@ -16,6 +16,7 @@
     "@tanstack/react-query": "^4.32.6",
     "busboy": "^1.6.0",
     "csv-parse": "^5.4.0",
+    "exceljs": "^4.4.0",
     "firebase": "11.2.0",
     "luxon": "^3.4.3",
     "moment": "^2.30.1",

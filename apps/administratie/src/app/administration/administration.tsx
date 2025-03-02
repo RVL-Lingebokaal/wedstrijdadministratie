@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Tabs } from '@components/server';
 import {
   ClassPage,
+  DownloadsPage,
   SessionPage,
   StartNumbersPage,
   StatisticsPage,
@@ -27,6 +28,7 @@ export function AdministrationPage() {
         {tab === AdministrationTabs.session && <SessionPage />}
         {tab === AdministrationTabs.startNumbers && <StartNumbersPage />}
         {tab === AdministrationTabs.statistics && <StatisticsPage />}
+        {tab === AdministrationTabs.downloads && <DownloadsPage />}
       </div>
     </div>
   );
