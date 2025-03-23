@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// @ts-ignore
-import { Buffer } from 'exceljs/index';
 import { downloadService } from '@services';
 
 export async function GET(req: NextRequest) {

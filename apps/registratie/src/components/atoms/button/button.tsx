@@ -1,12 +1,12 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
-import { colors } from '../../../theme/colors';
+import { borderColors, colors, textColors } from '../../../theme/colors';
 
 interface ButtonProps {
   onPress: () => void;
   title: string;
   variant?: 'contained' | 'outlined';
-  color?: 'primary' | 'secondary';
+  color?: 'primary' | 'secondary' | 'white';
   disabled?: boolean;
 }
 
@@ -15,12 +15,14 @@ export function Button({
   title,
   disabled,
   variant,
-  color,
+  color = 'primary',
 }: ButtonProps) {
   const styles = createStyles({
-    color: colors[color || 'primary'],
-    textColor: colors.text,
+    color: colors[color],
+    textColor: textColors[color],
+    borderColor: borderColors[color],
   });
+  console.log(borderColors[color]);
 
   return (
     <Pressable style={styles.button} onPress={onPress} disabled={disabled}>
@@ -32,9 +34,10 @@ export function Button({
 interface CreateStylesProps {
   color: string;
   textColor: string;
+  borderColor?: string;
 }
 
-const createStyles = ({ color, textColor }: CreateStylesProps) =>
+const createStyles = ({ color, textColor, borderColor }: CreateStylesProps) =>
   StyleSheet.create({
     button: {
       alignItems: 'center',
@@ -44,6 +47,8 @@ const createStyles = ({ color, textColor }: CreateStylesProps) =>
       borderRadius: 4,
       elevation: 3,
       backgroundColor: color,
+      borderColor: borderColor,
+      borderWidth: borderColor ? 1 : 0,
     },
     text: {
       fontSize: 16,

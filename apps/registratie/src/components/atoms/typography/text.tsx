@@ -4,12 +4,17 @@ import { Text } from 'react-native';
 
 interface TextProps extends TypographyProps {
   light?: boolean;
+  padding?: number;
 }
 
-export function MainText({ text, light }: TextProps) {
+export function MainText({ text, light, padding }: TextProps) {
   return (
     <Text
-      style={{ fontSize: 20, color: light ? colors.text : colors.darkText }}
+      style={{
+        fontSize: 20,
+        color: light ? colors.text : colors.darkText,
+        paddingTop: padding,
+      }}
     >
       {text}
     </Text>

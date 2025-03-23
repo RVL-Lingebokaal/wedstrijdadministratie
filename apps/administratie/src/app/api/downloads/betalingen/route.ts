@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { downloadService } from '@services';
 // @ts-ignore
-import { Buffer } from 'exceljs/index';
+import { Buffer } from 'exceljs';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;

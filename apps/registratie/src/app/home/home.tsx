@@ -26,7 +26,7 @@ export function Home({ navigation }: NavigationProps<'home'>) {
         >
           <Button
             title="Registratie"
-            color="primary"
+            color="white"
             onPress={() => navigation.navigate('registration')}
           />
         </View>

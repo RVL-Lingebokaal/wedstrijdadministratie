@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Page } from '../../components/atoms/page/page';
-import { MainText } from '../../components/atoms/typography/text';
+import { LabelText, MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
-import { VolumeManager } from 'react-native-volume-manager';
-import { timeService } from '../../services/timeService';
 import { Button } from '../../components/atoms/button/button';
-import SnackBar from 'react-native-snackbar-component';
+import { colors } from '../../theme/colors';
+import { timeService } from '../../services/timeService';
+import { VolumeManager } from 'react-native-volume-manager';
 
 export function Registration() {
   const [isStart, setIsStart] = useState(false);
@@ -27,6 +27,14 @@ export function Registration() {
   );
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowSnackbar(false);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [showSnackbar]);
+
+  useEffect(() => {
     void VolumeManager.showNativeVolumeUI({ enabled: false });
     const volumeListener = VolumeManager.addVolumeListener(() =>
       volumeChanger()
@@ -40,15 +48,28 @@ export function Registration() {
   return (
     <Page title="Tijdsregistratie">
       <ScrollView style={{ display: 'flex', gap: 20 }}>
-        <SnackBar
-          visible={showSnackbar}
-          textMessage={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
-          actionHandler={() => setShowSnackbar(false)}
-          actionText="let's go"
-          position="top"
-          autoHidingTime={3000}
+        {showSnackbar && (
+          <View
+            style={{
+              marginBottom: 10,
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 4,
+              borderStyle: 'dashed',
+              borderColor: colors.primary,
+              backgroundColor: colors.white,
+            }}
+          >
+            <LabelText
+              text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
+            />
+          </View>
+        )}
+        <MainText
+          padding={showSnackbar ? 0 : 40}
+          text="Geef hieronder aan of je bij de finish of de start staat."
         />
-        <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
+
         <MultipleInputsContainer>
           <CustomCheckbox
             label="Finish"
@@ -70,22 +91,24 @@ export function Registration() {
             onChange={() => setIsA(!isA)}
           />
         </MultipleInputsContainer>
-        <MainText text="Je bent nu helemaal klaar om tijden te registreren. Om een tijd te registreren, druk op de volumeknop omhoog van je telefoon. Een andere optie is om de knop hieronder te gebruiken." />
-        <Button
-          title="Registreer tijd"
-          color="primary"
-          onPress={() => volumeChanger(true)}
-        />
+        <MainText text="Je kan een tijd registreren door de volumeknop op de telefoon te gebruiken of de knop hieronder." />
+        <View style={{ marginTop: 10 }}>
+          <Button
+            title="Registreer tijd"
+            color="primary"
+            onPress={() => volumeChanger(true)}
+          />
+        </View>
       </ScrollView>
     </Page>
   );
 }
 
 function getTimeString(date: Date) {
-  const hour = date.getHours() > 10 ? date.getHours() : `0${date.getHours()}`;
+  const hour = date.getHours() >= 10 ? date.getHours() : `0${date.getHours()}`;
   const minutes =
-    date.getMinutes() > 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+    date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
   const seconds =
-    date.getSeconds() > 10 ? date.getSeconds() : `0${date.getSeconds()}`;
+    date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
   return `${hour}:${minutes}:${seconds}`;
 }

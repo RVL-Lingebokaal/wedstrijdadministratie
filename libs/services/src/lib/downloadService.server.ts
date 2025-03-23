@@ -1,6 +1,6 @@
 import { settingsService, teamService } from '@services';
 // @ts-ignore
-import ExcelJS from 'exceljs';
+import { Workbook } from 'exceljs';
 import { AgeType, ClassItem, Team, translateClass } from '@models';
 
 export class DownloadService {
@@ -30,7 +30,7 @@ export class DownloadService {
     const teams = await teamService.getTeams();
 
     // Create a new Excel workbook
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1');
 
     // Define columns
@@ -69,7 +69,7 @@ export class DownloadService {
     const teams = await teamService.getTeams();
 
     // Create a new Excel workbook
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1');
 
     // Define columns
@@ -115,7 +115,7 @@ export class DownloadService {
     const classes = this.getSettingsMapClasses(settings.classes);
 
     // Create a new Excel workbook
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1');
 
     // Define columns
@@ -187,7 +187,7 @@ export class DownloadService {
     const classes = this.getSettingsMapClasses(settings.classes);
 
     // Create a new Excel workbook
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1');
     const headerStyle = {
       font: { bold: true, size: 12 },

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { downloadService } from '@services';
 // @ts-ignore
-import { Buffer } from 'exceljs/index';
+import { Buffer } from 'exceljs';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const sortByStartNumber = searchParams.get('sortByStartNumber') === 'true';
-  console.log('within here');
+
   try {
     // Create a new Excel workbook
     let buffer: null | Buffer = null;
