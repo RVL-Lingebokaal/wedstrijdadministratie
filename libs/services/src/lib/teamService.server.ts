@@ -144,6 +144,9 @@ export class TeamService {
         boatType: team?.boatType,
         gender: team?.gender,
         ageClass: docData['ageClass'],
+        startNr: team?.startNumber,
+        slag: team?.helm ?? team?.participants[0],
+        block: team?.block,
       };
     });
   }

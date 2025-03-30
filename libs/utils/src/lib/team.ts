@@ -67,7 +67,11 @@ export function getConvertedResults(
   results?: GetTeamResult[]
 ) {
   if (!results) {
-    return { rowsMap: new Map<string, Item[][]>(), headers: [] };
+    return {
+      rowsMap: new Map<string, Item[][]>(),
+      headers: [],
+      correctedRows: [[]],
+    };
   }
   const classMap = getClassMap(classItems);
   const correctionAgeSexMap = getCorrectionAgeSexMap(ages);
@@ -96,50 +100,86 @@ export function getConvertedResults(
   });
 
   const rowsMap = new Map<string, Item[][]>();
+  const correctedRows = [] as Item[][];
 
-  results.forEach(({ name, result, gender, boatType, ageClass }) => {
-    const key = `${ageClass}${gender}${boatType}`;
-    const className = classMap.get(key) ?? '';
-    const translatedClassName = doneSet.get(className) ?? '';
-    const rows = rowsMap.get(translatedClassName) ?? [];
+  results.forEach(
+    ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
+      const key = `${ageClass}${gender}${boatType}`;
+      const className = classMap.get(key) ?? '';
+      const translatedClassName = doneSet.get(className) ?? '';
+      const rows = rowsMap.get(translatedClassName) ?? [];
 
-    const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
-    const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
-    const start = convertTimeToObject(startTimeMillis);
-    const finish = convertTimeToObject(finishTimeMillis);
-    let difference = null;
+      const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
+      const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
+      const start = convertTimeToObject(startTimeMillis);
+      const finish = convertTimeToObject(finishTimeMillis);
+      let correction = null;
 
-    if (startTimeMillis && finishTimeMillis) {
-      difference =
-        Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
-      const correctionAgeSex =
-        correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
-      const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
-      const totalCorrection = correctionAgeSex * correctionBoat;
+      if (startTimeMillis && finishTimeMillis) {
+        const difference =
+          Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
+        const correctionAgeSex =
+          correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
+        const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
+        const totalCorrection = correctionAgeSex * correctionBoat;
 
-      difference = difference * totalCorrection;
+        correction = difference * totalCorrection;
+      }
+
+      const row = [
+        { node: startNr },
+        { node: name },
+        { node: slag.name },
+        {
+          node:
+            start.dateTime && finish.dateTime
+              ? getDifference(start.dateTime, finish.dateTime)
+              : '-',
+        },
+        { node: ageClass },
+        { node: block },
+      ];
+
+      rows.push(row);
+      rowsMap.set(translatedClassName, rows);
+      correctedRows.push([
+        { node: startNr },
+        { node: className },
+        { node: name },
+        { node: ageClass },
+        {
+          node:
+            start.dateTime && finish.dateTime
+              ? getDifference(start.dateTime, finish.dateTime)
+              : '-',
+        },
+        {
+          node: correction
+            ? Duration.fromMillis(correction).toFormat("hh:mm:ss.SSS'")
+            : '',
+        },
+      ]);
     }
-
-    const row = [
-      { node: name },
-      { node: start.localeString },
-      { node: finish.localeString },
-      {
-        node:
-          start.dateTime && finish.dateTime
-            ? getDifference(start.dateTime, finish.dateTime)
-            : '-',
-      },
-      {
-        node: difference
-          ? Duration.fromMillis(difference).toFormat("hh:mm:ss.SSS'")
-          : '',
-      },
-    ];
-
-    rows.push(row);
-    rowsMap.set(translatedClassName, rows);
+  );
+  [...rowsMap.keys()].forEach((key) => {
+    const rows = rowsMap.get(key) ?? [];
+    const sortedRows = rows.sort((a, b) => {
+      return sortTimes(a[3].node as string, b[3].node as string);
+    });
+    rowsMap.set(key, sortedRows);
   });
+  const sortedCorrectedRows = correctedRows.sort((a, b) => {
+    return sortTimes(a[4].node as string, b[4].node as string);
+  });
+  return { rowsMap, headers, correctedRows: sortedCorrectedRows };
+}
 
-  return { rowsMap, headers };
+function sortTimes(a: string, b: string) {
+  if (a && b && a !== '-' && b !== '-') {
+    return DateTime.fromISO(a).toMillis() - DateTime.fromISO(b).toMillis();
+  }
+  if (a === '-') {
+    return 1;
+  }
+  return -1;
 }

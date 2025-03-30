@@ -7,6 +7,9 @@ export interface GetTeamResult extends TeamResult {
   participants: Participant[];
   gender: Gender;
   ageClass: AgeType;
+  startNr: number;
+  slag: Participant;
+  block: number;
 }
 
 export function useGetResults() {

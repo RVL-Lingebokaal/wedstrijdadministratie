@@ -1,5 +1,4 @@
-import { AgeItem, AgeType, ClassItem } from '@models';
-import { GetTeamResult } from '@hooks';
+import { AgeItem, AgeType, ClassItem, Team } from '@models';
 
 export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   const type = ages.find(({ age }) => {
@@ -13,10 +12,7 @@ export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   return type ?? AgeType.open;
 }
 
-export function allAgesAreProcessed(
-  teams: GetTeamResult[],
-  classes: ClassItem[]
-) {
+export function allAgesAreProcessed(teams: Team[], classes: ClassItem[]) {
   const teamAges = teams.reduce(
     (set, team) =>
       set.add(
