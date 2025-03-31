@@ -27,7 +27,7 @@ export interface Team extends TeamResult {
   participants: Participant[];
   boat?: Boat | null;
   registrationFee: number;
-  preferredBlock: number;
+  preferredBlock?: number;
   coach?: string;
   phoneNumber: string;
   remarks: string;

@@ -89,7 +89,9 @@ export class BondService {
         registrationFee: record[TEAM_REGISTRATION_FEE],
         remarks: record[TEAM_REMARKS],
         coach: record[TEAM_COACH],
-        preferredBlock: parseInt(record[TEAM_PREFFERED_BLOCK]),
+        preferredBlock: record[TEAM_PREFFERED_BLOCK]
+          ? parseInt(record[TEAM_PREFFERED_BLOCK])
+          : undefined,
         phoneNumber: record[TEAM_PHONE_NUMBER],
         boatType,
         gender,
@@ -181,15 +183,13 @@ export class BondService {
     helm: boolean
   ): { boatType: BoatType; gender: Gender } {
     const typeWithoutSpaces = type.replaceAll(' ', '').toLowerCase();
-    const gender = typeWithoutSpaces.includes('h')
-      ? Gender.M
-      : typeWithoutSpaces.includes('d')
-      ? Gender.F
-      : Gender.MIX;
+    const gender = this.getGender(typeWithoutSpaces);
 
     switch (typeWithoutSpaces) {
       case 'h1x':
       case 'd1x':
+      case 'm1x':
+      case 'v1x':
         if (amountOfParticipants === 1 && !helm) {
           return { gender, boatType: BoatType.skiff };
         }
@@ -202,6 +202,8 @@ export class BondService {
       case 'dc4+':
       case 'hc4+':
       case 'oc4+':
+      case 'mc4+':
+      case 'vc4+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWithC };
         }
@@ -214,6 +216,8 @@ export class BondService {
       case 'dc4x':
       case 'hc4x':
       case 'oc4x':
+      case 'mc4x':
+      case 'vc4x':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWithC };
         }
@@ -226,6 +230,8 @@ export class BondService {
       case 'dc4*':
       case 'hc4*':
       case 'oc4*':
+      case 'mc4*':
+      case 'vc4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.scullFourWithC };
         }
@@ -237,6 +243,8 @@ export class BondService {
       case 'mix2x':
       case 'd2x':
       case 'h2x':
+      case 'm2x':
+      case 'v2x':
         if (amountOfParticipants === 2 && !helm) {
           return { gender, boatType: BoatType.scullTwoWithout };
         }
@@ -249,6 +257,8 @@ export class BondService {
       case 'd4+':
       case 'h4+':
       case 'o4+':
+      case 'm4+':
+      case 'v4+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.boardFourWith };
         }
@@ -261,6 +271,8 @@ export class BondService {
       case 'd4*':
       case 'h4*':
       case 'o4*':
+      case 'm4*':
+      case 'v4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: BoatType.scullFourWith };
         }
@@ -275,6 +287,8 @@ export class BondService {
       case 'h8+':
       case 'h8':
       case 'o8+':
+      case 'm8+':
+      case 'v8+':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: BoatType.boardEightWith };
         }
@@ -287,6 +301,8 @@ export class BondService {
       case 'd8*':
       case 'h8*':
       case 'o8*':
+      case 'v8*':
+      case 'm8*':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: BoatType.scullEightWith };
         }
@@ -298,6 +314,14 @@ export class BondService {
       default:
         throw Error(`Could not translate: ${type}`);
     }
+  }
+
+  private getGender(type: string) {
+    const isFemale = type.includes('D') || type.includes('V');
+    const isMix = type.includes('Mix');
+    if (isMix) return Gender.MIX;
+    if (isFemale) return Gender.F;
+    return Gender.M;
   }
 }
 
