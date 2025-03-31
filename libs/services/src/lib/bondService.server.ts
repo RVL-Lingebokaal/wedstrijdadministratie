@@ -43,7 +43,7 @@ export class BondService {
     let row = 1;
     for await (const record of records) {
       row++;
-      const { participants, helm } = this.addParticipants(
+      const { participants, helm, preferredBlock } = this.addParticipants(
         record,
         participantMap
       );
@@ -56,9 +56,7 @@ export class BondService {
         let boat: Boat = {
           club: record[TEAM_CLUB],
           name: record[BOAT_NAME],
-          blocks: record[TEAM_PREFFERED_BLOCK]
-            ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
-            : new Set(),
+          blocks: new Set([preferredBlock]),
           id: getBoatId(record[BOAT_NAME], record[TEAM_CLUB]),
         };
         boatId = boat.id;
@@ -91,9 +89,7 @@ export class BondService {
         registrationFee: record[TEAM_REGISTRATION_FEE] ?? 0,
         remarks: record[TEAM_REMARKS] ?? null,
         coach: record[TEAM_COACH] ?? null,
-        preferredBlock: record[TEAM_PREFFERED_BLOCK]
-          ? parseInt(record[TEAM_PREFFERED_BLOCK])
-          : null,
+        preferredBlock,
         phoneNumber: record[TEAM_PHONE_NUMBER] ?? null,
         boatType,
         gender,
@@ -114,28 +110,51 @@ export class BondService {
     map: Map<string, Participant>
   ) {
     const participants: Participant[] = [];
+    let overrideBlock: undefined | number = undefined;
     PARTICIPANT_KEYS.forEach((key) => {
       const rec = record[key];
       if (rec && rec !== '') {
-        const participant = this.createParticipant(record, key, map);
+        const { participant, newBlock } = this.createParticipant(
+          record,
+          key,
+          map,
+          overrideBlock
+        );
+        overrideBlock = newBlock;
+        if (overrideBlock !== undefined && overrideBlock !== newBlock) {
+          throw new Error(
+            `I need to do something: ${overrideBlock} ${newBlock} ${record[TEAM_ID]}`
+          );
+        }
         participants.push(participant);
       }
     });
 
     const rec = record[HELM];
     const helm =
-      rec && rec !== '' ? this.createParticipant(record, HELM, map) : null;
+      rec && rec !== ''
+        ? this.createParticipant(record, HELM, map, overrideBlock ?? 1)
+        : null;
 
-    return { participants, helm };
+    return {
+      participants,
+      helm: helm?.participant ?? null,
+      preferredBlock: overrideBlock ?? 1,
+    };
   }
 
   private createParticipant(
     record: Record<string, string>,
     path: string,
-    map: Map<string, Participant>
+    map: Map<string, Participant>,
+    overrideBlock?: number
   ) {
+    let preferredBlock = record[TEAM_PREFFERED_BLOCK]
+      ? parseInt(record[TEAM_PREFFERED_BLOCK])
+      : null;
+    preferredBlock = overrideBlock ?? preferredBlock ?? 1;
     const id = record[`NKODE ${path}`];
-    let participant = map.get(id) ?? {
+    let initialParticipant = map.get(id) ?? {
       name: record[path],
       birthYear: parseInt(
         record[`geb${isNaN(parseInt(path)) ? '' : ' '}${path}`]
@@ -146,15 +165,12 @@ export class BondService {
         ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
         : new Set(),
     };
-    participant = record[TEAM_PREFFERED_BLOCK]
-      ? addBlock<Participant>({
-          object: participant,
-          block: parseInt(record[TEAM_PREFFERED_BLOCK]),
-          reset: true,
-        })
-      : participant;
+    const { participant, newBlock } = this.addBlockParticipant(
+      preferredBlock,
+      initialParticipant
+    );
     map.set(id, participant);
-    return participant;
+    return { participant, newBlock };
   }
 
   private checkRecord(record: any, row: number) {
@@ -328,6 +344,18 @@ export class BondService {
     if (isMix) return Gender.MIX;
     if (isFemale) return Gender.F;
     return Gender.M;
+  }
+
+  private addBlockParticipant(
+    block: number,
+    participant: Participant
+  ): { participant: Participant; newBlock: number } {
+    if (participant.blocks.has(block)) {
+      return this.addBlockParticipant(block + 1, participant);
+    }
+
+    participant.blocks.add(block);
+    return { participant, newBlock: block };
   }
 }
 
