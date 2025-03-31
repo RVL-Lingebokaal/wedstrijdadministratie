@@ -23,7 +23,7 @@ export function getAgeType({ participant, ages }: GetAgeTypesProps) {
   if (participant.ageType) {
     return participant.ageType;
   }
-  const age = 2024 - participant.birthYear; //new Date().getFullYear() - participant.birthYear;
+  const age = new Date().getFullYear() - participant.birthYear;
   return calculateAgeType(ages, age);
 }
 
