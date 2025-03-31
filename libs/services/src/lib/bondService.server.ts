@@ -323,8 +323,8 @@ export class BondService {
   }
 
   private getGender(type: string) {
-    const isFemale = type.includes('D') || type.includes('V');
-    const isMix = type.includes('Mix');
+    const isFemale = type.includes('d') || type.includes('v');
+    const isMix = type.includes('mix');
     if (isMix) return Gender.MIX;
     if (isFemale) return Gender.F;
     return Gender.M;
