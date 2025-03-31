@@ -56,7 +56,9 @@ export class BondService {
         let boat: Boat = {
           club: record[TEAM_CLUB],
           name: record[BOAT_NAME],
-          blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
+          blocks: record[TEAM_PREFFERED_BLOCK]
+            ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
+            : new Set(),
           id: getBoatId(record[BOAT_NAME], record[TEAM_CLUB]),
         };
         boatId = boat.id;
@@ -86,13 +88,13 @@ export class BondService {
         club: record[TEAM_CLUB],
         participants,
         boat: boatId ? boats.get(boatId) : null,
-        registrationFee: record[TEAM_REGISTRATION_FEE],
-        remarks: record[TEAM_REMARKS],
-        coach: record[TEAM_COACH],
+        registrationFee: record[TEAM_REGISTRATION_FEE] ?? 0,
+        remarks: record[TEAM_REMARKS] ?? null,
+        coach: record[TEAM_COACH] ?? null,
         preferredBlock: record[TEAM_PREFFERED_BLOCK]
           ? parseInt(record[TEAM_PREFFERED_BLOCK])
-          : undefined,
-        phoneNumber: record[TEAM_PHONE_NUMBER],
+          : null,
+        phoneNumber: record[TEAM_PHONE_NUMBER] ?? null,
         boatType,
         gender,
         helm,
@@ -140,13 +142,17 @@ export class BondService {
       ),
       id,
       club: record[`VKODE ${path}`],
-      blocks: new Set([parseInt(record[TEAM_PREFFERED_BLOCK])]),
+      blocks: record[TEAM_PREFFERED_BLOCK]
+        ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
+        : new Set(),
     };
-    participant = addBlock<Participant>({
-      object: participant,
-      block: parseInt(record[TEAM_PREFFERED_BLOCK]),
-      reset: true,
-    });
+    participant = record[TEAM_PREFFERED_BLOCK]
+      ? addBlock<Participant>({
+          object: participant,
+          block: parseInt(record[TEAM_PREFFERED_BLOCK]),
+          reset: true,
+        })
+      : participant;
     map.set(id, participant);
     return participant;
   }
