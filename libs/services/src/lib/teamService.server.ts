@@ -109,6 +109,7 @@ export class TeamService {
           place: parseInt(docData['place']),
           result: docData['result'],
           startNumber: docData['startNumber'],
+          block: docData['block'],
         };
         return acc.set(team.id, team);
       }, new Map());

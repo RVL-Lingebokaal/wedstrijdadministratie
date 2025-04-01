@@ -12,27 +12,17 @@ import { VolumeManager } from 'react-native-volume-manager';
 export function Registration() {
   const [isStart, setIsStart] = useState(false);
   const [isA, setIsA] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | undefined>(undefined);
 
   const volumeChanger = useCallback(
     async (fromButton = false) => {
       const now = new Date();
       await timeService.saveTime(now.getTime(), isA, isStart);
-      if (!fromButton) await VolumeManager.setVolume(0.8);
+      if (!fromButton) await VolumeManager.setVolume(0.5);
       setCurrentTime(now);
-      setShowSnackbar(true);
     },
     [isA, isStart]
   );
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowSnackbar(false);
-    }, 3000);
-
-    return () => clearTimeout(timeout);
-  }, [showSnackbar]);
 
   useEffect(() => {
     void VolumeManager.showNativeVolumeUI({ enabled: false });
@@ -48,27 +38,26 @@ export function Registration() {
   return (
     <Page title="Tijdsregistratie">
       <ScrollView style={{ display: 'flex', gap: 20 }}>
-        {showSnackbar && (
-          <View
-            style={{
-              marginBottom: 10,
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 4,
-              borderStyle: 'dashed',
-              borderColor: colors.primary,
-              backgroundColor: colors.white,
-            }}
-          >
-            <LabelText
-              text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
-            />
-          </View>
-        )}
-        <MainText
-          padding={showSnackbar ? 0 : 40}
-          text="Geef hieronder aan of je bij de finish of de start staat."
-        />
+        <View
+          style={{
+            marginBottom: 10,
+            borderWidth: 1,
+            padding: 10,
+            borderRadius: 4,
+            borderStyle: 'dashed',
+            borderColor: colors.primary,
+            backgroundColor: colors.white,
+          }}
+        >
+          <LabelText
+            text={
+              currentTime
+                ? `De tijd ${getTimeString(currentTime)} is geregistreerd`
+                : 'Er is nog geen tijd geregistreerd'
+            }
+          />
+        </View>
+        <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
 
         <MultipleInputsContainer>
           <CustomCheckbox

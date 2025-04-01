@@ -13,7 +13,7 @@ export function Page({ children, title }: PageProps) {
     <View style={{ flex: 1 }}>
       {title ? (
         <View style={{ backgroundColor: colors.primary, padding: 20 }}>
-          <Header text={title} />
+          <Header text={title} type="text" />
         </View>
       ) : null}
       <View

@@ -5,6 +5,12 @@ import { Participant } from '@models';
 export async function GET() {
   const teams = await teamService.getTeams();
 
+  Array.from(teams.values()).forEach((t) => {
+    if (t.id === '792267') {
+      console.log('block', t.block);
+    }
+  });
+
   const arrayTeams = Array.from(teams.values());
   const jsonTeams: any[] = [];
   arrayTeams.forEach((t) => {

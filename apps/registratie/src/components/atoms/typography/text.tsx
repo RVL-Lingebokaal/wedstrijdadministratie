@@ -2,7 +2,7 @@ import { colors } from '../../../theme/colors';
 import { TypographyProps } from './headings';
 import { Text } from 'react-native';
 
-interface TextProps extends TypographyProps {
+interface TextProps extends Omit<TypographyProps, 'type'> {
   light?: boolean;
   padding?: number;
 }

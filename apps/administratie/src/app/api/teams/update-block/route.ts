@@ -15,6 +15,8 @@ export async function POST(req: NextRequest) {
   try {
     team.block = args.destBlock;
     team.startNumber = undefined;
+    console.log(JSON.stringify(team.participants));
+
     await teamService.saveTeam(team);
   } catch (error: any) {
     let errorMessage;
