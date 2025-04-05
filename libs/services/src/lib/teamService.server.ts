@@ -146,7 +146,7 @@ export class TeamService {
         gender: team?.gender,
         ageClass: docData['ageClass'],
         startNr: team?.startNumber,
-        slag: team?.helm ?? team?.participants[0],
+        slag: team?.participants[0],
         block: team?.block,
       };
     });

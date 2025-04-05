@@ -140,7 +140,7 @@ export function sortTeamsWithStartNumber({
         }),
       },
       { node: team.name },
-      { node: team.helm?.name ?? team.participants[0].name ?? '' },
+      { node: team.participants[0].name ?? '' },
       { node: team.boat?.name ?? '' },
     ];
     acc.push(teamItems);
@@ -214,7 +214,7 @@ function getSortedRowItems({
         }),
       },
       { node: team.name },
-      { node: team.helm?.name ?? team.participants[0].name ?? '' },
+      { node: team.participants[0].name ?? '' },
       { node: team.boat?.name ?? '' },
     ];
     acc.push(teamItems);
