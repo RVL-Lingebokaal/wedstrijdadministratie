@@ -3,11 +3,8 @@ import { Boat } from './boat';
 import { AgeItem, AgeType, BoatType } from './settings';
 import { calculateAgeType } from '@utils';
 
-export enum Gender {
-  M = 'male',
-  MIX = 'mix',
-  F = 'female',
-}
+export const gender = ['male', 'mix', 'female', 'open'] as const;
+export type Gender = (typeof gender)[number];
 
 export interface TeamTimes {
   startTimeA?: string;

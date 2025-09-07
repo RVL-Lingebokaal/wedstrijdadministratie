@@ -7,7 +7,7 @@ import {
   AgeStrategy,
   AgeType,
   BoatItem,
-  BoatType,
+  boatType,
   SettingsTabs,
 } from '@models';
 import { useGetGeneralSettings, useGetSettings } from '@hooks';
@@ -66,7 +66,7 @@ export default function SettingsPage() {
 }
 
 const getDefaultvaluesBoats = (): BoatItem[] => {
-  return Object.values(BoatType).map((key) => ({
+  return boatType.map((key) => ({
     type: key,
     correction: 1,
     price: 10,

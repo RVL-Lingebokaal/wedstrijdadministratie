@@ -58,3 +58,7 @@ npm-debug.*
 *.orig.*
 web-build/
 cache/
+
+# Android and IOS
+registratie/android/
+registratie/ios/

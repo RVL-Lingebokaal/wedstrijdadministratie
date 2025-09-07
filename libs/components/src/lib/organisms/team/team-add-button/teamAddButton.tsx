@@ -2,11 +2,11 @@
 import { Button, FormModal } from '@components/server';
 import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BoatType, Gender } from '@models';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { BoatType } from '@models';
 import { addTeamSchema, TeamAddForm } from '@schemas';
 import { useAddTeam } from '@hooks';
 import { TeamForm } from '../../../molecules/team-form/teamForm';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface TeamAddButtonProps {
   refetch: () => void;
@@ -15,7 +15,7 @@ interface TeamAddButtonProps {
 export function TeamAddButton({ refetch }: TeamAddButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const methods = useForm<TeamAddForm>({
-    resolver: yupResolver(addTeamSchema),
+    resolver: zodResolver(addTeamSchema),
     defaultValues: getDefaultValues(),
     mode: 'onSubmit',
   });
@@ -32,7 +32,7 @@ export function TeamAddButton({ refetch }: TeamAddButtonProps) {
         );
         return;
       }
-      await mutate(val);
+      mutate(val);
       refetch();
       reset(getDefaultValues());
       setShowModal(false);
@@ -78,25 +78,25 @@ function getDefaultValues(): TeamAddForm {
     participants: [],
     boat: '',
     preferredBlock: 1,
-    boatType: BoatType.skiff,
+    boatType: '1x',
     helm: null,
-    gender: Gender.M,
+    gender: 'male',
   };
 }
 
 export function getDisabled(type: BoatType, participantsLength: number) {
   switch (type) {
-    case BoatType.skiff:
+    case '1x':
       return participantsLength >= 1;
-    case BoatType.scullTwoWithout:
-    case BoatType.boardTwoWithout:
+    case '2-':
+    case '2x':
       return participantsLength >= 2;
-    case BoatType.scullFourWith:
-    case BoatType.scullFourWithout:
-    case BoatType.scullFourWithC:
-    case BoatType.boardFourWithC:
-    case BoatType.boardFourWithout:
-    case BoatType.boardFourWith:
+    case '4-':
+    case '4x-':
+    case '4+':
+    case '4*':
+    case 'C4+':
+    case 'C4*':
       return participantsLength >= 4;
     default:
       return participantsLength >= 8;

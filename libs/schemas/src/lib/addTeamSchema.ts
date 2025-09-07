@@ -1,41 +1,28 @@
-import { array, mixed, number, object, string } from 'yup';
-import { BoatType, Gender } from '@models';
+import { boatType, gender } from '@models';
+import { z } from 'zod';
 
-const participantSchema = object({
-  name: string().required(),
-  club: string().required(),
-  birthYear: number().required(),
+const participantSchema = z.object({
+  name: z.string(),
+  club: z.string(),
+  birthYear: z.number(),
+  id: z.string().optional(),
 });
 
-export const addTeamSchema = object({
-  name: string().required(),
-  club: string().required(),
-  participants: array().of(participantSchema).required(),
-  boat: string().required(),
-  preferredBlock: number().min(1).max(3).required(),
-  boatType: mixed<BoatType>().oneOf(Object.values(BoatType)).required(),
-  helm: object({
-    name: string().required(),
-    club: string().required(),
-    birthYear: number().required(),
-  }).nullable(),
-  gender: mixed<Gender>().oneOf(Object.values(Gender)).required(),
+export const addTeamSchema = z.object({
+  name: z.string(),
+  club: z.string(),
+  participants: z.array(participantSchema).min(1),
+  boat: z.string(),
+  preferredBlock: z.number().min(1).max(3),
+  boatType: z.enum(boatType),
+  helm: participantSchema.nullable(),
+  gender: z.enum(gender),
 });
 
-export interface TeamAddFormParticipant {
-  name: string;
-  club: string;
-  birthYear: number;
+type ParticipantSchema = z.infer<typeof participantSchema>;
+
+export interface TeamAddFormParticipant extends ParticipantSchema {
   id?: string;
 }
 
-export interface TeamAddForm {
-  name: string;
-  club: string;
-  participants: TeamAddFormParticipant[];
-  helm: TeamAddFormParticipant | null;
-  boat: string;
-  preferredBlock: number;
-  boatType: BoatType;
-  gender: Gender;
-}
+export type TeamAddForm = z.infer<typeof addTeamSchema>;

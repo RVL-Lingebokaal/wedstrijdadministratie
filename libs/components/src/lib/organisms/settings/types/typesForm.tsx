@@ -1,6 +1,6 @@
 'use client';
 import { typesFormSchema } from '@schemas';
-import { BoatForm, BoatType } from '@models';
+import { BoatForm, boatType } from '@models';
 import { useCallback } from 'react';
 import { Input, TableForm } from '@components/server';
 import { useSaveSettings } from '@hooks';
@@ -46,13 +46,12 @@ export function TypesForm({ initialValues }: TypesFormProps) {
     />
   );
 }
+
 const getDefaultValues = (initialValues?: BoatForm) => {
   if (initialValues && initialValues.items) {
     return initialValues;
   }
-
-  const values = Object.values(BoatType);
   return {
-    items: values.map((val) => ({ type: val, correction: 1, price: 10 })),
+    items: boatType.map((val) => ({ type: val, correction: 1, price: 10 })),
   };
 };

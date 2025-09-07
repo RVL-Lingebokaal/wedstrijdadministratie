@@ -1,137 +1,144 @@
 import { addTeamSchema } from './addTeamSchema';
-import { BoatType, Gender } from '@models';
 
 const mockTeam = {
   name: 'name',
   club: 'club',
-  participants: [],
+  participants: [{ name: 'name', club: 'club', birthYear: 1900 }],
   boat: 'boat',
   preferredBlock: 1,
-  boatType: BoatType.skiff,
+  boatType: '1x',
   helm: null,
-  gender: Gender.M,
+  gender: 'male',
 };
 
 describe('addTeamSchema', () => {
-  it('validates a scheme', () =>
-    expect(addTeamSchema.validate(mockTeam)).resolves.not.toThrow());
+  it('validates a scheme', () => {
+    const result = addTeamSchema.safeParse(mockTeam);
 
-  it('validates a scheme with a helm', () =>
-    expect(
-      addTeamSchema.validate({
-        ...mockTeam,
-        helm: { name: 'name', club: 'club', birthYear: 1900 },
-      })
-    ).resolves.not.toThrow());
+    expect(result.success).toBe(true);
+  });
 
-  it('validates a scheme with participants', () =>
-    expect(
-      addTeamSchema.validate({
-        ...mockTeam,
-        participants: [{ name: 'name', club: 'club', birthYear: 1900 }],
-      })
-    ).resolves.not.toThrow());
+  it('validates a scheme with a helm', () => {
+    const result = addTeamSchema.safeParse({
+      ...mockTeam,
+      helm: { name: 'name', club: 'club', birthYear: 1900 },
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('validates a scheme with participants', () => {
+    const result = addTeamSchema.safeParse({
+      ...mockTeam,
+      participants: [{ name: 'name', club: 'club', birthYear: 1900 }],
+    });
+
+    expect(result.success).toBe(true);
+  });
 
   it.each([
     {
       missing: 'name',
       el: { ...mockTeam, name: undefined },
-      error: 'name is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'club',
       el: { ...mockTeam, club: undefined },
-      error: 'club is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'boat',
       el: { ...mockTeam, boat: undefined },
-      error: 'boat is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'participants',
       el: { ...mockTeam, participants: undefined },
-      error: 'participants is a required field',
+      error: 'expected array, received undefined',
     },
     {
       missing: 'preferredBlock',
       el: { ...mockTeam, preferredBlock: undefined },
-      error: 'preferredBlock is a required field',
+      error: 'expected number, received undefined',
     },
-    {
-      missing: 'boatType',
-      el: { ...mockTeam, boatType: undefined },
-      error: 'boatType is a required field',
-    },
-    {
-      missing: 'gender',
-      el: {
-        ...mockTeam,
-        gender: undefined,
-        error: 'gender is a required field',
-      },
-    },
-  ])('throws an error, because of missing $missing', ({ el, error }) =>
-    expect(addTeamSchema.validate(el)).rejects.toThrow(error)
-  );
+  ])('throws an error, because of missing $missing', ({ el, error }) => {
+    const result = addTeamSchema.safeParse(el);
 
-  it('throws an error, because the gender is wrong', () =>
-    expect(
-      addTeamSchema.validate({ ...mockTeam, gender: '1' })
-    ).rejects.toThrow(
-      'gender must be one of the following values: male, female, mix'
-    ));
+    expect(result.error?.message).toContain(error);
+  });
 
-  it('throws an error, because the preferredBlock is wrong', () =>
-    expect(
-      addTeamSchema.validate({ ...mockTeam, preferredBlock: 4 })
-    ).rejects.toThrow('preferredBlock must be less than or equal to 3'));
+  it('throws an error, because the gender is wrong', () => {
+    const result = addTeamSchema.safeParse({ ...mockTeam, gender: '1' });
 
-  it('throws an error, because the boatType is wrong', () =>
-    expect(
-      addTeamSchema.validate({ ...mockTeam, boatType: '1' })
-    ).rejects.toThrow(
-      'boatType must be one of the following values: 4*, 4x-, C4*, C4+, 4-, 4+, 8*, 8+, 2-, 2x, 1x'
-    ));
+    expect(result.error?.message).toContain(
+      'Invalid option: expected one of \\"male\\"|\\"mix\\"|\\"female\\"|\\"open\\"'
+    );
+  });
+
+  it('throws an error, because the preferredBlock is wrong', () => {
+    const result = addTeamSchema.safeParse({ ...mockTeam, preferredBlock: 4 });
+
+    expect(result.error?.message).toContain(
+      'Too big: expected number to be <=3'
+    );
+  });
+
+  it('throws an error, because the boatType is wrong', () => {
+    const result = addTeamSchema.safeParse({ ...mockTeam, boatType: '1' });
+
+    expect(result.error?.message).toContain(
+      'Invalid option: expected one of \\"8+\\"|\\"8*\\"|\\"4*\\"|\\"4+\\"|\\"4-\\"|\\"4x-\\"|\\"2-\\"|\\"2x\\"|\\"1x\\"|\\"C4*\\"|\\"C4+\\"|\\"C3x\\"'
+    );
+  });
 
   it.each([
     {
       missing: 'name',
       el: { ...mockTeam, helm: { birthYear: 1900, club: 'club' } },
-      error: 'helm.name is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'club',
       el: { ...mockTeam, helm: { birthYear: 1900, name: 'name' } },
-      error: 'helm.club is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'birthYear',
       el: { ...mockTeam, helm: { name: 'name', club: 'club' } },
-      error: 'helm.birthYear is a required field',
+      error: 'expected number, received undefined',
     },
-  ])('throws an error, because of missing $missing in helm', ({ el, error }) =>
-    expect(addTeamSchema.validate(el)).rejects.toThrow(error)
+  ])(
+    'throws an error, because of missing $missing in helm',
+    ({ el, error }) => {
+      const result = addTeamSchema.safeParse(el);
+
+      expect(result.error?.message).toContain(error);
+    }
   );
 
   it.each([
     {
       missing: 'name',
       el: { ...mockTeam, participants: [{ club: 'club', birthYear: 1900 }] },
-      error: 'participants[0].name is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'club',
       el: { ...mockTeam, participants: [{ name: 'name', birthYear: 1900 }] },
-      error: 'participants[0].club is a required field',
+      error: 'expected string, received undefined',
     },
     {
       missing: 'birthYear',
       el: { ...mockTeam, participants: [{ name: 'name', club: 'club' }] },
-      error: 'participants[0].birthYear is a required field',
+      error: 'expected number, received undefined',
     },
   ])(
     'throws an error, because of missing $missing in participant',
-    ({ el, error }) => expect(addTeamSchema.validate(el)).rejects.toThrow(error)
+    ({ el, error }) => {
+      const result = addTeamSchema.safeParse(el);
+
+      expect(result.error?.message).toContain(error);
+    }
   );
 });

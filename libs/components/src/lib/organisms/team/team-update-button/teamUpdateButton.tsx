@@ -1,12 +1,12 @@
 'use client';
-import { BoatType, Gender, getParticipantForm, Team } from '@models';
+import { getParticipantForm, Team } from '@models';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, FormModal, Select } from '@components/server';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { TeamForm } from '../../../molecules/team-form/teamForm';
 import { addTeamSchema, TeamAddForm } from '@schemas';
 import { useUpdateTeam } from '@hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface TeamChangeButtonProps {
   refetch: () => void;
@@ -16,7 +16,7 @@ interface TeamChangeButtonProps {
 export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [team, setTeam] = useState<null | Team>(null);
-  const [error, setError] = useState<null | string>(null);
+  const [_, setError] = useState<null | string>(null);
   const { mutate } = useUpdateTeam();
   const teamsMap = useMemo(
     () =>
@@ -27,7 +27,7 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const { getValues, control, handleSubmit, watch, reset, setValue } =
     useForm<TeamAddForm>({
       defaultValues: getTeamFormValues(),
-      resolver: yupResolver(addTeamSchema),
+      resolver: zodResolver(addTeamSchema),
     });
 
   const onClickSubmit = useCallback(
@@ -84,7 +84,7 @@ function getTeamFormValues(team?: Team): TeamAddForm {
     helm: team?.helm ? getParticipantForm(team.helm) : null,
     boat: team?.boat?.name ?? '',
     preferredBlock: team?.preferredBlock ?? 1,
-    boatType: team?.boatType ?? BoatType.skiff,
-    gender: team?.gender ?? Gender.MIX,
+    boatType: team?.boatType ?? '1x',
+    gender: team?.gender ?? 'mix',
   };
 }

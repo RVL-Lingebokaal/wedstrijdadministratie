@@ -18,7 +18,7 @@ import { ClassGridHeader } from '../../../atoms/grid-header/classGridHeader';
 import { allAgesAreProcessed } from '@utils';
 
 export function ClassPage() {
-  const [gender, setGender] = useState(Gender.M);
+  const [gender, setGender] = useState<Gender>('male');
   const { data: teamData, isLoading } = useGetTeams();
   const { data: settingsData, refetch } = useGetSettings();
 

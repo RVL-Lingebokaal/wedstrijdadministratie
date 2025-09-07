@@ -1,6 +1,6 @@
 import { useGetClassMap, useGetSettings, useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
-import { BoatType, Gender, translateClass } from '@models';
+import { boatType, BoatType, gender, Gender, translateClass } from '@models';
 import { useMemo } from 'react';
 
 export function StatisticsPage() {
@@ -15,8 +15,6 @@ export function StatisticsPage() {
       acc.set(boat.type, boat.price);
       return acc;
     }, new Map<BoatType, number>());
-    const boatTypes = Object.values(BoatType);
-    const genderTypes = Object.values(Gender);
     let totalAmount = 0;
     const map = teamData.reduce(
       (acc, { ageClass, boatType, gender, participants, helm }) => {
@@ -66,8 +64,8 @@ export function StatisticsPage() {
     }, [] as { text: string; boatType: BoatType; gender: Gender }[]);
     const medals = filtered.sort(
       (a, b) =>
-        boatTypes.indexOf(a.boatType) - boatTypes.indexOf(b.boatType) ||
-        genderTypes.indexOf(a.gender) - genderTypes.indexOf(b.gender)
+        boatType.indexOf(a.boatType) - boatType.indexOf(b.boatType) ||
+        gender.indexOf(a.gender) - gender.indexOf(b.gender)
     );
     return { medals, totalAmount };
   }, [teamData, classMap]);

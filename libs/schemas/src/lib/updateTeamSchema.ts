@@ -1,6 +1,6 @@
-import { string } from "yup";
-import { addTeamSchema } from "./addTeamSchema";
+import { addTeamSchema } from './addTeamSchema';
+import { z } from 'zod';
 
-export const updateTeamSchema = addTeamSchema.shape({
-  team: string().required(),
+export const updateTeamSchema = addTeamSchema.extend({
+  team: z.string(),
 });

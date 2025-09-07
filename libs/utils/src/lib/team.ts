@@ -2,9 +2,9 @@ import {
   AgeItem,
   AgeType,
   BoatItem,
-  BoatType,
+  boatType,
   ClassItem,
-  Gender,
+  gender,
   translateClass,
 } from '@models';
 import { DateTime, Duration } from 'luxon';
@@ -46,9 +46,9 @@ export function getDifference(startTime: DateTime, finishTime: DateTime) {
 
 export function getCorrectionAgeSexMap(ages: AgeItem[]) {
   return ages.reduce((map, { type, correctionFemale, correctionMale }) => {
-    map.set(`${type}${Gender.M}`, correctionMale);
-    map.set(`${type}${Gender.F}`, correctionFemale);
-    map.set(`${type}${Gender.MIX}`, (correctionFemale + correctionMale) / 2);
+    map.set(`${type}male`, correctionMale);
+    map.set(`${type}female`, correctionFemale);
+    map.set(`${type}mix`, (correctionFemale + correctionMale) / 2);
     return map;
   }, new Map<string, number>());
 }
@@ -78,17 +78,16 @@ export function getConvertedResults(
   const correctionBoatMap = getCorrectionBoatMap(boatItems);
   const doneSet = new Map<string, string>();
   const ageTypes = Object.values(AgeType);
-  const genders = Object.values(Gender);
   const headers: string[] = [];
 
-  Object.values(BoatType).forEach((boatType) => {
+  boatType.forEach((boatType) => {
     ageTypes.forEach((age) => {
-      genders.forEach((gender) => {
-        const key = `${age}${gender}${boatType}`;
+      gender.forEach((g) => {
+        const key = `${age}${g}${boatType}`;
         const className = classMap.get(key);
         if (className && !doneSet.has(className)) {
           const translatedClass = translateClass({
-            gender,
+            gender: g,
             boatType,
             className,
           });

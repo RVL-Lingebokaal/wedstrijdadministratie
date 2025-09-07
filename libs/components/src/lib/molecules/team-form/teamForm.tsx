@@ -5,7 +5,7 @@ import {
   InputController,
   SelectController,
 } from '@components/server';
-import { BoatType } from '@models';
+import { boatType, BoatType } from '@models';
 import { AddParticipantForm } from '../add-participant-form/addParticipantForm';
 import { FaTrashAlt } from 'react-icons/fa';
 import { getDisabled } from '../../organisms/team/team-add-button/teamAddButton';
@@ -38,7 +38,7 @@ export function TeamForm({
 }: TeamFormProps) {
   const [showAddParticipant, setShowAddParticipant] = useState(false);
 
-  const boatType = watch('boatType');
+  const watchedBoatType = watch('boatType');
   const club = watch('club');
   const { fields, append, remove } = useFieldArray<TeamAddForm>({
     control,
@@ -62,7 +62,7 @@ export function TeamForm({
           control={control}
           label="Boottype"
           topClassNames="grow"
-          items={Object.values(BoatType).map((val) => ({ id: val }))}
+          items={boatType.map((val) => ({ id: val }))}
           disabled={isUpdate}
           onSelect={(val) =>
             checkNeedsHelm(val as BoatType) && !isUpdate
@@ -95,7 +95,7 @@ export function TeamForm({
         <InputController path="club" control={control} label="Vereniging" />
         <InputController path="boat" control={control} label="Bootnaam" />
       </div>
-      {checkNeedsHelm(boatType) && (
+      {checkNeedsHelm(watchedBoatType) && (
         <div className="flex gap-x-3">
           <InputController
             path="helm.name"
@@ -118,7 +118,9 @@ export function TeamForm({
         <Button
           name="Voeg deelnemer toe"
           color="primary"
-          disabled={showAddParticipant || getDisabled(boatType, fields.length)}
+          disabled={
+            showAddParticipant || getDisabled(watchedBoatType, fields.length)
+          }
           onClick={() => {
             setShowAddParticipant(true);
             append({ name: '', club, birthYear: 1900 });
@@ -177,9 +179,5 @@ export function TeamForm({
 }
 
 function checkNeedsHelm(val: BoatType) {
-  return (
-    val !== BoatType.skiff &&
-    val !== BoatType.boardTwoWithout &&
-    val !== BoatType.scullTwoWithout
-  );
+  return val !== '1x' && val !== '2-' && val !== '2x';
 }

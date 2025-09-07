@@ -24,20 +24,21 @@ export enum AgeStrategy {
   youngest = 'jongste',
 }
 
-export enum BoatType {
-  boardEightWith = '8+',
-  scullEightWith = '8*',
-  scullFourWith = '4*',
-  boardFourWith = '4+',
-  boardFourWithout = '4-',
-  scullFourWithout = '4x-',
-  boardTwoWithout = '2-',
-  scullTwoWithout = '2x',
-  skiff = '1x',
-  scullFourWithC = 'C4*',
-  boardFourWithC = 'C4+',
-  scullThreeWithC = 'C3x',
-}
+export const boatType = [
+  '8+',
+  '8*',
+  '4*',
+  '4+',
+  '4-',
+  '4x-',
+  '2-',
+  '2x',
+  '1x',
+  'C4*',
+  'C4+',
+  'C3x',
+] as const;
+export type BoatType = (typeof boatType)[number];
 
 export interface BoatItem {
   type: BoatType;
@@ -113,6 +114,12 @@ export function translateClass({
   className,
 }: TranslateClassProps) {
   const translatedGender =
-    gender === Gender.F ? 'D' : gender === Gender.M ? 'H' : 'Mix';
+    gender === 'female'
+      ? 'D'
+      : gender === 'male'
+      ? 'H'
+      : gender === 'mix'
+      ? 'Mix'
+      : 'Open';
   return `${translatedGender}${boatType}${className}`;
 }

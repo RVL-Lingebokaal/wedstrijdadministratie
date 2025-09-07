@@ -213,10 +213,10 @@ export class BondService {
       case 'm1x':
       case 'v1x':
         if (amountOfParticipants === 1 && !helm) {
-          return { gender, boatType: BoatType.skiff };
+          return { gender, boatType: '1x' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.skiff,
+          boatType: '1x',
           helm,
           amountOfParticipants,
         });
@@ -227,10 +227,10 @@ export class BondService {
       case 'mc4+':
       case 'vc4+':
         if (amountOfParticipants === 4 && helm) {
-          return { gender, boatType: BoatType.boardFourWithC };
+          return { gender, boatType: 'C4+' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.boardFourWithC,
+          boatType: 'C4+',
           helm,
           amountOfParticipants,
         });
@@ -241,10 +241,10 @@ export class BondService {
       case 'mc4x':
       case 'vc4x':
         if (amountOfParticipants === 4 && helm) {
-          return { gender, boatType: BoatType.boardFourWithC };
+          return { gender, boatType: 'C4*' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.boardFourWithC,
+          boatType: 'C4*',
           helm,
           amountOfParticipants,
         });
@@ -255,10 +255,10 @@ export class BondService {
       case 'mc4*':
       case 'vc4*':
         if (amountOfParticipants === 4 && helm) {
-          return { gender, boatType: BoatType.scullFourWithC };
+          return { gender, boatType: 'C4*' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.scullFourWithC,
+          boatType: 'C4*',
           helm,
           amountOfParticipants,
         });
@@ -268,10 +268,10 @@ export class BondService {
       case 'm2x':
       case 'v2x':
         if (amountOfParticipants === 2 && !helm) {
-          return { gender, boatType: BoatType.scullTwoWithout };
+          return { gender, boatType: '2x' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.scullTwoWithout,
+          boatType: '2x',
           helm,
           amountOfParticipants,
         });
@@ -282,10 +282,10 @@ export class BondService {
       case 'm4+':
       case 'v4+':
         if (amountOfParticipants === 4 && helm) {
-          return { gender, boatType: BoatType.boardFourWith };
+          return { gender, boatType: '4+' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.boardFourWith,
+          boatType: '4+',
           helm,
           amountOfParticipants,
         });
@@ -296,10 +296,10 @@ export class BondService {
       case 'm4*':
       case 'v4*':
         if (amountOfParticipants === 4 && helm) {
-          return { gender, boatType: BoatType.scullFourWith };
+          return { gender, boatType: '4*' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.scullFourWith,
+          boatType: '4*',
           helm,
           amountOfParticipants,
         });
@@ -312,10 +312,10 @@ export class BondService {
       case 'm8+':
       case 'v8+':
         if (amountOfParticipants === 8 && helm) {
-          return { gender, boatType: BoatType.boardEightWith };
+          return { gender, boatType: '8+' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.boardEightWith,
+          boatType: '8+',
           helm,
           amountOfParticipants,
         });
@@ -326,10 +326,10 @@ export class BondService {
       case 'v8*':
       case 'm8*':
         if (amountOfParticipants === 8 && helm) {
-          return { gender, boatType: BoatType.scullEightWith };
+          return { gender, boatType: '8*' };
         }
         throw new BoatTypeError({
-          boatType: BoatType.scullEightWith,
+          boatType: '8*',
           helm,
           amountOfParticipants,
         });
@@ -338,12 +338,12 @@ export class BondService {
     }
   }
 
-  private getGender(type: string) {
+  private getGender(type: string): Gender {
     const isFemale = type.includes('d') || type.includes('v');
     const isMix = type.includes('mix');
-    if (isMix) return Gender.MIX;
-    if (isFemale) return Gender.F;
-    return Gender.M;
+    if (isMix) return 'mix';
+    if (isFemale) return 'female';
+    return 'male';
   }
 
   private addBlockParticipant(

@@ -1,8 +1,8 @@
 import {
   AgeType,
-  BoatType,
+  boatType,
   ClassItem,
-  Gender,
+  gender,
   Team,
   translateClass,
   UseUpdateStartNumberTeam,
@@ -29,9 +29,7 @@ export function getTeamsForStartNumbers({
   const missingNumbersSet = new Set<number>(missingNumbers);
 
   const classMap = getClassMap(classes);
-  const boatTypes = Object.values(BoatType);
   const ageTypes = Object.values(AgeType);
-  const genderTypes = Object.values(Gender);
   const toBeSaved: UseUpdateStartNumberTeam[] = [];
 
   teams.sort((a, b) => {
@@ -44,8 +42,8 @@ export function getTeamsForStartNumbers({
 
     return (
       sortBlock ||
-      boatTypes.indexOf(a.boatType) - boatTypes.indexOf(b.boatType) ||
-      genderTypes.indexOf(a.gender) - genderTypes.indexOf(b.gender) ||
+      boatType.indexOf(a.boatType) - boatType.indexOf(b.boatType) ||
+      gender.indexOf(a.gender) - gender.indexOf(b.gender) ||
       ageTypes.indexOf(a.ageClass) - ageTypes.indexOf(b.ageClass)
     );
   });

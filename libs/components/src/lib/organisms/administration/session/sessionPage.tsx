@@ -6,8 +6,8 @@ import { BoatType, Gender } from '@models';
 import { SessionBlockTeams } from '../../../molecules/session-block-teams/sessionBlockTeams';
 
 export function SessionPage() {
-  const [boatType, setBoatType] = useState<BoatType>(BoatType.scullTwoWithout);
-  const [gender, setGender] = useState<Gender>(Gender.M);
+  const [boatType, setBoatType] = useState<BoatType>('2-');
+  const [gender, setGender] = useState<Gender>('male');
   const { data: teamData, isLoading, refetch } = useGetTeams();
   const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(teamData);
 

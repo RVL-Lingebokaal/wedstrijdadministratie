@@ -1,5 +1,5 @@
 import { Select } from './select';
-import { Gender } from '@models';
+import { gender, Gender } from '@models';
 
 interface SelectGenderProps {
   selectedValue: Gender;
@@ -20,7 +20,7 @@ export function SelectGender({
 }: SelectGenderProps) {
   return (
     <Select
-      items={Object.values(Gender).map((g) => ({
+      items={gender.map((g) => ({
         id: g,
         text: translateGender(g),
       }))}
@@ -36,11 +36,13 @@ export function SelectGender({
 
 function translateGender(gender: Gender) {
   switch (gender) {
-    case Gender.M:
+    case 'male':
       return 'Mannen';
-    case Gender.F:
+    case 'female':
       return 'Vrouwen';
-    default:
+    case 'mix':
       return 'Mix';
+    default:
+      return 'Open';
   }
 }
