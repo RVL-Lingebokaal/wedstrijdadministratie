@@ -1,5 +1,5 @@
 import { Select } from './select';
-import { gender, Gender } from '@models';
+import { Gender, genders } from '@models';
 
 interface SelectGenderProps {
   selectedValue: Gender;
@@ -20,7 +20,7 @@ export function SelectGender({
 }: SelectGenderProps) {
   return (
     <Select
-      items={gender.map((g) => ({
+      items={genders.map((g) => ({
         id: g,
         text: translateGender(g),
       }))}

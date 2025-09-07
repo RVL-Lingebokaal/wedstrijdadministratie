@@ -1,4 +1,4 @@
-import { AgeItem, AgeType, ClassItem, Team } from '@models';
+import { AgeItem, ClassItem, Team } from '@models';
 
 export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
   const type = ages.find(({ age }) => {
@@ -9,7 +9,7 @@ export function calculateAgeType(ages: AgeItem[], ageToBeFound: number) {
     return ageToBeFound >= lower && ageToBeFound < high + 1;
   })?.type;
 
-  return type ?? AgeType.open;
+  return type ?? '-';
 }
 
 export function allAgesAreProcessed(teams: Team[], classes: ClassItem[]) {

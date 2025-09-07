@@ -1,8 +1,14 @@
-import { array, number, object, string } from 'yup';
+import { z } from 'zod';
 
-export const settingFormSchema = object({
-  date: string().required(),
-  missingNumbers: array()
-    .of(object({ value: number().required() }).required())
-    .required(),
+export const settingFormSchema = z.object({
+  date: z.string(),
+  missingNumbers: z
+    .array(
+      z.object({
+        value: z.number(),
+      })
+    )
+    .min(0),
+  currentNumber: z.number().optional(),
 });
+export type SettingForm = z.infer<typeof settingFormSchema>;

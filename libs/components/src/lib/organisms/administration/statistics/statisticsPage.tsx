@@ -1,6 +1,6 @@
 import { useGetClassMap, useGetSettings, useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
-import { boatType, BoatType, gender, Gender, translateClass } from '@models';
+import { BoatType, boatTypes, Gender, genders, translateClass } from '@models';
 import { useMemo } from 'react';
 
 export function StatisticsPage() {
@@ -64,8 +64,8 @@ export function StatisticsPage() {
     }, [] as { text: string; boatType: BoatType; gender: Gender }[]);
     const medals = filtered.sort(
       (a, b) =>
-        boatType.indexOf(a.boatType) - boatType.indexOf(b.boatType) ||
-        gender.indexOf(a.gender) - gender.indexOf(b.gender)
+        boatTypes.indexOf(a.boatType) - boatTypes.indexOf(b.boatType) ||
+        genders.indexOf(a.gender) - genders.indexOf(b.gender)
     );
     return { medals, totalAmount };
   }, [teamData, classMap]);

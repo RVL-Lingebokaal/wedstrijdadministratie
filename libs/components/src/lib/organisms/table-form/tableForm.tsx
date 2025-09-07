@@ -13,9 +13,11 @@ import {
   useForm,
 } from 'react-hook-form';
 import { Button } from '../../atoms/button/button';
-import { ObjectSchema } from 'yup';
 import { AgeForm, BoatForm } from '@models';
 import { ReactElement } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { ZodType } from 'zod';
 
 export type Form = BoatForm | AgeForm;
 
@@ -27,7 +29,7 @@ interface RowHeaderItem<T extends Form> {
 
 interface TableFormProps<T extends Form> {
   onSubmit: (val: T) => void;
-  schema: ObjectSchema<T>;
+  schema: ZodType<Form>;
   defaultValues: DefaultValues<T>;
   gridHeaderItems: string[];
   rowInputs: RowHeaderItem<T>[];
@@ -40,12 +42,8 @@ export function TableForm<T extends Form>({
   rowInputs,
   gridHeaderItems,
 }: TableFormProps<T>) {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<T>({
-    // resolver: yupResolver(schema),
+  const { handleSubmit, control } = useForm<T>({
+    resolver: zodResolver(schema),
     defaultValues: defaultValues,
     mode: 'all',
   });

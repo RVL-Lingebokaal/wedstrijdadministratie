@@ -5,7 +5,7 @@ import {
   InputController,
   SelectController,
 } from '@components/server';
-import { boatType, BoatType } from '@models';
+import { BoatType, boatTypes } from '@models';
 import { AddParticipantForm } from '../add-participant-form/addParticipantForm';
 import { FaTrashAlt } from 'react-icons/fa';
 import { getDisabled } from '../../organisms/team/team-add-button/teamAddButton';
@@ -62,7 +62,7 @@ export function TeamForm({
           control={control}
           label="Boottype"
           topClassNames="grow"
-          items={boatType.map((val) => ({ id: val }))}
+          items={boatTypes.map((val) => ({ id: val }))}
           disabled={isUpdate}
           onSelect={(val) =>
             checkNeedsHelm(val as BoatType) && !isUpdate

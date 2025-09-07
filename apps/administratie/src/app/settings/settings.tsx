@@ -1,15 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { AgesForm, SettingsForm, TypesForm } from '@components';
+import { AgesForm, BoatsForm, SettingsForm } from '@components';
 import { LoadingSpinner, Tabs } from '@components/server';
-import {
-  AgeItem,
-  AgeStrategy,
-  AgeType,
-  BoatItem,
-  boatType,
-  SettingsTabs,
-} from '@models';
+import { AgeItem, ageTypes, BoatItem, boatTypes, SettingsTabs } from '@models';
 import { useGetGeneralSettings, useGetSettings } from '@hooks';
 
 export default function SettingsPage() {
@@ -34,7 +27,7 @@ export default function SettingsPage() {
         setTab={setTab}
       />
       {tab === SettingsTabs.type && (
-        <TypesForm
+        <BoatsForm
           initialValues={{
             items:
               data && data.boats && data.boats.length > 0
@@ -66,7 +59,7 @@ export default function SettingsPage() {
 }
 
 const getDefaultvaluesBoats = (): BoatItem[] => {
-  return boatType.map((key) => ({
+  return boatTypes.map((key) => ({
     type: key,
     correction: 1,
     price: 10,
@@ -74,11 +67,11 @@ const getDefaultvaluesBoats = (): BoatItem[] => {
 };
 
 const getDefaultvaluesAges = (): AgeItem[] => {
-  return Object.values(AgeType).map((key) => ({
+  return ageTypes.map((key) => ({
     type: key,
     age: key,
     correctionFemale: 1,
     correctionMale: 1,
-    strategy: AgeStrategy.average,
+    strategy: 'gemiddeld',
   }));
 };

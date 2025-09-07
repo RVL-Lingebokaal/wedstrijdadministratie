@@ -1,26 +1,24 @@
-import { array, mixed, number, object, string } from 'yup';
-import { AgeStrategy, AgeType } from '@models';
+import { ageStrategies, ageTypes } from '@models';
+import { z } from 'zod';
 
-export const ageFormSchema = object({
-  items: array()
-    .of(
-      object({
-        type: mixed<AgeType>().oneOf(Object.values(AgeType)).required(),
-        age: string().required(),
-        correctionMale: number()
-          .transform((_value, originalValue) =>
+export const ageFormSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        type: z.enum(ageTypes),
+        age: z.string(),
+        correctionMale: z
+          .number()
+          .transform((_, originalValue) =>
             Number(originalValue.toString().replace(/,/, '.'))
-          )
-          .required(),
-        correctionFemale: number()
-          .transform((_value, originalValue) =>
+          ),
+        correctionFemale: z
+          .number()
+          .transform((_, originalValue) =>
             Number(originalValue.toString().replace(/,/, '.'))
-          )
-          .required(),
-        strategy: mixed<AgeStrategy>()
-          .oneOf(Object.values(AgeStrategy))
-          .required(),
+          ),
+        strategy: z.enum(ageStrategies),
       })
     )
-    .required(),
+    .min(1),
 });

@@ -6,17 +6,11 @@ import {
   IconButton,
   InputController,
 } from '@components/server';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { settingFormSchema } from '@schemas';
+import { SettingForm, settingFormSchema } from '@schemas';
 import { useSaveGeneralSettings } from '@hooks';
 import { SettingData } from '@models';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-
-interface SettingsForm {
-  date: string;
-  missingNumbers: { value: number }[];
-  currentNumber?: number | '';
-}
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export function SettingsForm({ initialData }: { initialData: SettingData }) {
   const { mutate, isLoading } = useSaveGeneralSettings();
@@ -26,15 +20,15 @@ export function SettingsForm({ initialData }: { initialData: SettingData }) {
     formState: { isValid },
     getValues,
     setValue,
-  } = useForm<SettingsForm>({
+  } = useForm<SettingForm>({
     defaultValues: {
       ...initialData,
       missingNumbers: initialData.missingNumbers?.map((value) => ({ value })),
-      currentNumber: '',
+      currentNumber: undefined,
     },
-    resolver: yupResolver(settingFormSchema),
+    resolver: zodResolver(settingFormSchema),
   });
-  const onSubmit = (values: SettingsForm) => {
+  const onSubmit = (values: SettingForm) => {
     const missingNumbers = values.missingNumbers.map((value) => value.value);
     void mutate({ ...values, missingNumbers });
   };
@@ -81,7 +75,7 @@ export function SettingsForm({ initialData }: { initialData: SettingData }) {
                     const currentNumber = getValues('currentNumber');
                     if (currentNumber) {
                       append({ value: currentNumber });
-                      setValue('currentNumber', '');
+                      setValue('currentNumber', undefined);
                     }
                   }}
                 />

@@ -60,5 +60,5 @@ web-build/
 cache/
 
 # Android and IOS
-registratie/android/
-registratie/ios/
+apps/registratie/android/
+apps/registratie/ios/

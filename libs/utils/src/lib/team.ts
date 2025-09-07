@@ -1,10 +1,10 @@
 import {
   AgeItem,
-  AgeType,
+  ageTypes,
   BoatItem,
-  boatType,
+  boatTypes,
   ClassItem,
-  gender,
+  genders,
   translateClass,
 } from '@models';
 import { DateTime, Duration } from 'luxon';
@@ -77,12 +77,11 @@ export function getConvertedResults(
   const correctionAgeSexMap = getCorrectionAgeSexMap(ages);
   const correctionBoatMap = getCorrectionBoatMap(boatItems);
   const doneSet = new Map<string, string>();
-  const ageTypes = Object.values(AgeType);
   const headers: string[] = [];
 
-  boatType.forEach((boatType) => {
+  boatTypes.forEach((boatType) => {
     ageTypes.forEach((age) => {
-      gender.forEach((g) => {
+      genders.forEach((g) => {
         const key = `${age}${g}${boatType}`;
         const className = classMap.get(key);
         if (className && !doneSet.has(className)) {

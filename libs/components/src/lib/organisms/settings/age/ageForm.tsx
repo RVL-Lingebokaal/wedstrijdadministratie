@@ -1,5 +1,5 @@
 'use client';
-import { AgeForm, AgeStrategy, ageTranslations, AgeType } from '@models';
+import { AgeForm, ageStrategies, ageTranslations, ageTypes } from '@models';
 import { useCallback } from 'react';
 import { Input, Select, TableForm } from '@components/server';
 import { ageFormSchema } from '@schemas';
@@ -58,7 +58,7 @@ export function AgesForm({ initialValues }: AgeFormProps) {
             <Select<string>
               selectedValue={field.value.toString()}
               onChange={field.onChange}
-              items={Object.values(AgeStrategy).map((val) => ({ id: val }))}
+              items={ageStrategies.map((val) => ({ id: val }))}
             />
           ),
         },
@@ -66,18 +66,18 @@ export function AgesForm({ initialValues }: AgeFormProps) {
     />
   );
 }
-const getDefaultValues = (initialValues?: AgeForm) => {
+
+const getDefaultValues = (initialValues?: AgeForm): AgeForm => {
   if (initialValues && initialValues.items) {
     return initialValues;
   }
 
-  const values = Object.values(AgeType);
   return {
-    items: values.map((val) => ({
+    items: ageTypes.map((val) => ({
       type: val,
       correctionMale: 1,
       correctionFemale: 10,
-      strategy: AgeStrategy.average,
+      strategy: 'gemiddeld',
       age: ageTranslations[val],
     })),
   };

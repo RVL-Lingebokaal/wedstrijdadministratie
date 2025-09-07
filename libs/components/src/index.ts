@@ -20,7 +20,7 @@ export * from './lib/organisms/administration/statistics/statisticsPage';
 export * from './lib/organisms/administration/downloads/downloadsPage';
 export * from './lib/organisms/settings/settings/settingsForm';
 export * from './lib/organisms/settings/age/ageForm';
-export * from './lib/organisms/settings/types/typesForm';
+export * from './lib/organisms/settings/types/boatsForm';
 export * from './lib/organisms/team/team-add-button/teamAddButton';
 export * from './lib/organisms/team/team-update-button/teamUpdateButton';
 export * from './lib/organisms/upload-button/UploadButton';

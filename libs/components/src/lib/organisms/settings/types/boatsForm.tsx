@@ -1,15 +1,14 @@
 'use client';
-import { typesFormSchema } from '@schemas';
-import { BoatForm, boatType } from '@models';
+import { boatForm, BoatForm, boatTypes } from '@models';
 import { useCallback } from 'react';
 import { Input, TableForm } from '@components/server';
 import { useSaveSettings } from '@hooks';
 import toast from 'react-hot-toast';
 
-interface TypesFormProps {
+interface BoatsFormProps {
   initialValues?: BoatForm;
 }
-export function TypesForm({ initialValues }: TypesFormProps) {
+export function BoatsForm({ initialValues }: BoatsFormProps) {
   const { mutate } = useSaveSettings({
     onSuccess: () =>
       toast.success(
@@ -25,7 +24,7 @@ export function TypesForm({ initialValues }: TypesFormProps) {
   return (
     <TableForm
       onSubmit={onSubmit}
-      schema={typesFormSchema}
+      schema={boatForm}
       defaultValues={getDefaultValues(initialValues)}
       gridHeaderItems={['Boottype', 'Correctiefactor', 'Prijs']}
       rowInputs={[
@@ -47,11 +46,11 @@ export function TypesForm({ initialValues }: TypesFormProps) {
   );
 }
 
-const getDefaultValues = (initialValues?: BoatForm) => {
+const getDefaultValues = (initialValues?: BoatForm): BoatForm => {
   if (initialValues && initialValues.items) {
     return initialValues;
   }
   return {
-    items: boatType.map((val) => ({ type: val, correction: 1, price: 10 })),
+    items: boatTypes.map((val) => ({ type: val, correction: 1, price: 10 })),
   };
 };

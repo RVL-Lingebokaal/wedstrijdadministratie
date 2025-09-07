@@ -1,4 +1,4 @@
-import { boatType, gender } from '@models';
+import { boatTypes, genders } from '@models';
 import { z } from 'zod';
 
 const participantSchema = z.object({
@@ -14,9 +14,9 @@ export const addTeamSchema = z.object({
   participants: z.array(participantSchema).min(1),
   boat: z.string(),
   preferredBlock: z.number().min(1).max(3),
-  boatType: z.enum(boatType),
+  boatType: z.enum(boatTypes),
   helm: participantSchema.nullable(),
-  gender: z.enum(gender),
+  gender: z.enum(genders),
 });
 
 type ParticipantSchema = z.infer<typeof participantSchema>;

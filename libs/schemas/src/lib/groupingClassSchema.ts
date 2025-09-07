@@ -1,5 +1,6 @@
-import { object, string } from "yup";
+import { z } from 'zod';
 
-export const groupingClassSchema = object({
-  name: string().required(),
+export const groupingClassSchema = z.object({
+  name: z.string(),
 });
+export type GroupingForm = z.infer<typeof groupingClassSchema>;

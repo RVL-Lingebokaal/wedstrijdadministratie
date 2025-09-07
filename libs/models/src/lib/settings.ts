@@ -1,30 +1,29 @@
 import { Gender } from './team';
+import { z } from 'zod';
 
-export enum AgeType {
-  fourteen = '14',
-  sixteen = '16',
-  eighteen = '18',
-  open = '-',
-  VA = 'VA',
-  VB = 'VB',
-  VC = 'VC',
-  VD = 'VD',
-  VE = 'VE',
-  VF = 'VF',
-  VG = 'VG',
-  VH = 'VH',
-  VI = 'VI',
-  VJ = 'VJ',
-  VK = 'VK',
-}
+export const ageTypes = [
+  '14',
+  '16',
+  '18',
+  '-',
+  'VA',
+  'VB',
+  'VC',
+  'VD',
+  'VE',
+  'VF',
+  'VG',
+  'VH',
+  'VI',
+  'VJ',
+  'VK',
+];
+export type AgeType = (typeof ageTypes)[number];
 
-export enum AgeStrategy {
-  oldest = 'oudste',
-  average = 'gemiddeld',
-  youngest = 'jongste',
-}
+export const ageStrategies = ['oudste', 'gemiddeld', 'jongste'] as const;
+export type AgeStrategy = (typeof ageStrategies)[number];
 
-export const boatType = [
+export const boatTypes = [
   '8+',
   '8*',
   '4*',
@@ -38,17 +37,18 @@ export const boatType = [
   'C4+',
   'C3x',
 ] as const;
-export type BoatType = (typeof boatType)[number];
+export type BoatType = (typeof boatTypes)[number];
 
-export interface BoatItem {
-  type: BoatType;
-  correction: number;
-  price: number;
-}
-
-export interface BoatForm {
-  items: BoatItem[];
-}
+const boatItemForm = z.object({
+  type: z.enum(boatTypes),
+  correction: z.number(),
+  price: z.number().min(0),
+});
+export type BoatItem = z.infer<typeof boatItemForm>;
+export const boatForm = z.object({
+  items: z.array(boatItemForm).min(1),
+});
+export type BoatForm = z.infer<typeof boatForm>;
 
 export interface ClassItem {
   name: string;
@@ -69,7 +69,7 @@ export interface AgeForm {
   items: AgeItem[];
 }
 
-export const ageTranslations = {
+export const ageTranslations: Record<string, string> = {
   '14': '0 t/m 14',
   '16': '15 t/m 16',
   '18': '17 t/m 18',

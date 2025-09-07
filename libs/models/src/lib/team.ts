@@ -3,8 +3,8 @@ import { Boat } from './boat';
 import { AgeItem, AgeType, BoatType } from './settings';
 import { calculateAgeType } from '@utils';
 
-export const gender = ['male', 'mix', 'female', 'open'] as const;
-export type Gender = (typeof gender)[number];
+export const genders = ['male', 'mix', 'female', 'open'] as const;
+export type Gender = (typeof genders)[number];
 
 export interface TeamTimes {
   startTimeA?: string;
@@ -69,7 +69,7 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
   }, 0);
   const age = total / participants.length;
 
-  if (oneBelow22 && age > 27) return AgeType.open;
+  if (oneBelow22 && age > 27) return '-';
 
   return calculateAgeType(ages, age);
 }

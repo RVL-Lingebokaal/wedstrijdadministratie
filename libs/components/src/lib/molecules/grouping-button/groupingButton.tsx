@@ -2,16 +2,12 @@
 import { Button, ErrorModal, FormModal, Input } from '@components/server';
 import { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { groupingClassSchema } from '@schemas';
+import { groupingClassSchema, GroupingForm } from '@schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface GroupingButtonProps {
   selectedIndexes: Set<number>;
   onSaveName: (name: string) => void;
-}
-
-interface GroupingForm {
-  name: string;
 }
 
 export function GroupingButton({
@@ -21,7 +17,7 @@ export function GroupingButton({
   const [showModal, setShowModal] = useState(false);
   const [isError, setIsError] = useState(false);
   const { handleSubmit, control } = useForm<GroupingForm>({
-    resolver: yupResolver(groupingClassSchema),
+    resolver: zodResolver(groupingClassSchema),
     defaultValues: { name: '' },
     mode: 'onSubmit',
   });
