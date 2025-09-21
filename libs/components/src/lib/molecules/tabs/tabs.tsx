@@ -1,12 +1,13 @@
 import { Button } from '../../atoms/button/button';
 import { AdministrationTabs, SettingsTabs } from '@models';
+import { ResultsTabs } from '../../../../../../apps/administratie/src/app/results/results';
 
-type PossibleTabs = AdministrationTabs | SettingsTabs;
+type PossibleTabs = AdministrationTabs | SettingsTabs | ResultsTabs;
 
 interface TabsProps<T extends PossibleTabs> {
-  tabs: string[];
-  currentTab: T[0];
-  setTab: (tab: T[0]) => void;
+  tabs: T[];
+  currentTab: T;
+  setTab: (tab: T) => void;
 }
 
 export function Tabs<T extends PossibleTabs>({

@@ -9,26 +9,20 @@ import {
   StatisticsPage,
 } from '@components';
 
-import { AdministrationTabs } from '@models';
+import { administrationTabs, AdministrationTabs } from '@models';
 
 export function AdministrationPage() {
-  const [tab, setTab] = useState<AdministrationTabs[0]>(
-    AdministrationTabs.session
-  );
+  const [tab, setTab] = useState<AdministrationTabs>('session');
 
   return (
     <div className="flex">
-      <Tabs
-        tabs={Object.values(AdministrationTabs)}
-        currentTab={tab}
-        setTab={setTab}
-      />
+      <Tabs tabs={[...administrationTabs]} currentTab={tab} setTab={setTab} />
       <div className="w-full">
-        {tab === AdministrationTabs.class && <ClassPage />}
-        {tab === AdministrationTabs.session && <SessionPage />}
-        {tab === AdministrationTabs.startNumbers && <StartNumbersPage />}
-        {tab === AdministrationTabs.statistics && <StatisticsPage />}
-        {tab === AdministrationTabs.downloads && <DownloadsPage />}
+        {tab === 'class' && <ClassPage />}
+        {tab === 'session' && <SessionPage />}
+        {tab === 'startNumbers' && <StartNumbersPage />}
+        {tab === 'statistics' && <StatisticsPage />}
+        {tab === 'downloads' && <DownloadsPage />}
       </div>
     </div>
   );

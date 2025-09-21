@@ -2,14 +2,21 @@
 import { useState } from 'react';
 import { AgesForm, BoatsForm, SettingsForm } from '@components';
 import { LoadingSpinner, Tabs } from '@components/server';
-import { AgeItem, ageTypes, BoatItem, boatTypes, SettingsTabs } from '@models';
+import {
+  AgeItem,
+  ageTypes,
+  BoatItem,
+  boatTypes,
+  settingsTabs,
+  SettingsTabs,
+} from '@models';
 import { useGetGeneralSettings, useGetSettings } from '@hooks';
 
 export default function SettingsPage() {
   const { data, isLoading } = useGetSettings();
   const { data: generalData, isLoading: generalIsLoading } =
     useGetGeneralSettings();
-  const [tab, setTab] = useState<SettingsTabs[0]>(SettingsTabs.type);
+  const [tab, setTab] = useState<SettingsTabs>('type');
 
   if (isLoading || generalIsLoading) {
     return <LoadingSpinner />;
@@ -21,12 +28,8 @@ export default function SettingsPage() {
 
   return (
     <div className="flex">
-      <Tabs
-        tabs={Object.values(SettingsTabs)}
-        currentTab={tab}
-        setTab={setTab}
-      />
-      {tab === SettingsTabs.type && (
+      <Tabs tabs={[...settingsTabs]} currentTab={tab} setTab={setTab} />
+      {tab === 'type' && (
         <BoatsForm
           initialValues={{
             items:
@@ -36,7 +39,7 @@ export default function SettingsPage() {
           }}
         />
       )}
-      {tab === SettingsTabs.leeftijd && (
+      {tab === 'leeftijd' && (
         <AgesForm
           initialValues={{
             items:
@@ -46,7 +49,7 @@ export default function SettingsPage() {
           }}
         />
       )}
-      {tab === SettingsTabs.instellingen && (
+      {tab === 'instellingen' && (
         <SettingsForm
           initialData={{
             date: generalData.date,

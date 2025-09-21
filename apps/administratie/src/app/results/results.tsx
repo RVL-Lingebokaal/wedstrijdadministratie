@@ -26,13 +26,11 @@ const headerItemsCorrected = [
   'Gecorrigeerd',
   'Plaats',
 ];
-enum ResultsTabs {
-  uncorrected = 'Gevaren',
-  corrected = 'Gecorrigeerd',
-}
+export const resultsTabs = ['uncorrected', 'corrected'] as const;
+export type ResultsTabs = (typeof resultsTabs)[number];
 
 export default function ResultsPage() {
-  const [tab, setTab] = useState<ResultsTabs[0]>(ResultsTabs.uncorrected);
+  const [tab, setTab] = useState<ResultsTabs>('uncorrected');
   const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
   const { data, isLoading } = useGetResults();
   const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
@@ -64,13 +62,9 @@ export default function ResultsPage() {
 
   return (
     <div className="flex w-full ">
-      <Tabs
-        tabs={Object.values(ResultsTabs)}
-        currentTab={tab}
-        setTab={setTab}
-      />
+      <Tabs tabs={[...resultsTabs]} currentTab={tab} setTab={setTab} />
       <div className="w-full">
-        {tab === ResultsTabs.uncorrected &&
+        {tab === 'uncorrected' &&
           headers.map((header, index) => (
             <Disclosure key={header} defaultOpen>
               <DisclosureButton className="w-full">
@@ -87,7 +81,7 @@ export default function ResultsPage() {
               </DisclosurePanel>
             </Disclosure>
           ))}
-        {tab === ResultsTabs.corrected && (
+        {tab === 'corrected' && (
           <div>
             <GridHeader items={headerItemsCorrected} />
             {correctedRows.map((item, index) => (

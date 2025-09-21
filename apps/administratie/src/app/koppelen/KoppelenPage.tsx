@@ -4,23 +4,19 @@ import { StyledRadioGroup, TimePage } from '@components';
 import { useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
 
-export enum Sessie {
-  all = 'all',
-  'sessie1' = 'sessie1',
-  'sessie2' = 'sessie2',
-  'sessie3' = 'sessie3',
-}
+export const sessie = ['all', 'sessie1', 'sessie2', 'sessie3'] as const;
+export type Sessie = (typeof sessie)[number];
 
 export function KoppelenPage() {
   const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
   const [isA, setIsA] = useState(true);
   const [isStart, setIsStart] = useState(true);
-  const [sessie, setSessie] = useState<Sessie>(Sessie.all);
+  const [sessie, setSessie] = useState<Sessie>('all');
 
   const filteredTeams = useMemo(() => {
     if (!teamData) return [];
 
-    if (sessie === Sessie.all) {
+    if (sessie === 'all') {
       return teamData;
     }
     const blockNumber = parseInt(sessie.replace('sessie', ''));
@@ -84,10 +80,10 @@ export function KoppelenPage() {
       <div className="pl-4 pt-4 grid grid-cols-1 w-3/5 gap-2">
         <StyledRadioGroup<Sessie>
           items={[
-            { label: 'Alle sessies', value: Sessie.all },
-            { label: 'Sessie 1', value: Sessie.sessie1 },
-            { label: 'Sessie 2', value: Sessie.sessie2 },
-            { label: 'Sessie 3', value: Sessie.sessie3 },
+            { label: 'Alle sessies', value: 'all' },
+            { label: 'Sessie 1', value: 'sessie1' },
+            { label: 'Sessie 2', value: 'sessie2' },
+            { label: 'Sessie 3', value: 'sessie3' },
           ]}
           selected={sessie}
           onChange={setSessie}
