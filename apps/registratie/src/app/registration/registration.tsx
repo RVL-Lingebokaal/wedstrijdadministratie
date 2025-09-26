@@ -4,20 +4,22 @@ import { LabelText, MainText } from '../../components/atoms/typography/text';
 import { CustomCheckbox } from '../../components/atoms/checkbox/checkbox';
 import { ScrollView, View } from 'react-native';
 import { MultipleInputsContainer } from '../../components/atoms/containers/containers';
-import { Button } from '../../components/atoms/button/button';
 import { colors } from '../../theme/colors';
 import { timeService } from '../../services/timeService';
 import { VolumeManager } from 'react-native-volume-manager';
+import ntpSync from '@ruanitto/react-native-ntp-sync';
+import { Button } from '../../components/atoms/button/button';
 
 export function Registration() {
+  const clock = new ntpSync({});
   const [isStart, setIsStart] = useState(false);
   const [isA, setIsA] = useState(false);
-  const [currentTime, setCurrentTime] = useState<Date | undefined>(undefined);
+  const [currentTime, setCurrentTime] = useState<number>(clock.getTime());
 
   const volumeChanger = useCallback(
     async (fromButton = false) => {
-      const now = new Date();
-      await timeService.saveTime(now.getTime(), isA, isStart);
+      const now = clock.getTime();
+      await timeService.saveTime(now, isA, isStart);
       if (!fromButton) await VolumeManager.setVolume(0.5);
       setCurrentTime(now);
     },
@@ -34,6 +36,7 @@ export function Registration() {
       volumeListener.remove();
     };
   }, [isA, isStart]);
+  const d = new Date();
 
   return (
     <Page title="Tijdsregistratie">
@@ -52,7 +55,9 @@ export function Registration() {
           <LabelText
             text={
               currentTime
-                ? `De tijd ${getTimeString(currentTime)} is geregistreerd`
+                ? `De tijd ${getTimeString(
+                    currentTime
+                  )} is geregistreerd ${currentTime} ${d.getTime()}`
                 : 'Er is nog geen tijd geregistreerd'
             }
           />
@@ -93,11 +98,17 @@ export function Registration() {
   );
 }
 
-function getTimeString(date: Date) {
-  const hour = date.getHours() >= 10 ? date.getHours() : `0${date.getHours()}`;
+function getTimeString(date: number) {
+  const dateObj = new Date(date);
+  const hour =
+    dateObj.getHours() >= 10 ? dateObj.getHours() : `0${dateObj.getHours()}`;
   const minutes =
-    date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+    dateObj.getMinutes() >= 10
+      ? dateObj.getMinutes()
+      : `0${dateObj.getMinutes()}`;
   const seconds =
-    date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
+    dateObj.getSeconds() >= 10
+      ? dateObj.getSeconds()
+      : `0${dateObj.getSeconds()}`;
   return `${hour}:${minutes}:${seconds}`;
 }

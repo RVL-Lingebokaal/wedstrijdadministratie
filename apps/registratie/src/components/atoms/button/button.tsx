@@ -22,7 +22,6 @@ export function Button({
     textColor: textColors[color],
     borderColor: borderColors[color],
   });
-  console.log(borderColors[color]);
 
   return (
     <Pressable style={styles.button} onPress={onPress} disabled={disabled}>
