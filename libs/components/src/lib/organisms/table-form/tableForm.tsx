@@ -8,6 +8,7 @@ import {
   DefaultValues,
   FieldArrayWithId,
   FieldPath,
+  FieldValues,
   Path,
   useFieldArray,
   useForm,
@@ -22,14 +23,14 @@ import { ZodType } from 'zod';
 export type Form = BoatForm | AgeForm;
 
 interface RowHeaderItem<T extends Form> {
-  input?: (field: ControllerRenderProps<T>) => ReactElement;
+  input?: (field: ControllerRenderProps<FieldValues, Path<T>>) => ReactElement;
   getValue?: (field: FieldArrayWithId<T, ArrayPath<T>>) => string;
   name: FieldPath<T['items'][0]>;
 }
 
 interface TableFormProps<T extends Form> {
-  onSubmit: (val: T) => void;
-  schema: ZodType<Form>;
+  onSubmit: (val: any) => void;
+  schema: ZodType<Form, FieldValues>;
   defaultValues: DefaultValues<T>;
   gridHeaderItems: string[];
   rowInputs: RowHeaderItem<T>[];
@@ -42,14 +43,14 @@ export function TableForm<T extends Form>({
   rowInputs,
   gridHeaderItems,
 }: TableFormProps<T>) {
-  const { handleSubmit, control } = useForm<T>({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
     mode: 'all',
   });
-  const { fields } = useFieldArray<T, ArrayPath<T>>({
+  const { fields } = useFieldArray({
     control,
-    name: 'items' as ArrayPath<T>,
+    name: 'items',
   });
 
   return (
@@ -81,7 +82,7 @@ export function TableForm<T extends Form>({
                     render={({ field }) => input(field)}
                   />
                 ) : (
-                  getValue?.(field) ?? ''
+                  getValue?.(field as FieldArrayWithId<T, ArrayPath<T>>) ?? ''
                 ),
                 isInput: Boolean(input),
               }))}
