@@ -1,3 +1,4 @@
+'use client';
 // Use this file to export React client components (e.g. those with 'use client' directive) or other non-server utilities
 //Atoms
 
@@ -11,6 +12,7 @@ export * from './lib/molecules/session-block-teams/sessionBlockTeams';
 export * from './lib/molecules/team-form/teamForm';
 export * from './lib/molecules/header/header';
 export * from './lib/molecules/combobox/combobox';
+export * from './lib/molecules/select-wedstrijd/selectWedstrijd';
 
 //Organisms
 export * from './lib/organisms/administration/class/classPage';
@@ -28,3 +30,4 @@ export * from './lib/organisms/time/timePage';
 
 //Atoms
 export * from './lib/atoms/radio-group/radioGroup';
+export * from './lib/molecules/wedstrijd-home-elements/wedstrijdHomeElements';

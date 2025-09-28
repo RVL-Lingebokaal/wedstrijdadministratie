@@ -4,3 +4,4 @@ export * from './lib/ageFormSchema';
 export * from './lib/groupingClassSchema';
 export * from './lib/settingFormSchema';
 export * from './lib/updateTeamSchema';
+export * from './lib/addWedstrijdSchema';

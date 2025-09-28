@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
-const navLinks = [
+const navLinksWedstrijd = [
   { title: 'Instellingen', target: '/settings' },
   { title: 'Upload', target: '/upload' },
   { title: 'Data', target: '/data' },
@@ -13,14 +13,18 @@ const navLinks = [
   { title: 'Koppelen', target: '/koppelen' },
   { title: 'Uitslagen', target: '/results' },
 ];
+const navLinksGeneral = [{ title: 'Nieuwe wedstrijd', target: '/create' }];
 
 export function Header() {
   const pathname = usePathname();
+  const navLinks = pathname.startsWith('/wedstrijd/')
+    ? navLinksWedstrijd
+    : navLinksGeneral;
 
   return (
     <div className="bg-primary flex justify-center">
       <nav className="flex justify-between py-2 w-6xl">
-        <Link href="/apps/administratie/public">
+        <Link href="/">
           <Image
             className="bg-white p-2"
             src="/rvl_logo.svg"

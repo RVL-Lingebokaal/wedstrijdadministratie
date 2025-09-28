@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import { Homepage } from './homepage';
+import { wedstrijdService } from '@services';
+import { SelectWedstrijd } from '@components';
 
 export const metadata: Metadata = {
   title: 'Lingebokaal administratie',
@@ -7,6 +8,21 @@ export const metadata: Metadata = {
   icons: '/rvl_logo_small.png',
 };
 
-export default function Home() {
-  return <Homepage />;
+export default async function Home() {
+  const wedstrijden = await wedstrijdService.getWedstrijden();
+
+  return (
+    <div>
+      <h1 className="text-white text-7xl font-bold">Wedstrijdadministratie</h1>
+      <p className="text-white text-xl mt-5">
+        Welkom op de website van de wedstrijdadminsitratie. Klik hieronder op de
+        wedstrijd die je wil bekijken.
+      </p>
+      <div className="max-w-sm mt-10">
+        {wedstrijden.length > 0 && (
+          <SelectWedstrijd wedstrijden={wedstrijden} />
+        )}
+      </div>
+    </div>
+  );
 }

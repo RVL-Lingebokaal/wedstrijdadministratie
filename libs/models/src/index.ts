@@ -5,3 +5,5 @@ export * from './lib/error';
 export * from './lib/settings';
 export * from './lib/enums';
 export * from './lib/interfaces';
+export * from './lib/wedstrijd';
+export * from './lib/counts';

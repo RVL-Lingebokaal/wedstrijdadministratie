@@ -1,5 +1,6 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
+import { getCountsResponseDtoSchema } from '@models';
 
 export function useGetCounts() {
   return useQuery(
@@ -9,12 +10,15 @@ export function useGetCounts() {
 
       if (!response.ok) throw new Error('Could not get counts');
 
-      return (await response.json()) as {
-        teamsSize: number;
-        participantsSize: number;
-        clubsSize: number;
-        date: string;
-      };
+      const parsedData = getCountsResponseDtoSchema.safeParse(
+        await response.json()
+      );
+
+      if (!parsedData.success) {
+        throw new Error('Could not parse response from server');
+      }
+
+      return parsedData.data;
     },
     {
       keepPreviousData: true,

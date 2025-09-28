@@ -1,3 +1,4 @@
+'use client';
 import { ClassItem, Settings } from '@models';
 import { useMemo } from 'react';
 

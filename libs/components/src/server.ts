@@ -17,6 +17,7 @@ export * from './lib/atoms/select/select';
 export * from './lib/atoms/select/selectController';
 export * from './lib/atoms/select/selectGender';
 export * from './lib/atoms/styled-toast/styledToast';
+export * from './lib/atoms/text-area/textAreaController';
 
 //Molecules
 export * from './lib/molecules/date-picker/DatePicker';

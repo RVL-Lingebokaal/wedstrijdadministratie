@@ -1,3 +1,4 @@
+'use client';
 import { useMemo } from 'react';
 import { AgeItem, AgeType, Team } from '@models';
 

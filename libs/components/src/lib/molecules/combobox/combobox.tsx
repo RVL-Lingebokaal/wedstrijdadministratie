@@ -9,10 +9,15 @@ import { useState } from 'react';
 import { FaCheck, FaChevronDown } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 
+export interface ComboxBoxItem {
+  value: string;
+  label: string;
+}
+
 interface ComboboxProps {
-  values: string[];
-  selectedItem: string;
-  setSelectedItem: (item: string) => void;
+  values: ComboxBoxItem[];
+  selectedItem: ComboxBoxItem;
+  setSelectedItem: (item: ComboxBoxItem | null) => void;
 }
 
 export function Combobox({
@@ -25,7 +30,7 @@ export function Combobox({
   const filteredValues =
     query === ''
       ? values
-      : values.filter((value) => {
+      : values.filter(({ value }) => {
           return value.toString().toLowerCase().includes(query.toLowerCase());
         });
 
@@ -34,7 +39,7 @@ export function Combobox({
       <HeadlessCombobox
         value={selectedItem}
         onClose={() => setQuery('')}
-        onChange={(event) => setSelectedItem(event ?? '')}
+        onChange={(event) => setSelectedItem(event)}
       >
         <div className="relative">
           <ComboboxInput
@@ -42,7 +47,7 @@ export function Combobox({
               'w-full rounded-lg border-none bg-white py-1.5 pr-8 pl-3 text-sm/6 text-primary',
               'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
             )}
-            displayValue={(value: string) => value}
+            displayValue={(value: ComboxBoxItem) => value?.label}
             onChange={(event) => setQuery(event.target.value)}
             autoComplete="off"
             autoFocus
@@ -59,14 +64,14 @@ export function Combobox({
             'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
           )}
         >
-          {filteredValues.map((value) => (
+          {filteredValues.map((item) => (
             <ComboboxOption
-              key={value}
-              value={value}
+              key={item.value}
+              value={item}
               className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none bg-white/50 data-[focus]:bg-white/75"
             >
               <FaCheck className="invisible size-4 fill-primary group-data-[selected]:visible" />
-              <div className="text-sm/6 text-primary ">{value}</div>
+              <div className="text-sm/6 text-primary ">{item.label}</div>
             </ComboboxOption>
           ))}
         </ComboboxOptions>

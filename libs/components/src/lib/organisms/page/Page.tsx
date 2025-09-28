@@ -2,8 +2,8 @@
 import { Header } from '@components';
 import { Footer } from '../../molecules/footer/footer';
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import { StyledToast } from '../../atoms/styled-toast/styledToast';
+import { usePathname } from 'next/navigation';
 
 export function Page({
   className,
@@ -13,13 +13,16 @@ export function Page({
   className: string;
 }) {
   const pathname = usePathname();
+  const showDiagonalLine = pathname === '/' || pathname.includes('/wedstrijd/');
+
+  console.log(pathname);
 
   return (
     <div className={`${className} min-h-full`}>
       <Header />
       <main
         className={`min-h-[calc(100vh_-_138px)] flex justify-center py-6 ${
-          pathname === '/' ? 'diagonal-theme-line' : 'bg-background'
+          showDiagonalLine ? 'diagonal-theme-line' : 'bg-background'
         }`}
       >
         <StyledToast />

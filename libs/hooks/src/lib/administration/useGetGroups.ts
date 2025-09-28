@@ -1,3 +1,4 @@
+'use client';
 import { BoatType, Gender, Team } from '@models';
 import { useMemo } from 'react';
 

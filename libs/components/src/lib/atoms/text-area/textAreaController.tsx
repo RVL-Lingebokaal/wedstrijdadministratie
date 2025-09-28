@@ -1,36 +1,31 @@
-'use client';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
-import { Input } from './input';
-import { HTMLInputTypeAttribute } from 'react';
+import { TextArea } from './textarea';
 
-interface InputControllerProps<T extends FieldValues> {
+interface TextAreaControllerProps<T extends FieldValues> {
   path: Path<T>;
   control: Control<T>;
   label?: string;
   disabled?: boolean;
   classNames?: string;
-  type?: HTMLInputTypeAttribute;
 }
 
-export function InputController<T extends FieldValues>({
+export function TextAreaController<T extends FieldValues>({
   path,
   control,
   label,
   disabled,
   classNames,
-  type,
-}: InputControllerProps<T>) {
+}: TextAreaControllerProps<T>) {
   return (
     <Controller
       name={path}
       control={control}
       render={({ field, fieldState }) => (
-        <Input
+        <TextArea
           disabled={disabled}
           label={label}
           hasError={fieldState.invalid}
           classNames={classNames}
-          type={type}
           {...field}
         />
       )}

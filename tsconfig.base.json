@@ -19,6 +19,7 @@
       "@components": ["libs/components/src/index.ts"],
       "@components/server": ["libs/components/src/server.ts"],
       "@hooks": ["libs/hooks/src/index.ts"],
+      "@hooks/server": ["libs/hooks/src/server.ts"],
       "@models": ["libs/models/src/index.ts"],
       "@schemas": ["libs/schemas/src/index.ts"],
       "@services": ["libs/services/src/index.ts"],

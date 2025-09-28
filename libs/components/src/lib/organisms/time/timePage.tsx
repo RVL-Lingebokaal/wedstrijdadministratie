@@ -43,7 +43,11 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
   );
 
   const possibleStartNumbers = useMemo(
-    () => getPossibleStartNumbers(teams, isA, isStart),
+    () =>
+      getPossibleStartNumbers(teams, isA, isStart).map((number) => ({
+        label: number,
+        value: number,
+      })),
     [teams]
   );
 
@@ -55,8 +59,8 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
         <div className="grid grid-cols-2 gap-6 col-span-2">
           <Combobox
             values={possibleStartNumbers ?? []}
-            selectedItem={selected}
-            setSelectedItem={(val) => setSelected(val)}
+            selectedItem={{ label: selected, value: selected }}
+            setSelectedItem={(val) => setSelected(val?.value ?? '')}
           />
           <div>
             <Button

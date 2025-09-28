@@ -1,3 +1,4 @@
+'use client';
 import { AgeItem, ClassItem, Team } from '@models';
 import { useMemo } from 'react';
 import { useGetTeamsByClass } from './useGetTeamsByClass';
