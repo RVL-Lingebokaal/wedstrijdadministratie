@@ -43,7 +43,7 @@ export function TableForm<T extends Form>({
   rowInputs,
   gridHeaderItems,
 }: TableFormProps<T>) {
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, getValues } = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
     mode: 'all',
@@ -55,7 +55,7 @@ export function TableForm<T extends Form>({
 
   return (
     <div className="w-full flex">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(() => onSubmit(getValues()))}>
         <div className="mx-4 w-full">
           <div className="flex">
             <GridHeader

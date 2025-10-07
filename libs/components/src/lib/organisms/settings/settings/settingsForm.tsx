@@ -8,12 +8,17 @@ import {
 } from '@components/server';
 import { SettingForm, settingFormSchema } from '@schemas';
 import { useSaveGeneralSettings } from '@hooks';
-import { SettingData } from '@models';
+import { SettingData, WedstrijdIdProps } from '@models';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export function SettingsForm({ initialData }: { initialData: SettingData }) {
-  const { mutate, isLoading } = useSaveGeneralSettings();
+interface SettingsFormProps extends WedstrijdIdProps {
+  initialData: SettingData;
+  wedstrijdId: string;
+}
+
+export function SettingsForm({ initialData, wedstrijdId }: SettingsFormProps) {
+  const { mutate, isLoading } = useSaveGeneralSettings({ wedstrijdId });
   const {
     handleSubmit,
     control,
@@ -58,6 +63,7 @@ export function SettingsForm({ initialData }: { initialData: SettingData }) {
                     key={field.id}
                     path={`missingNumbers.${index}.value`}
                     control={control}
+                    type="number"
                   />
                   <IconButton
                     icon={<FaMinus color="#0E294B" />}
@@ -67,7 +73,11 @@ export function SettingsForm({ initialData }: { initialData: SettingData }) {
                 </div>
               ))}
               <div className="flex gap-4">
-                <InputController path="currentNumber" control={control} />
+                <InputController
+                  path="currentNumber"
+                  control={control}
+                  type="number"
+                />
                 <IconButton
                   type="button"
                   icon={<FaPlus color="#0E294B" />}

@@ -1,17 +1,25 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { Time } from '@models';
+import { Time, WedstrijdIdProps } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
-export function useInitiateUpdates(
-  updateFunction: (values: Time[]) => void,
-  isA: boolean,
-  isStart: boolean
-) {
+interface UseInitiateUpdatesProps extends WedstrijdIdProps {
+  updateFunction: (values: Time[]) => void;
+  isA: boolean;
+  isStart: boolean;
+}
+
+export function useInitiateUpdates({
+  isA,
+  isStart,
+  updateFunction,
+  wedstrijdId,
+}: UseInitiateUpdatesProps) {
   const [sseConnection, setSSEConnection] = useState<EventSource | null>(null);
 
   const listenToSSEUpdates = useCallback(() => {
     const eventSource = new EventSource(
-      `/api/teams/time?isA=${isA}&isStart=${isStart}`
+      `/api/teams/time?${QUERY_PARAMS.isA}=${isA}&${QUERY_PARAMS.isStart}=${isStart}&${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`
     );
     eventSource.onopen = () => {
       console.log('SSE connection opened.');

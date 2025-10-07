@@ -1,22 +1,29 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { UpdateBlockArgs } from '@models';
+import { UpdateBlockArgs, WedstrijdIdProps } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
-interface UseUpdateBlockTeamProps {
+interface UseUpdateBlockTeamProps extends WedstrijdIdProps {
   onError: () => void;
 }
 
-export function useUpdateBlockTeam({ onError }: UseUpdateBlockTeamProps) {
+export function useUpdateBlockTeam({
+  onError,
+  wedstrijdId,
+}: UseUpdateBlockTeamProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
     ['update-block-team'],
     async (args: UpdateBlockArgs) => {
-      const response = await fetch('api/teams/update-block', {
-        method: 'POST',
-        body: JSON.stringify(args),
-      });
+      const response = await fetch(
+        `/api/teams/update-block?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(args),
+        }
+      );
 
       const result = (await response.json()) as any;
 

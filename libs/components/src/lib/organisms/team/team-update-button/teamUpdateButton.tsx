@@ -1,5 +1,5 @@
 'use client';
-import { getParticipantForm, Team } from '@models';
+import { getParticipantForm, Team, WedstrijdIdProps } from '@models';
 import { useCallback, useMemo, useState } from 'react';
 import { Button, FormModal, Select } from '@components/server';
 import { useForm } from 'react-hook-form';
@@ -8,16 +8,18 @@ import { addTeamSchema, TeamAddForm } from '@schemas';
 import { useUpdateTeam } from '@hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-interface TeamChangeButtonProps {
-  refetch: () => void;
+interface TeamChangeButtonProps extends WedstrijdIdProps {
   teams: Team[];
 }
 
-export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
+export function TeamUpdateButton({
+  wedstrijdId,
+  teams,
+}: TeamChangeButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [team, setTeam] = useState<null | Team>(null);
   const [_, setError] = useState<null | string>(null);
-  const { mutate } = useUpdateTeam();
+  const { mutate } = useUpdateTeam({ wedstrijdId });
   const teamsMap = useMemo(
     () =>
       teams.reduce<Map<string, Team>>((acc, t) => acc.set(t.id, t), new Map()),
@@ -33,9 +35,8 @@ export function TeamUpdateButton({ refetch, teams }: TeamChangeButtonProps) {
   const onClickSubmit = useCallback(
     async (val: TeamAddForm) => {
       mutate({ teamId: team?.id ?? '', ...val });
-      refetch();
     },
-    [mutate, refetch, team]
+    [mutate, team]
   );
 
   return (

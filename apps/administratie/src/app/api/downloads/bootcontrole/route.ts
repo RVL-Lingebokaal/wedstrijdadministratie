@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { downloadService } from '@services';
+import { QUERY_PARAMS } from '@utils';
 
 export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   try {
     // Create a new Excel workbook
-    const buffer = await downloadService.getBootControle();
+    const buffer = await downloadService.getBootControle(wedstrijdId);
 
     // Set response headers
     return new NextResponse(buffer, {

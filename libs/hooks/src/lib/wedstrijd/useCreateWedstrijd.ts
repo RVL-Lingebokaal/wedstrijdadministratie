@@ -1,7 +1,6 @@
 'use client';
 import { useMutation } from '@tanstack/react-query';
-import { WedstrijdAddForm } from '@schemas';
-import { createWedstrijdDtoResponseSchema } from '@models';
+import { BasicWedstrijdInfo, createWedstrijdDtoResponseSchema } from '@models';
 import { useRouter } from 'next/navigation';
 
 export function useCreateWedstrijd() {
@@ -9,7 +8,7 @@ export function useCreateWedstrijd() {
 
   return useMutation(
     ['create-wedstrijd'],
-    async (args: WedstrijdAddForm) => {
+    async (args: BasicWedstrijdInfo) => {
       const response = await fetch('/api/wedstrijd/create', {
         method: 'POST',
         body: JSON.stringify(args),

@@ -1,17 +1,21 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { SettingData } from '@models';
+import { SaveGeneralSettings, WedstrijdIdProps } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
-export function useSaveGeneralSettings() {
+export function useSaveGeneralSettings({ wedstrijdId }: WedstrijdIdProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
     ['save-general-settings'],
-    async (args: SettingData) => {
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        body: JSON.stringify({ ...args, type: 'general' }),
-      });
+    async (args: SaveGeneralSettings) => {
+      const response = await fetch(
+        `/api/wedstrijd/settings/general?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(args),
+        }
+      );
 
       if (!response.ok) throw new Error('Could not save general settings');
 

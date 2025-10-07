@@ -1,5 +1,13 @@
 'use client';
-import { AgeItem, AgeType, BoatType, ClassItem, Gender, Team } from '@models';
+import {
+  AgeItem,
+  AgeType,
+  BoatType,
+  ClassItem,
+  Gender,
+  Team,
+  WedstrijdIdProps,
+} from '@models';
 import { useCallback, useMemo, useState } from 'react';
 import { ClassRow } from '@components/server';
 import { GroupingButton } from '../grouping-button/groupingButton';
@@ -8,7 +16,7 @@ import { RemoveGroupingButton } from '../remove-grouping-button/removeGroupingBu
 import toast from 'react-hot-toast';
 import { useGetTeamsByClass } from '../../../../../hooks/src/lib/administration/useGetTeamsByClass';
 
-interface ClassSectionProps {
+interface ClassSectionProps extends WedstrijdIdProps {
   teams: Team[];
   ages: AgeItem[];
   boatType: BoatType;
@@ -26,10 +34,12 @@ export function ClassSection({
   gender,
   ownClassItems,
   refetch,
+  wedstrijdId,
 }: ClassSectionProps) {
   const { mutate } = useSaveSettings({
     onSuccess: () =>
       toast.success('De wijzigingen in de klassen zijn opgeslagen!'),
+    wedstrijdId,
   });
   const [selectedIndexes, setSelectedIndexes] = useState<Set<number>>(
     new Set()
@@ -71,7 +81,7 @@ export function ClassSection({
           .sort(),
       };
       classes.push(classItem);
-      mutate({ type: 'classes', items: classes });
+      mutate({ type: 'classes', itemsToSave: classes });
       setSelectedIndexes(new Set());
       refetch();
     },

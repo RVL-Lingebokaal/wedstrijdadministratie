@@ -127,7 +127,7 @@ export function getConvertedResults(
       const row = [
         { node: startNr },
         { node: name },
-        { node: slag.name },
+        { node: slag?.name },
         {
           node:
             start.dateTime && finish.dateTime

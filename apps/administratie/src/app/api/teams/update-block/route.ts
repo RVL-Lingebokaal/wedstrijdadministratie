@@ -1,10 +1,18 @@
 import { NextRequest } from 'next/server';
 import { UpdateBlockArgs } from '@models';
 import { teamService } from '@services';
+import { QUERY_PARAMS } from '@utils';
 
 export async function POST(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   const args = (await req.json()) as UpdateBlockArgs;
-  const team = await teamService.getTeam(args.teamId);
+  const team = await teamService.getTeam(args.teamId, wedstrijdId);
 
   if (!team) {
     return new Response(`Er bestaat geen team voor id: ${args.teamId}`, {
@@ -15,7 +23,6 @@ export async function POST(req: NextRequest) {
   try {
     team.block = args.destBlock;
     team.startNumber = undefined;
-    console.log(JSON.stringify(team.participants));
 
     await teamService.saveTeam(team);
   } catch (error: any) {

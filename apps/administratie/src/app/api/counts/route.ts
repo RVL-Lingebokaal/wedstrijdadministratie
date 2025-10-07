@@ -1,8 +1,17 @@
 import { participantService, settingsService, teamService } from '@services';
+import { QUERY_PARAMS } from '@utils';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
-  const teams = await teamService.getTeams();
-  const participants = await participantService.getParticipants();
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
+  const teams = await teamService.getTeams(wedstrijdId);
+  const participants = await participantService.getParticipants(wedstrijdId);
   const clubs = Array.from(teams.values()).reduce<Set<string>>(
     (acc, team) => acc.add(team.club),
     new Set()
@@ -10,7 +19,7 @@ export async function GET() {
   const date = await settingsService.getGeneralSettings();
 
   return Response.json({
-    teamsSize: teams.size,
+    teamsSize: teams.length,
     participantsSize: participants.size,
     clubsSize: clubs.size,
     date: date.date,

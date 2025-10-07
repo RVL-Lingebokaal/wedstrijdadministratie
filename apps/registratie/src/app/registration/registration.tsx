@@ -9,17 +9,22 @@ import { timeService } from '../../services/timeService';
 import { VolumeManager } from 'react-native-volume-manager';
 import ntpSync from '@ruanitto/react-native-ntp-sync';
 import { Button } from '../../components/atoms/button/button';
+import { RouteProp } from '@react-navigation/core';
+import { RootStackParamList } from '../interfaces';
 
-export function Registration() {
+type RegistrationRouteProp = RouteProp<RootStackParamList, 'registration'>;
+
+export function Registration({ route }: { route: RegistrationRouteProp }) {
   const clock = new ntpSync({});
   const [isStart, setIsStart] = useState(false);
   const [isA, setIsA] = useState(false);
   const [currentTime, setCurrentTime] = useState<number>(clock.getTime());
+  const { wedstrijdId } = route.params;
 
   const volumeChanger = useCallback(
     async (fromButton = false) => {
       const now = clock.getTime();
-      await timeService.saveTime(now, isA, isStart);
+      await timeService.saveTime(now, isA, isStart, wedstrijdId);
       if (!fromButton) await VolumeManager.setVolume(0.5);
       setCurrentTime(now);
     },
@@ -63,7 +68,6 @@ export function Registration() {
           />
         </View>
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
-
         <MultipleInputsContainer>
           <CustomCheckbox
             label="Finish"

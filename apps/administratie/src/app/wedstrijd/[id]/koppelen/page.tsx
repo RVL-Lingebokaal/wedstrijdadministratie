@@ -3,12 +3,12 @@ import { useMemo, useState } from 'react';
 import { StyledRadioGroup, TimePage } from '@components';
 import { useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
+import { Sessie } from '@models';
 
-export const sessie = ['all', 'sessie1', 'sessie2', 'sessie3'] as const;
-export type Sessie = (typeof sessie)[number];
-
-export function KoppelenPage() {
-  const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
+export default function KoppelenPage({
+  params: { id },
+}: ParamsWithWedstrijdId) {
+  const { data: teamData, isLoading: teamIsLoading } = useGetTeams(id);
   const [isA, setIsA] = useState(true);
   const [isStart, setIsStart] = useState(true);
   const [sessie, setSessie] = useState<Sessie>('all');
@@ -53,11 +53,6 @@ export function KoppelenPage() {
           getoond. Je kan ook filteren op sessie nummer of er voor kiezen om
           alle tijden te zien.
         </p>
-        <p>
-          Kies uit de onderste lijst een tijd. Vul vervolgens een startnummer in
-          de invoer in en druk op enter. De tijd is nu gekoppeld aan dit
-          startnummer.
-        </p>
       </div>
       <div className="pl-4 pt-4 grid grid-cols-1 w-2/5 gap-2">
         <StyledRadioGroup<boolean>
@@ -89,7 +84,17 @@ export function KoppelenPage() {
           onChange={setSessie}
         />
       </div>
-      <TimePage teams={filteredTeams} isA={isA} isStart={isStart} />
+      <p className="mt-8">
+        Kies uit de onderste lijst een tijd. Vul vervolgens een startnummer in
+        de invoer in en druk op enter. De tijd is nu gekoppeld aan dit
+        startnummer.
+      </p>
+      <TimePage
+        teams={filteredTeams}
+        isA={isA}
+        isStart={isStart}
+        wedstrijdId={id}
+      />
     </div>
   );
 }

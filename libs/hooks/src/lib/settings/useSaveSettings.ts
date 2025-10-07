@@ -1,26 +1,28 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ItemsToSave, SettingsType } from '@services';
+import { QUERY_PARAMS } from '@utils';
+import { SaveSettingsSchema, WedstrijdIdProps } from '@models';
 
-interface SaveSettinsArgs {
-  type: SettingsType;
-  items: ItemsToSave;
-}
-
-interface UseSaveSettingsProps {
+interface UseSaveSettingsProps extends WedstrijdIdProps {
   onSuccess: () => void;
 }
 
-export function useSaveSettings({ onSuccess }: UseSaveSettingsProps) {
+export function useSaveSettings({
+  onSuccess,
+  wedstrijdId,
+}: UseSaveSettingsProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
     ['save-settings'],
-    async (args: SaveSettinsArgs) => {
-      const response = await fetch('/api/settings', {
-        method: 'POST',
-        body: JSON.stringify(args),
-      });
+    async (args: SaveSettingsSchema) => {
+      const response = await fetch(
+        `/api/wedstrijd/settings?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(args),
+        }
+      );
 
       if (!response.ok) throw new Error('Could not save settings');
 

@@ -7,15 +7,17 @@ import {
   ageTypes,
   BoatItem,
   boatTypes,
-  settingsTabs,
   SettingsTabs,
+  settingsTabsTranslated,
 } from '@models';
 import { useGetGeneralSettings, useGetSettings } from '@hooks';
 
-export default function SettingsPage() {
-  const { data, isLoading } = useGetSettings();
+export default function SettingsPage({
+  params: { id },
+}: ParamsWithWedstrijdId) {
+  const { data, isLoading } = useGetSettings(id);
   const { data: generalData, isLoading: generalIsLoading } =
-    useGetGeneralSettings();
+    useGetGeneralSettings(id);
   const [tab, setTab] = useState<SettingsTabs>('type');
 
   if (isLoading || generalIsLoading) {
@@ -28,9 +30,10 @@ export default function SettingsPage() {
 
   return (
     <div className="flex">
-      <Tabs tabs={[...settingsTabs]} currentTab={tab} setTab={setTab} />
+      <Tabs tabs={settingsTabsTranslated} currentTab={tab} setTab={setTab} />
       {tab === 'type' && (
         <BoatsForm
+          wedstrijdId={id}
           initialValues={{
             items:
               data && data.boats && data.boats.length > 0
@@ -41,6 +44,7 @@ export default function SettingsPage() {
       )}
       {tab === 'leeftijd' && (
         <AgesForm
+          wedstrijdId={id}
           initialValues={{
             items:
               data && data.ages && data.ages.length > 0
@@ -51,6 +55,7 @@ export default function SettingsPage() {
       )}
       {tab === 'instellingen' && (
         <SettingsForm
+          wedstrijdId={id}
           initialData={{
             date: generalData.date,
             missingNumbers: generalData.missingNumbers ?? [],

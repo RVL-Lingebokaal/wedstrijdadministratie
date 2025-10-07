@@ -1,12 +1,16 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import { Team } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
-export function useGetTeams() {
+export function useGetTeams(wedstrijdId: string) {
   return useQuery(
     ['get-teams'],
     async () => {
-      const response = await fetch('/api/teams/all', { method: 'GET' });
+      const response = await fetch(
+        `/api/teams/all?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        { method: 'GET' }
+      );
 
       if (!response.ok) throw new Error('Could not get teams');
 

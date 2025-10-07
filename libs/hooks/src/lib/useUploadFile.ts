@@ -1,7 +1,8 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_PARAMS } from '@utils';
 
-export function useUploadFile() {
+export function useUploadFile(wedstrijdId: string) {
   const queryClient = useQueryClient();
 
   return useMutation(
@@ -10,10 +11,13 @@ export function useUploadFile() {
       const formData = new FormData();
       formData.set('file', args.file);
 
-      const response = await fetch('/api/fileupload', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        `/api/wedstrijd/fileupload?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
       const jsonResponse = await response.json();
 
       if (!response.ok) throw new Error('Could not upload file');

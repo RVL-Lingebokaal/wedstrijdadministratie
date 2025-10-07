@@ -1,15 +1,17 @@
 import { teamService } from '@services';
-import { stringifySet } from '@utils';
+import { QUERY_PARAMS, stringifySet } from '@utils';
 import { Participant } from '@models';
+import { NextRequest } from 'next/server';
 
-export async function GET() {
-  const teams = await teamService.getTeams();
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
 
-  Array.from(teams.values()).forEach((t) => {
-    if (t.id === '792267') {
-      console.log('block', t.block);
-    }
-  });
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
+  const teams = await teamService.getTeams(wedstrijdId);
 
   const arrayTeams = Array.from(teams.values());
   const jsonTeams: any[] = [];

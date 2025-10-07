@@ -1,5 +1,5 @@
 'use client';
-import { BoatType, Team } from '@models';
+import { BoatType, Team, WedstrijdIdProps } from '@models';
 import {
   ErrorModal,
   SessionGridHeader,
@@ -14,7 +14,7 @@ import {
 } from '@hello-pangea/dnd';
 import { useUpdateBlockTeam, useUpdatePlaceTeam } from '@hooks';
 
-interface SessionBlockTeamsProps {
+interface SessionBlockTeamsProps extends WedstrijdIdProps {
   teams?: Team[];
   refetch: () => void;
   totalBlocks: Map<number, number>;
@@ -30,12 +30,14 @@ export function SessionBlockTeams({
   totalBlocks,
   blockKey,
   boatType,
+  wedstrijdId,
 }: SessionBlockTeamsProps) {
   const [showError, setShowError] = useState(false);
   const { mutate: updateBlock, error } = useUpdateBlockTeam({
     onError: () => setShowError(true),
+    wedstrijdId,
   });
-  const { mutate: updatePlace } = useUpdatePlaceTeam();
+  const { mutate: updatePlace } = useUpdatePlaceTeam({ wedstrijdId });
 
   const onClick = useCallback(
     async (result: DropResult) => {

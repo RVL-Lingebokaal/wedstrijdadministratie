@@ -13,9 +13,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vermaas.developers.registratie"
@@ -38,7 +36,7 @@
         "projectId": "e2f874a0-dfbc-4d83-9538-0c9d9e992182"
       }
     },
-    "plugins":[
+    "plugins": [
       "@react-native-firebase/app",
       [
         "expo-splash-screen",

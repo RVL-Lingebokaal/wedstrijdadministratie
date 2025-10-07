@@ -31,6 +31,7 @@ const PARTICIPANT_KEYS = ['Slag', '2', '3', '4', '5', '6', '7', 'Boeg'];
 
 export class BondService {
   async readBondFile(
+    wedstrijdId: string,
     stream: Stream
   ): Promise<{ teams: Team[]; participants: Participant[]; boats: Boat[] }> {
     const teams = new Set<Team>();
@@ -45,7 +46,8 @@ export class BondService {
       row++;
       const { participants, helm, preferredBlock } = this.addParticipants(
         record,
-        participantMap
+        participantMap,
+        wedstrijdId
       );
 
       let boatId: null | string = null;
@@ -58,6 +60,7 @@ export class BondService {
           name: record[BOAT_NAME],
           blocks: new Set([preferredBlock]),
           id: getBoatId(record[BOAT_NAME], record[TEAM_CLUB]),
+          wedstrijdId,
         };
         boatId = boat.id;
         if (boats.has(boatId)) {
@@ -96,6 +99,8 @@ export class BondService {
         helm,
         place: 0,
         ageClass,
+        wedstrijdId,
+        block: preferredBlock,
       });
     }
     return {
@@ -107,7 +112,8 @@ export class BondService {
 
   private addParticipants(
     record: Record<string, string>,
-    map: Map<string, Participant>
+    map: Map<string, Participant>,
+    wedstrijdId: string
   ) {
     const participants: Participant[] = [];
     let overrideBlock: undefined | number = undefined;
@@ -118,6 +124,7 @@ export class BondService {
           record,
           key,
           map,
+          wedstrijdId,
           overrideBlock
         );
         overrideBlock = newBlock;
@@ -133,7 +140,13 @@ export class BondService {
     const rec = record[HELM];
     const helm =
       rec && rec !== ''
-        ? this.createParticipant(record, HELM, map, overrideBlock ?? 1)
+        ? this.createParticipant(
+            record,
+            HELM,
+            map,
+            wedstrijdId,
+            overrideBlock ?? 1
+          )
         : null;
 
     return {
@@ -147,6 +160,7 @@ export class BondService {
     record: Record<string, string>,
     path: string,
     map: Map<string, Participant>,
+    wedstrijdId: string,
     overrideBlock?: number
   ) {
     let preferredBlock = record[TEAM_PREFFERED_BLOCK]
@@ -164,6 +178,7 @@ export class BondService {
       blocks: record[TEAM_PREFFERED_BLOCK]
         ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
         : new Set(),
+      wedstrijdId,
     };
     const { participant, newBlock } = this.addBlockParticipant(
       preferredBlock,
@@ -341,8 +356,10 @@ export class BondService {
   private getGender(type: string): Gender {
     const isFemale = type.includes('d') || type.includes('v');
     const isMix = type.includes('mix');
+    const isOpen = type.includes('o');
     if (isMix) return 'mix';
     if (isFemale) return 'female';
+    if (isOpen) return 'open';
     return 'male';
   }
 

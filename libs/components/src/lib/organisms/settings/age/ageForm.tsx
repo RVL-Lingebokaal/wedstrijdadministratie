@@ -1,26 +1,33 @@
 'use client';
-import { AgeForm, ageStrategies, ageTranslations, ageTypes } from '@models';
+import {
+  AgeForm,
+  ageStrategies,
+  ageTranslations,
+  ageTypes,
+  WedstrijdIdProps,
+} from '@models';
 import { useCallback } from 'react';
 import { Input, Select, TableForm } from '@components/server';
 import { ageFormSchema } from '@schemas';
 import { useSaveSettings } from '@hooks';
 import toast from 'react-hot-toast';
 
-interface AgeFormProps {
+interface AgeFormProps extends WedstrijdIdProps {
   initialValues?: AgeForm;
 }
 
-export function AgesForm({ initialValues }: AgeFormProps) {
+export function AgesForm({ initialValues, wedstrijdId }: AgeFormProps) {
   const { mutate } = useSaveSettings({
     onSuccess: () =>
       toast.success(
         'De wijzigingen in de correctiefactoren van de leeftijd zijn opgeslagen!'
       ),
+    wedstrijdId,
   });
 
   const onSubmit = useCallback(
     async (data: AgeForm) => {
-      mutate({ type: 'ages', items: data.items });
+      mutate({ type: 'ages', itemsToSave: data.items });
     },
     [mutate]
   );
@@ -43,13 +50,23 @@ export function AgesForm({ initialValues }: AgeFormProps) {
         {
           name: 'correctionMale',
           input: (field) => (
-            <Input classNames="m-0" {...field} value={field.value as string} />
+            <Input
+              classNames="m-0"
+              {...field}
+              value={field.value as string}
+              type="number"
+            />
           ),
         },
         {
           name: 'correctionFemale',
           input: (field) => (
-            <Input classNames="m-0" {...field} value={field.value as string} />
+            <Input
+              classNames="m-0"
+              {...field}
+              value={field.value as string}
+              type="number"
+            />
           ),
         },
         {

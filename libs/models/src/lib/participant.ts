@@ -9,6 +9,7 @@ export interface Participant {
   birthYear: number;
   blocks: Set<number>;
   ageType?: AgeType;
+  wedstrijdId: string;
 }
 
 export function getAgeParticipant(participant: Participant) {

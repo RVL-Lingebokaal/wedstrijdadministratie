@@ -3,11 +3,14 @@ import {
   collection,
   doc,
   getDocs,
+  query,
   setDoc,
+  where,
   writeBatch,
 } from 'firebase/firestore';
 import firestore from './firebase/firebase';
 import { stringifySet } from '@utils';
+import { Collections } from '../types/databaseCollections';
 
 export class BoatService {
   private boats: Map<string, Boat> = new Map();
@@ -16,12 +19,12 @@ export class BoatService {
     const batch = writeBatch(firestore);
 
     boats.forEach((boat) => {
-      const { name, club, blocks, id } = boat;
+      const { name, club, blocks, id, wedstrijdId } = boat;
       const docRef = doc(firestore, 'boot', id);
       this.boats.set(id, boat);
       batch.set(
         docRef,
-        { name, club, blocks: stringifySet(blocks) },
+        { name, club, blocks: stringifySet(blocks), wedstrijdId },
         { merge: true }
       );
     });
@@ -29,12 +32,13 @@ export class BoatService {
     return await batch.commit();
   }
 
-  async removeAllBoats() {
+  async removeAllBoats(wedstrijdId: string) {
     if (this.boats.size === 0) {
       return;
     }
-    const dbInstance = collection(firestore, 'boot');
-    const data = await getDocs(dbInstance);
+    const dbInstance = collection(firestore, Collections.BOOT);
+    const q = query(dbInstance, where('wedstrijdId', '==', wedstrijdId));
+    const data = await getDocs(q);
 
     const batch = writeBatch(firestore);
     data.docs.forEach((doc) => {
@@ -45,10 +49,12 @@ export class BoatService {
     this.boats = new Map();
   }
 
-  async getBoats() {
+  async getBoats(wedstrijdId: string) {
     if (this.boats.size === 0) {
-      const dbInstance = collection(firestore, 'boot');
-      const data = await getDocs(dbInstance);
+      const dbInstance = collection(firestore, Collections.BOOT);
+      const q = query(dbInstance, where('wedstrijdId', '==', wedstrijdId));
+      const data = await getDocs(q);
+
       this.boats = data.docs.reduce(
         (acc, doc) =>
           acc.set(doc.id, {
@@ -56,6 +62,7 @@ export class BoatService {
             name: doc.data()['name'],
             club: doc.data()['club'],
             blocks: JSON.parse(doc.data()['blocks']),
+            wedstrijdId: doc.data()['wedstrijdId'],
           }),
         new Map<string, Boat>()
       );

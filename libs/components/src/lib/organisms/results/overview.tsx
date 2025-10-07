@@ -1,14 +1,13 @@
 'use client';
 
-import { useGetResults, useGetSettings, useGetTeams } from '@hooks';
-import { GridHeader, GridRow, LoadingSpinner, Tabs } from '@components/server';
-import { allAgesAreProcessed, getConvertedResults } from '@utils';
+import { useState } from 'react';
+import { GridHeader, GridRow, Tabs } from '@components/server';
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
-import { useState } from 'react';
+import { Item } from '@utils';
 
 const headerItemsUncorrected = [
   'Slag',
@@ -28,41 +27,34 @@ const headerItemsCorrected = [
 ];
 export const resultsTabs = ['uncorrected', 'corrected'] as const;
 export type ResultsTabs = (typeof resultsTabs)[number];
+export const resultsTabsWithTranslations: {
+  value: ResultsTabs;
+  name: string;
+}[] = [
+  { value: 'uncorrected', name: 'Origineel' },
+  { value: 'corrected', name: 'Gecorrigeerd' },
+];
 
-export default function ResultsPage() {
+interface OverviewResultsProps {
+  headers: string[];
+  rowsMap: Map<string, Item[][]>;
+  correctedRows: Item[][];
+}
+
+export function OverviewResults({
+  headers,
+  rowsMap,
+  correctedRows,
+}: OverviewResultsProps) {
   const [tab, setTab] = useState<ResultsTabs>('uncorrected');
-  const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
-  const { data, isLoading } = useGetResults();
-  const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
-
-  if (isLoading || settingsIsLoading || teamIsLoading) {
-    return <LoadingSpinner />;
-  }
-
-  const { processed } = allAgesAreProcessed(
-    teamData ?? [],
-    settingsData?.classes ?? []
-  );
-
-  if (!processed) {
-    return (
-      <h2>
-        Er zijn nog teams die niet zijn verwerkt. Ga naar de Administratie
-        pagina om alle teams aan een klasse toe te wijzen.
-      </h2>
-    );
-  }
-
-  const { rowsMap, headers, correctedRows } = getConvertedResults(
-    settingsData?.classes ?? [],
-    settingsData?.ages ?? [],
-    settingsData?.boats ?? [],
-    data
-  );
 
   return (
     <div className="flex w-full ">
-      <Tabs tabs={[...resultsTabs]} currentTab={tab} setTab={setTab} />
+      <Tabs
+        tabs={resultsTabsWithTranslations}
+        currentTab={tab}
+        setTab={setTab}
+      />
       <div className="w-full">
         {tab === 'uncorrected' &&
           headers.map((header, index) => (

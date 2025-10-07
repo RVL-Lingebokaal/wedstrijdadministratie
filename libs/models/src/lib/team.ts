@@ -35,6 +35,7 @@ export interface Team extends TeamResult {
   block?: null | number;
   startNumber?: number;
   ageClass: AgeType;
+  wedstrijdId: string;
 }
 
 export function getDatabaseTeam(team: Team) {

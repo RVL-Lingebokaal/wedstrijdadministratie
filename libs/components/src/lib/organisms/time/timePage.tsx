@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StartNumberTime, Team, Time } from '@models';
+import { StartNumberTime, Team, Time, WedstrijdIdProps } from '@models';
 import { useInitiateUpdates, useSaveTime } from '@hooks';
 import {
   getNewTimes,
@@ -10,14 +10,14 @@ import { Combobox } from '@components';
 import { Button } from '@components/server';
 import { TimeGridRow } from './timeGridRow';
 
-interface TimePageProps {
+interface TimePageProps extends WedstrijdIdProps {
   teams: Team[];
   isA: boolean;
   isStart: boolean;
 }
 
-export function TimePage({ teams, isStart, isA }: TimePageProps) {
-  const { mutate } = useSaveTime();
+export function TimePage({ teams, isStart, isA, wedstrijdId }: TimePageProps) {
+  const { mutate } = useSaveTime({ wedstrijdId });
   const [selected, setSelected] = useState('');
   const [times, setTimes] = useState<Time[]>([]);
   const [startNumberTimes, setStartNumberTimes] = useState<StartNumberTime[]>(
@@ -51,7 +51,12 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
     [teams]
   );
 
-  useInitiateUpdates(updateTimes, isA, isStart);
+  useInitiateUpdates({
+    updateFunction: updateTimes,
+    isA,
+    isStart,
+    wedstrijdId,
+  });
 
   return (
     <div className="p-4">
@@ -85,6 +90,7 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
             <div className="grid gap-1 pt-6">
               {startNumberTimes.map((item) => (
                 <TimeGridRow
+                  wedstrijdId={wedstrijdId}
                   key={item.id}
                   time={item}
                   selectedTime={selectedTime}
@@ -106,6 +112,7 @@ export function TimePage({ teams, isStart, isA }: TimePageProps) {
         <div className="grid gap-1">
           {times.map((time) => (
             <TimeGridRow
+              wedstrijdId={wedstrijdId}
               key={time.id}
               time={time}
               selectedTime={selectedTime}

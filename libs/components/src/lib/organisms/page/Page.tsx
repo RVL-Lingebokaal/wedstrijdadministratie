@@ -13,9 +13,8 @@ export function Page({
   className: string;
 }) {
   const pathname = usePathname();
-  const showDiagonalLine = pathname === '/' || pathname.includes('/wedstrijd/');
-
-  console.log(pathname);
+  const wedstrijdRegex = /(wedstrijd\/\w{1,5}\d{4})[^\/]/;
+  const showDiagonalLine = pathname === '/' || wedstrijdRegex.test(pathname);
 
   return (
     <div className={`${className} min-h-full`}>

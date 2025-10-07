@@ -8,8 +8,16 @@ import {
   participantService,
   teamService,
 } from '@services';
+import { QUERY_PARAMS } from '@utils';
 
 export async function POST(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId or type is required', { status: 400 });
+  }
+
   try {
     const stream = Readable.fromWeb(req.body as any);
     const allHeaders = headers();
@@ -19,11 +27,12 @@ export async function POST(req: NextRequest) {
       },
     });
     busBoy.on('file', async function (_, stream: Stream) {
-      await teamService.removeAllTeams();
-      await participantService.removeAllParticipants();
-      await boatService.removeAllBoats();
+      await teamService.removeAllTeams(wedstrijdId);
+      await participantService.removeAllParticipants(wedstrijdId);
+      await boatService.removeAllBoats(wedstrijdId);
 
       const { teams, participants, boats } = await bondService.readBondFile(
+        wedstrijdId,
         stream
       );
 

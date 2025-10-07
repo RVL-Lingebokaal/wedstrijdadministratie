@@ -17,15 +17,16 @@ import {
 } from 'firebase/firestore';
 import firestore from './firebase/firebase';
 import { DateTime } from 'luxon';
-import { teamService } from '@services';
+import { Collections, teamService } from '@services';
 
 export class TimeService {
   watchTimeUpdates(
     isA: boolean,
     isStart: boolean,
-    updateFunction: (data: Time[]) => void
+    updateFunction: (data: Time[]) => void,
+    wedstrijdId: string
   ) {
-    const dbInstance = collection(firestore, 'time');
+    const dbInstance = collection(firestore, Collections.TIME);
     const toDay = DateTime.now().set({
       hour: 1,
       minute: 0,
@@ -34,6 +35,7 @@ export class TimeService {
     });
     const q = query(
       dbInstance,
+      where('wedstrijdId', '==', wedstrijdId),
       where('isA', '==', isA),
       where('isStart', '==', isStart),
       where('time', '>=', toDay.toMillis()),
@@ -52,24 +54,29 @@ export class TimeService {
     });
   }
 
-  async saveTime(time: SaveStartNumberTime) {
-    const team = await teamService.getTeam(time.teamId);
-    const docRef = doc(firestore, 'ploeg', time.teamId);
+  async saveTime(wedstrijdId: string, time: SaveStartNumberTime) {
+    const team = await teamService.getTeam(time.teamId, wedstrijdId);
+    const docRef = doc(firestore, Collections.PLOEG, time.teamId);
     const timeObject = {
       ...team?.result,
       ...getTimeResult(time.isA, time.isStart, time.time),
     };
     await setDoc(docRef, { result: timeObject }, { merge: true });
 
-    return await deleteDoc(doc(firestore, 'time', time.id));
+    return await deleteDoc(doc(firestore, Collections.TIME, time.id));
   }
 
   async deleteTime(time: Time) {
-    return await deleteDoc(doc(firestore, 'time', time.id));
+    return await deleteDoc(doc(firestore, Collections.TIME, time.id));
   }
 
-  async restoreTime(teamId: string, isA: boolean, isStart: boolean) {
-    const team = await teamService.getTeam(teamId);
+  async restoreTime(
+    teamId: string,
+    isA: boolean,
+    isStart: boolean,
+    wedstrijdId: string
+  ) {
+    const team = await teamService.getTeam(teamId, wedstrijdId);
 
     if (!team) {
       return;
@@ -81,8 +88,8 @@ export class TimeService {
       return;
     }
 
-    await teamService.removeTimeFromTeam(teamId, isA, isStart);
-    return await setDoc(doc(firestore, 'time'), {
+    await teamService.removeTimeFromTeam(teamId, isA, isStart, wedstrijdId);
+    return await setDoc(doc(firestore, Collections.TIME), {
       time,
       isA: isA,
       isStart: isStart,
@@ -90,7 +97,11 @@ export class TimeService {
   }
 
   async addTime(time: string, isA: boolean, isStart: boolean) {
-    return await addDoc(collection(firestore, 'time'), { time, isA, isStart });
+    return await addDoc(collection(firestore, Collections.TIME), {
+      time,
+      isA,
+      isStart,
+    });
   }
 }
 

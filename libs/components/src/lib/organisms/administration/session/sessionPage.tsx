@@ -2,13 +2,13 @@
 import { useMemo, useState } from 'react';
 import { useGetSessionTotals, useGetTeams } from '@hooks';
 import { LoadingSpinner, Select, SelectGender } from '@components/server';
-import { BoatType, Gender } from '@models';
+import { BoatType, Gender, WedstrijdIdProps } from '@models';
 import { SessionBlockTeams } from '../../../molecules/session-block-teams/sessionBlockTeams';
 
-export function SessionPage() {
+export function SessionPage({ wedstrijdId }: WedstrijdIdProps) {
   const [boatType, setBoatType] = useState<BoatType>('2-');
   const [gender, setGender] = useState<Gender>('male');
-  const { data: teamData, isLoading, refetch } = useGetTeams();
+  const { data: teamData, isLoading, refetch } = useGetTeams(wedstrijdId);
   const { totalBlocks, blockTeams, boatTypes } = useGetSessionTotals(teamData);
 
   const boatTypeSelectItems = useMemo(() => {
@@ -18,6 +18,8 @@ export function SessionPage() {
   if (isLoading) {
     return <LoadingSpinner />;
   }
+
+  // console.log
 
   return (
     <>
@@ -42,6 +44,7 @@ export function SessionPage() {
           refetch={refetch}
           totalBlocks={totalBlocks}
           blockTeams={blockTeams}
+          wedstrijdId={wedstrijdId}
         />
       </div>
     </>

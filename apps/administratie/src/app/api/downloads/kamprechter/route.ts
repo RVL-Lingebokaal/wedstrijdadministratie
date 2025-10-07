@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { downloadService } from '@services';
+import { QUERY_PARAMS } from '@utils';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const heat = searchParams.get('heat');
+  const heat = searchParams.get(QUERY_PARAMS.heat);
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
 
-  if (heat === null) {
-    throw new Error('A heat is necessary to generate the excel file');
+  if (!wedstrijdId || heat === null) {
+    return new Response('wedstrijdId or heat is required', { status: 400 });
   }
 
   try {
     // Create a new Excel workbook
     const buffer = await downloadService.getKamprechterInfo(
-      Number.parseInt(heat)
+      Number.parseInt(heat),
+      wedstrijdId
     );
 
     // Set response headers

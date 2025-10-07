@@ -27,6 +27,7 @@ export * from './lib/organisms/team/team-add-button/teamAddButton';
 export * from './lib/organisms/team/team-update-button/teamUpdateButton';
 export * from './lib/organisms/upload-button/UploadButton';
 export * from './lib/organisms/time/timePage';
+export * from './lib/organisms/results/overview';
 
 //Atoms
 export * from './lib/atoms/radio-group/radioGroup';

@@ -2,12 +2,14 @@ import { useGetGeneralSettings, useGetSettings, useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
 import { allAgesAreProcessed } from '@utils';
 import { StartNumbersGrid } from './startNumbersGrid';
+import { WedstrijdIdProps } from '@models';
 
-export function StartNumbersPage() {
-  const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
-  const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
+export function StartNumbersPage({ wedstrijdId }: WedstrijdIdProps) {
+  const { data: teamData, isLoading: teamIsLoading } = useGetTeams(wedstrijdId);
+  const { data: settingsData, isLoading: settingsIsLoading } =
+    useGetSettings(wedstrijdId);
   const { data: generalSettingsData, isLoading: generalSettingsIsLoading } =
-    useGetGeneralSettings();
+    useGetGeneralSettings(wedstrijdId);
 
   if (settingsIsLoading || teamIsLoading || generalSettingsIsLoading) {
     return <LoadingSpinner />;
@@ -36,6 +38,7 @@ export function StartNumbersPage() {
       generalSettingsData={generalSettingsData}
       settingsData={settingsData}
       teamData={teamData}
+      wedstrijdId={wedstrijdId}
     />
   );
 }

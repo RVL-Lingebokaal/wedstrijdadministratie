@@ -1,7 +1,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "typeRoots": ["node_modules/@types", "node_modules"],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules"
+    ],
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -11,20 +14,42 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2021", "dom"],
+    "lib": [
+      "es2021",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@components": ["libs/components/src/index.ts"],
-      "@components/server": ["libs/components/src/server.ts"],
-      "@hooks": ["libs/hooks/src/index.ts"],
-      "@hooks/server": ["libs/hooks/src/server.ts"],
-      "@models": ["libs/models/src/index.ts"],
-      "@schemas": ["libs/schemas/src/index.ts"],
-      "@services": ["libs/services/src/index.ts"],
-      "@utils": ["libs/utils/src/index.ts"]
+      "@components": [
+        "libs/components/src/index.ts"
+      ],
+      "@components/server": [
+        "libs/components/src/server.ts"
+      ],
+      "@hooks": [
+        "libs/hooks/src/index.ts"
+      ],
+      "@hooks/server": [
+        "libs/hooks/src/server.ts"
+      ],
+      "@models": [
+        "libs/models/src/index.ts"
+      ],
+      "@schemas": [
+        "libs/schemas/src/index.ts"
+      ],
+      "@services": [
+        "libs/services/src/index.ts"
+      ],
+      "@utils": [
+        "libs/utils/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

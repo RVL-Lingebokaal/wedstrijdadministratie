@@ -3,6 +3,7 @@ export interface Boat {
   club: string;
   id: string;
   blocks: Set<number>;
+  wedstrijdId: string;
 }
 
 export function getBoatId(name: string, club: string) {

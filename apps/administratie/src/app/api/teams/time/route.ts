@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PostTimeProps, Time } from '@models';
 import { timeService } from '@services';
+import { QUERY_PARAMS } from '@utils';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const isA = searchParams.get('isA') === 'true';
-  const isStart = searchParams.get('isStart') === 'true';
+  const isA = searchParams.get(QUERY_PARAMS.isA) === 'true';
+  const isStart = searchParams.get(QUERY_PARAMS.isStart) === 'true';
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   const acceptHeader = req.headers.get('accept');
 
   if (acceptHeader && acceptHeader.includes('text/event-stream')) {
@@ -22,7 +29,12 @@ export async function GET(req: NextRequest) {
       writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
     };
 
-    const unsubscribe = timeService.watchTimeUpdates(isA, isStart, sendUpdate);
+    const unsubscribe = timeService.watchTimeUpdates(
+      isA,
+      isStart,
+      sendUpdate,
+      wedstrijdId
+    );
 
     req.signal.addEventListener('abort', () => {
       console.log('aborting');
@@ -36,6 +48,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   const args = (await req.json()) as PostTimeProps;
 
   if (args.type === 'delete') {
@@ -46,7 +65,12 @@ export async function POST(req: NextRequest) {
     if (!args.teamId || args.isA === undefined || args.isStart === undefined) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
-    await timeService.restoreTime(args.teamId, args.isA, args.isStart);
+    await timeService.restoreTime(
+      args.teamId,
+      args.isA,
+      args.isStart,
+      wedstrijdId
+    );
   }
 
   if (args.type === 'duplicate') {

@@ -15,3 +15,7 @@ export interface UseUpdateStartNumberTeam {
 export interface UseUpdateStartNumberTeamArgs {
   teams: UseUpdateStartNumberTeam[];
 }
+
+export interface WedstrijdIdProps {
+  wedstrijdId: string;
+}

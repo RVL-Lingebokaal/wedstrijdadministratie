@@ -2,17 +2,13 @@
 import { Button, FormModal } from '@components/server';
 import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BoatType } from '@models';
+import { BoatType, WedstrijdIdProps } from '@models';
 import { addTeamSchema, TeamAddForm } from '@schemas';
 import { useAddTeam } from '@hooks';
 import { TeamForm } from '../../../molecules/team-form/teamForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-interface TeamAddButtonProps {
-  refetch: () => void;
-}
-
-export function TeamAddButton({ refetch }: TeamAddButtonProps) {
+export function TeamAddButton({ wedstrijdId }: WedstrijdIdProps) {
   const [showModal, setShowModal] = useState(false);
   const methods = useForm<TeamAddForm>({
     resolver: zodResolver(addTeamSchema),
@@ -21,7 +17,7 @@ export function TeamAddButton({ refetch }: TeamAddButtonProps) {
   });
   const [error, setError] = useState<string | null>(null);
   const { watch, control, getValues, handleSubmit, reset, setValue } = methods;
-  const { mutate } = useAddTeam();
+  const { mutate } = useAddTeam({ wedstrijdId });
   const boatType = watch('boatType');
 
   const onClickSubmit = useCallback(
@@ -33,11 +29,10 @@ export function TeamAddButton({ refetch }: TeamAddButtonProps) {
         return;
       }
       mutate(val);
-      refetch();
       reset(getDefaultValues());
       setShowModal(false);
     },
-    [boatType, mutate, refetch, reset]
+    [boatType, mutate, reset]
   );
 
   return (

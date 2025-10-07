@@ -1,4 +1,4 @@
-import { Gender } from './team';
+import { Gender, genders } from './team';
 import { z } from 'zod';
 
 export const ageTypes = [
@@ -39,7 +39,7 @@ export const boatTypes = [
 ] as const;
 export type BoatType = (typeof boatTypes)[number];
 
-const boatItemForm = z.object({
+export const boatItemForm = z.object({
   type: z.enum(boatTypes),
   correction: z.number(),
   price: z.number().min(0),
@@ -50,20 +50,22 @@ export const boatForm = z.object({
 });
 export type BoatForm = z.infer<typeof boatForm>;
 
-export interface ClassItem {
-  name: string;
-  boatType: BoatType;
-  ages: AgeType[];
-  gender: Gender;
-}
+export const classItem = z.object({
+  name: z.string(),
+  boatType: z.enum(boatTypes),
+  ages: z.array(z.enum(ageTypes)).min(1),
+  gender: z.enum(genders),
+});
+export type ClassItem = z.infer<typeof classItem>;
 
-export interface AgeItem {
-  type: AgeType;
-  age: string;
-  correctionMale: number;
-  correctionFemale: number;
-  strategy: AgeStrategy;
-}
+export const ageItem = z.object({
+  type: z.enum(ageTypes),
+  age: z.string(),
+  correctionMale: z.number(),
+  correctionFemale: z.number(),
+  strategy: z.enum(ageStrategies),
+});
+export type AgeItem = z.infer<typeof ageItem>;
 
 export interface AgeForm {
   items: AgeItem[];
@@ -123,3 +125,19 @@ export function translateClass({
       : 'Open';
   return `${translatedGender}${boatType}${className}`;
 }
+
+export const saveSettingsSchema = z.object({
+  type: z.enum(['boats', 'ages', 'classes', 'general']),
+  itemsToSave: z.union([
+    z.array(ageItem),
+    z.array(boatItemForm),
+    z.array(classItem),
+  ]),
+});
+export type SaveSettingsSchema = z.infer<typeof saveSettingsSchema>;
+
+export const saveGeneralSettingsSchema = z.object({
+  date: z.string().optional(),
+  missingNumbers: z.array(z.number().min(1)).optional(),
+});
+export type SaveGeneralSettings = z.infer<typeof saveGeneralSettingsSchema>;

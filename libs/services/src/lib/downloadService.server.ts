@@ -1,33 +1,33 @@
-import { settingsService, teamService } from '@services';
+import { teamService, wedstrijdService } from '@services';
 // @ts-ignore
 import { Workbook } from 'exceljs';
 import { AgeType, ClassItem, Team, translateClass } from '@models';
 
 export class DownloadService {
-  async getBetalingenByStartNumber() {
+  async getBetalingenByStartNumber(wedstrijdId: string) {
     const sortFunction = (a: Team, b: Team) =>
       (a.startNumber ?? 0) - (b.startNumber ?? 0);
-    return this.getBetalingen(sortFunction, true);
+    return this.getBetalingen(sortFunction, true, wedstrijdId);
   }
 
-  async getBetalingenByVerenigingsNaam() {
+  async getBetalingenByVerenigingsNaam(wedstrijdId: string) {
     const sortFunction = (a: Team, b: Team) => a.club.localeCompare(b.club);
-    return this.getBetalingen(sortFunction, false);
+    return this.getBetalingen(sortFunction, false, wedstrijdId);
   }
 
-  async getRugnummerByStartNumber() {
+  async getRugnummerByStartNumber(wedstrijdId: string) {
     const sortFunction = (a: Team, b: Team) =>
       (a.startNumber ?? 0) - (b.startNumber ?? 0);
-    return this.getRugnummer(sortFunction, true);
+    return this.getRugnummer(sortFunction, true, wedstrijdId);
   }
 
-  async getRugnummerByVerenigingsNaam() {
+  async getRugnummerByVerenigingsNaam(wedstrijdId: string) {
     const sortFunction = (a: Team, b: Team) => a.club.localeCompare(b.club);
-    return this.getRugnummer(sortFunction, false);
+    return this.getRugnummer(sortFunction, false, wedstrijdId);
   }
 
-  async getBootControle() {
-    const teams = await teamService.getTeams();
+  async getBootControle(wedstrijdId: string) {
+    const teams = await teamService.getTeams(wedstrijdId);
 
     // Create a new Excel workbook
     const workbook = new Workbook();
@@ -65,8 +65,8 @@ export class DownloadService {
     return await workbook.xlsx.writeBuffer();
   }
 
-  async getKamprechterInfo(heat: number) {
-    const teams = await teamService.getTeams();
+  async getKamprechterInfo(heat: number, wedstrijdId: string) {
+    const teams = await teamService.getTeams(wedstrijdId);
 
     // Create a new Excel workbook
     const workbook = new Workbook();
@@ -108,11 +108,14 @@ export class DownloadService {
 
   private async getRugnummer(
     sortFunc: (a: Team, b: Team) => number,
-    hasWhiteSpaceStartNr: boolean
+    hasWhiteSpaceStartNr: boolean,
+    wedstrijdId: string
   ) {
-    const teams = await teamService.getTeams();
-    const settings = await settingsService.getSettings();
-    const classes = this.getSettingsMapClasses(settings.classes);
+    const teams = await teamService.getTeams(wedstrijdId);
+    const settings = await wedstrijdService.getSettingsFromWedstrijd(
+      wedstrijdId
+    );
+    const classes = this.getSettingsMapClasses(settings.classes ?? []);
 
     // Create a new Excel workbook
     const workbook = new Workbook();
@@ -134,20 +137,17 @@ export class DownloadService {
     Array.from(teams.values())
       .sort(sortFunc)
       .forEach(
-        (
-          {
-            club,
-            name,
-            helm,
-            ageClass,
-            startNumber,
-            block,
-            gender,
-            boatType,
-            participants,
-          },
-          index
-        ) => {
+        ({
+          club,
+          name,
+          helm,
+          ageClass,
+          startNumber,
+          block,
+          gender,
+          boatType,
+          participants,
+        }) => {
           if (hasWhiteSpaceStartNr) {
             while (indexStartNumber + 1 !== startNumber) {
               indexStartNumber++;
@@ -180,18 +180,18 @@ export class DownloadService {
 
   private async getBetalingen(
     sortFunc: (a: Team, b: Team) => number,
-    hasWhiteSpaceStartNr: boolean
+    hasWhiteSpaceStartNr: boolean,
+    wedstrijdId: string
   ) {
-    const teams = await teamService.getTeams();
-    const settings = await settingsService.getSettings();
-    const classes = this.getSettingsMapClasses(settings.classes);
+    const teams = await teamService.getTeams(wedstrijdId);
+    const settings = await wedstrijdService.getSettingsFromWedstrijd(
+      wedstrijdId
+    );
+    const classes = this.getSettingsMapClasses(settings.classes ?? []);
 
     // Create a new Excel workbook
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Sheet 1');
-    const headerStyle = {
-      font: { bold: true, size: 12 },
-    };
 
     // Define columns
     worksheet.columns = [
@@ -211,21 +211,18 @@ export class DownloadService {
     Array.from(teams.values())
       .sort(sortFunc)
       .forEach(
-        (
-          {
-            club,
-            name,
-            helm,
-            ageClass,
-            startNumber,
-            block,
-            registrationFee,
-            gender,
-            boatType,
-            participants,
-          },
-          index
-        ) => {
+        ({
+          club,
+          name,
+          helm,
+          ageClass,
+          startNumber,
+          block,
+          registrationFee,
+          gender,
+          boatType,
+          participants,
+        }) => {
           if (hasWhiteSpaceStartNr) {
             while (indexStartNumber + 1 !== startNumber) {
               indexStartNumber++;

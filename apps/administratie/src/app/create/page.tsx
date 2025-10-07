@@ -7,16 +7,16 @@ import {
   InputController,
   TextAreaController,
 } from '@components/server';
-import { addWedstrijdSchema, WedstrijdAddForm } from '@schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DateTime } from 'luxon';
 import { useCreateWedstrijd } from '@hooks';
+import { BasicWedstrijdInfo, basicWedstrijdInfoSchema } from '@models';
 
 export default function CreateWedstrijd() {
   const { mutate } = useCreateWedstrijd();
 
-  const methods = useForm<WedstrijdAddForm>({
-    resolver: zodResolver(addWedstrijdSchema),
+  const methods = useForm<BasicWedstrijdInfo>({
+    resolver: zodResolver(basicWedstrijdInfoSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -31,7 +31,7 @@ export default function CreateWedstrijd() {
   } = methods;
 
   const onSubmit = useCallback(
-    async (values: WedstrijdAddForm) => {
+    async (values: BasicWedstrijdInfo) => {
       mutate(values);
     },
     [mutate]
@@ -43,22 +43,22 @@ export default function CreateWedstrijd() {
       <p>Op deze pagina kan je een nieuwe wedstrijd maken. </p>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5">
-          <InputController<WedstrijdAddForm>
+          <InputController<BasicWedstrijdInfo>
             label="Naam van de wedstrijd"
             path="name"
             control={control}
           />
-          <DatePicker<WedstrijdAddForm>
+          <DatePicker<BasicWedstrijdInfo>
             path="date"
             control={control}
             label="Datum wedstrijd"
           />
-          <TextAreaController<WedstrijdAddForm>
+          <TextAreaController<BasicWedstrijdInfo>
             label="Omschrijving van de wedstrijd"
             path="description"
             control={control}
           />
-          <InputController<WedstrijdAddForm>
+          <InputController<BasicWedstrijdInfo>
             label="Aantal blokken"
             path="amountOfBlocks"
             control={control}

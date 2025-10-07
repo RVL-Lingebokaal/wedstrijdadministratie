@@ -20,6 +20,7 @@ import {
 import firestore from './firebase/firebase';
 import { boatService } from './boatService.server';
 import { participantService } from './participantService.server';
+import { Collections } from '../types/databaseCollections';
 
 export class TeamService {
   private teams: Map<string, Team> = new Map();
@@ -28,7 +29,7 @@ export class TeamService {
     const batch = writeBatch(firestore);
 
     teams.forEach((team) => {
-      const docRef = doc(firestore, 'ploeg', team.id);
+      const docRef = doc(firestore, Collections.PLOEG, team.id);
       this.teams.set(team.id, team);
       batch.set(docRef, getDatabaseTeam(team), { merge: true });
     });
@@ -49,24 +50,25 @@ export class TeamService {
 
     if (team.id === '') {
       const docRef = await addDoc(
-        collection(firestore, 'ploeg'),
+        collection(firestore, Collections.PLOEG),
         getDatabaseTeam(team)
       );
       team.id = docRef.id;
     } else {
-      const db = doc(firestore, 'ploeg', team.id);
+      const db = doc(firestore, Collections.PLOEG, team.id);
       await setDoc(db, getDatabaseTeam(team), { merge: true });
     }
 
     this.teams.set(team.id, team);
   }
 
-  async removeAllTeams() {
+  async removeAllTeams(wedstrijdId: string) {
     if (this.teams.size === 0) {
       return;
     }
-    const dbInstance = collection(firestore, 'ploeg');
-    const data = await getDocs(dbInstance);
+    const dbInstance = collection(firestore, Collections.PLOEG);
+    const q = query(dbInstance, where('wedstrijdId', '==', wedstrijdId));
+    const data = await getDocs(q);
 
     const batch = writeBatch(firestore);
     data.docs.forEach((doc) => {
@@ -77,13 +79,13 @@ export class TeamService {
     this.teams = new Map();
   }
 
-  async getTeams() {
+  async getTeams(wedstrijd: string) {
     if (this.teams.size === 0) {
       const dbInstance = collection(firestore, 'ploeg');
       const data = await getDocs(dbInstance);
 
-      const boats = await boatService.getBoats();
-      const participants = await participantService.getParticipants();
+      const boats = await boatService.getBoats(wedstrijd);
+      const participants = await participantService.getParticipants(wedstrijd);
 
       this.teams = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
@@ -110,50 +112,71 @@ export class TeamService {
           result: docData['result'],
           startNumber: docData['startNumber'],
           block: docData['block'],
+          wedstrijdId: docData['wedstrijdId'],
         };
         return acc.set(team.id, team);
       }, new Map());
     }
-    return this.teams;
+    const teams = [...this.teams.values()];
+    return teams.filter(({ wedstrijdId }) => wedstrijdId === wedstrijd);
   }
 
-  async getTeam(teamId: string) {
-    const teams = await this.getTeams();
-    return teams.get(teamId);
+  async getTeam(teamId: string, wedstrijd: string) {
+    const teams = await this.getTeams(wedstrijd);
+
+    if (this.teams.size > 0) return this.teams.get(teamId);
+
+    return teams.find(
+      (team) => team.id === teamId && team.wedstrijdId === wedstrijd
+    );
   }
 
-  async getResults() {
-    const dbInstance = collection(firestore, 'ploeg');
-    const q = query(dbInstance, where('result', '!=', null), orderBy('result'));
+  async getResults(wedstrijd: string) {
+    const dbInstance = collection(firestore, Collections.PLOEG);
+    const q = query(
+      dbInstance,
+      where('result', '!=', null),
+      where('wedstrijdId', '==', wedstrijd),
+      orderBy('result')
+    );
     const data = await getDocs(q);
 
     if (data.empty) {
       return [];
     }
 
-    const teams = await this.getTeams();
+    await this.getTeams(wedstrijd);
 
     return data.docs.map((doc) => {
       const docData = doc.data();
-      const team = teams.get(docData['id']);
+      const team = this.teams.get(docData['id']);
+
+      if (!team) {
+        throw new Error('Missing team for this id');
+      }
 
       return {
         id: docData['id'],
         name: docData['name'],
         result: docData['result'],
-        participants: team?.participants ?? [],
-        boatType: team?.boatType,
-        gender: team?.gender,
+        participants: team.participants ?? [],
+        boatType: team.boatType,
+        gender: team.gender,
         ageClass: docData['ageClass'],
-        startNr: team?.startNumber,
-        slag: team?.participants[0],
-        block: team?.block,
+        startNr: team.startNumber ?? 0,
+        slag: team.participants[0],
+        block: team.block ?? 0,
       };
     });
   }
 
-  async removeTimeFromTeam(teamId: string, isA: boolean, isStart: boolean) {
-    const team = await this.getTeam(teamId);
+  async removeTimeFromTeam(
+    teamId: string,
+    isA: boolean,
+    isStart: boolean,
+    wedstrijd: string
+  ) {
+    const team = await this.getTeam(teamId, wedstrijd);
 
     if (!team || !team.result) {
       return;

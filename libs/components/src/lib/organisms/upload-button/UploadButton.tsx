@@ -2,9 +2,10 @@
 import { ChangeEvent, useCallback, useRef } from 'react';
 import { Button } from '@components/server';
 import { useUploadFile } from '@hooks';
+import { WedstrijdIdProps } from '@models';
 
-export function UploadButton() {
-  const { mutate, isLoading } = useUploadFile();
+export function UploadButton({ wedstrijdId }: WedstrijdIdProps) {
+  const { mutate, isLoading } = useUploadFile(wedstrijdId);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
 
   const memoizedOnClick = useCallback(() => {

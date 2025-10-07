@@ -1,4 +1,4 @@
-import { SettingData, Settings, Team } from '@models';
+import { SettingData, Settings, Team, WedstrijdIdProps } from '@models';
 import { GridHeader, GridRow } from '@components/server';
 import { useMemo } from 'react';
 import {
@@ -7,7 +7,7 @@ import {
 } from '../../../utils/startNumbersUtils';
 import { useUpdateStartNumbers } from '@hooks';
 
-interface StartNumbersGridProps {
+interface StartNumbersGridProps extends WedstrijdIdProps {
   teamData: Team[];
   settingsData: Omit<Settings, 'general'>;
   generalSettingsData: SettingData;
@@ -19,8 +19,9 @@ export function StartNumbersGrid({
   teamData,
   settingsData,
   generalSettingsData,
+  wedstrijdId,
 }: StartNumbersGridProps) {
-  const { mutate } = useUpdateStartNumbers();
+  const { mutate } = useUpdateStartNumbers({ wedstrijdId });
   const hasTeamsWithoutStartNumber = teamData?.some(
     (team) => !team.startNumber
   );

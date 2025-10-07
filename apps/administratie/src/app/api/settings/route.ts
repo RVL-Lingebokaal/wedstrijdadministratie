@@ -22,17 +22,3 @@ export async function POST(req: NextRequest) {
 
   return Response.json({ success: true });
 }
-
-export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const type = searchParams.get('type');
-
-  if (type === 'general') {
-    const generalSettings = await settingsService.getGeneralSettings();
-
-    return Response.json(generalSettings);
-  }
-  const settings = await settingsService.getSettings();
-
-  return Response.json(settings);
-}

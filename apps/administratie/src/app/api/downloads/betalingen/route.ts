@@ -2,17 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { downloadService } from '@services';
 // @ts-ignore
 import { Buffer } from 'exceljs';
+import { QUERY_PARAMS } from '@utils';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const sortByStartNumber = searchParams.get('sortByStartNumber') === 'true';
+  const sortByStartNumber =
+    searchParams.get(QUERY_PARAMS.sortByStartNumber) === 'true';
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   try {
     // Create a new Excel workbook
-    let buffer: null | Buffer = null;
+    let buffer: null | Buffer;
     if (sortByStartNumber) {
-      buffer = await downloadService.getBetalingenByStartNumber();
+      buffer = await downloadService.getBetalingenByStartNumber(wedstrijdId);
     } else {
-      buffer = await downloadService.getBetalingenByVerenigingsNaam();
+      buffer = await downloadService.getBetalingenByVerenigingsNaam(
+        wedstrijdId
+      );
     }
 
     // Set response headers

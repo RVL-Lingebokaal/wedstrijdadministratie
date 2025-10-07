@@ -5,7 +5,7 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { LoadingSpinner, SelectGender } from '@components/server';
-import { Gender } from '@models';
+import { Gender, WedstrijdIdProps } from '@models';
 import { useState } from 'react';
 import {
   useGetClassMap,
@@ -17,10 +17,10 @@ import { ClassSection } from '../../../molecules/class-section/classSection';
 import { ClassGridHeader } from '../../../atoms/grid-header/classGridHeader';
 import { allAgesAreProcessed } from '@utils';
 
-export function ClassPage() {
+export function ClassPage({ wedstrijdId }: WedstrijdIdProps) {
   const [gender, setGender] = useState<Gender>('male');
-  const { data: teamData, isLoading } = useGetTeams();
-  const { data: settingsData, refetch } = useGetSettings();
+  const { data: teamData, isLoading } = useGetTeams(wedstrijdId);
+  const { data: settingsData, refetch } = useGetSettings(wedstrijdId);
 
   const groups = useGetGroups(teamData ?? [], gender);
   const keys = Array.from(groups.keys()).sort();
@@ -69,6 +69,7 @@ export function ClassPage() {
                   gender={gender}
                   ownClassItems={classItems}
                   refetch={refetch}
+                  wedstrijdId={wedstrijdId}
                 />
               </DisclosurePanel>
             </Disclosure>

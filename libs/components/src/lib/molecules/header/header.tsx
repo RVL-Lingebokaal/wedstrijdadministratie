@@ -9,7 +9,7 @@ const navLinksWedstrijd = [
   { title: 'Instellingen', target: '/settings' },
   { title: 'Upload', target: '/upload' },
   { title: 'Data', target: '/data' },
-  { title: 'Administratie', target: '/administration' },
+  { title: 'Administratie', target: '/administratie' },
   { title: 'Koppelen', target: '/koppelen' },
   { title: 'Uitslagen', target: '/results' },
 ];
@@ -42,7 +42,7 @@ export function Header() {
                   : ''
               }`}
               key={target}
-              href={target}
+              href={getPathName(pathname, target)}
               passHref
             >
               {title}
@@ -52,4 +52,12 @@ export function Header() {
       </nav>
     </div>
   );
+}
+
+function getPathName(pathname: string, target: string) {
+  const parts = pathname.split('/').filter((part) => part !== '');
+
+  if (parts.length < 2) return `/${target}`;
+
+  return `/${parts[0]}/${parts[1]}/${target}`;
 }

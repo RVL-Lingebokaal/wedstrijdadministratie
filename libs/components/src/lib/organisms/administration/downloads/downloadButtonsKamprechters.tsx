@@ -1,7 +1,9 @@
 import { useDownload } from '@hooks';
 import { Button } from '@components/server';
+import { QUERY_PARAMS } from '@utils';
+import { WedstrijdIdProps } from '@models';
 
-export function DownloadButtonsKamprechters() {
+export function DownloadButtonsKamprechters({ wedstrijdId }: WedstrijdIdProps) {
   const downloadKamprechters = useDownload({});
 
   return (
@@ -12,7 +14,7 @@ export function DownloadButtonsKamprechters() {
             key={value}
             onClick={() =>
               downloadKamprechters({
-                url: `/api/downloads/kamprechter?heat=${value}`,
+                url: `/api/downloads/kamprechter?${QUERY_PARAMS.heat}=${value}&${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
                 fileName: `kamprechtersHeat${value}.xlsx`,
               })
             }

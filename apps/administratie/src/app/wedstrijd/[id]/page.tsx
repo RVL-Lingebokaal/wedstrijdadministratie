@@ -1,13 +1,11 @@
 import { Block, WedstrijdHomeElements } from '@components';
 import { participantService, teamService, wedstrijdService } from '@services';
 
-interface HomePageProps {
-  params: { id: string };
-}
-
-export default async function Homepage({ params: { id } }: HomePageProps) {
-  const teams = await teamService.getTeams();
-  const participants = await participantService.getParticipants();
+export default async function Homepage({
+  params: { id },
+}: ParamsWithWedstrijdId) {
+  const teams = await teamService.getTeams(id);
+  const participants = await participantService.getParticipants(id);
   const clubs = Array.from(teams.values()).reduce<Set<string>>(
     (acc, team) => acc.add(team.club),
     new Set()
@@ -19,7 +17,7 @@ export default async function Homepage({ params: { id } }: HomePageProps) {
       <h1 className="text-white text-6xl font-bold">{wedstrijd.name}</h1>
       <WedstrijdHomeElements
         data={{
-          teamsSize: teams.size,
+          teamsSize: teams.length + 1,
           participantsSize: participants.size,
           clubsSize: clubs.size,
           date: wedstrijd.date,

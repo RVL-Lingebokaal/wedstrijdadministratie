@@ -1,9 +1,15 @@
 import firestore from '@react-native-firebase/firestore';
+import { Collections } from './collections';
 
 export class TimeService {
   currentTime: number = new Date().getTime();
 
-  async saveTime(time: number, isA: boolean, isStart: boolean) {
+  async saveTime(
+    time: number,
+    isA: boolean,
+    isStart: boolean,
+    wedstrijdId: string
+  ) {
     const oldTime = this.currentTime;
     const difference = time - oldTime;
 
@@ -12,8 +18,8 @@ export class TimeService {
     this.currentTime = time;
 
     return await firestore()
-      .collection('time')
-      .add({ time, isA, isStart, oldTime, difference });
+      .collection(Collections.TIME)
+      .add({ time, isA, isStart, oldTime, difference, wedstrijdId });
   }
 }
 

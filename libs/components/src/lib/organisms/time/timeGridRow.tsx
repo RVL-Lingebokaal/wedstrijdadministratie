@@ -1,11 +1,11 @@
 import { twMerge } from 'tailwind-merge';
 import { DateTime } from 'luxon';
-import { Time } from '@models';
+import { Time, WedstrijdIdProps } from '@models';
 import { IconButton } from '@components/server';
 import { FaClone, FaRedo, FaTrashAlt } from 'react-icons/fa';
 import { useDeleteTime, useDuplicateTime, useRestoreTime } from '@hooks';
 
-interface TimeGridRowProps {
+interface TimeGridRowProps extends WedstrijdIdProps {
   time: Time;
   teamId?: string;
   isA?: boolean;
@@ -29,13 +29,14 @@ export function TimeGridRow({
   teamId,
   isA,
   isStart,
+  wedstrijdId,
 }: TimeGridRowProps) {
   const isSelected = selectedTime?.id === time.id;
   const hasDelete = deleteFunc !== undefined;
   const hasRestore = restoreFunc !== undefined;
-  const { mutate: deleteTime } = useDeleteTime();
-  const { mutate: restoreTime } = useRestoreTime();
-  const { mutate: duplicateTime } = useDuplicateTime();
+  const { mutate: deleteTime } = useDeleteTime({ wedstrijdId });
+  const { mutate: restoreTime } = useRestoreTime({ wedstrijdId });
+  const { mutate: duplicateTime } = useDuplicateTime({ wedstrijdId });
 
   return (
     <div

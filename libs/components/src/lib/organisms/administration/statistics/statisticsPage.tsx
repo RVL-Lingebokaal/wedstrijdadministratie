@@ -1,11 +1,19 @@
 import { useGetClassMap, useGetSettings, useGetTeams } from '@hooks';
 import { LoadingSpinner } from '@components/server';
-import { BoatType, boatTypes, Gender, genders, translateClass } from '@models';
+import {
+  BoatType,
+  boatTypes,
+  Gender,
+  genders,
+  translateClass,
+  WedstrijdIdProps,
+} from '@models';
 import { useMemo } from 'react';
 
-export function StatisticsPage() {
-  const { data: teamData, isLoading: teamIsLoading } = useGetTeams();
-  const { data: settingsData, isLoading: settingsIsLoading } = useGetSettings();
+export function StatisticsPage({ wedstrijdId }: WedstrijdIdProps) {
+  const { data: teamData, isLoading: teamIsLoading } = useGetTeams(wedstrijdId);
+  const { data: settingsData, isLoading: settingsIsLoading } =
+    useGetSettings(wedstrijdId);
   const classMap = useGetClassMap(settingsData);
 
   const { totalAmount, medals } = useMemo(() => {

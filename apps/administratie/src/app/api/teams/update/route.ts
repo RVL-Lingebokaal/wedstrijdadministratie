@@ -2,18 +2,28 @@ import { NextRequest } from 'next/server';
 import { UpdateTeamArgs } from '@hooks';
 import { boatService, participantService, teamService } from '@services';
 import { Participant } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
 export async function POST(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
+
+  if (!wedstrijdId) {
+    return new Response('wedstrijdId is required', { status: 400 });
+  }
+
   const args = (await req.json()) as UpdateTeamArgs;
-  let team = args.teamId ? await teamService.getTeam(args.teamId) : undefined;
+  let team = args.teamId
+    ? await teamService.getTeam(args.teamId, wedstrijdId)
+    : undefined;
 
   if (!team) {
     return new Response(`Er bestaat geen team voor id: ${args.teamId}`, {
       status: 500,
     });
   }
-  const participants = await participantService.getParticipants();
-  const boats = await boatService.getBoats();
+  const participants = await participantService.getParticipants(wedstrijdId);
+  const boats = await boatService.getBoats(wedstrijdId);
   team = {
     ...team,
     ...args,
