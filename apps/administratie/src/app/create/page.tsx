@@ -10,18 +10,20 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DateTime } from 'luxon';
 import { useCreateWedstrijd } from '@hooks';
-import { BasicWedstrijdInfo, basicWedstrijdInfoSchema } from '@models';
+import { CreateWedstrijdForm, createWedstrijdFormSchema } from '@models';
+import { RadioGroupController } from '@components';
 
 export default function CreateWedstrijd() {
   const { mutate } = useCreateWedstrijd();
 
-  const methods = useForm<BasicWedstrijdInfo>({
-    resolver: zodResolver(basicWedstrijdInfoSchema),
+  const methods = useForm<CreateWedstrijdForm>({
+    resolver: zodResolver(createWedstrijdFormSchema),
     defaultValues: {
       name: '',
       description: '',
       date: DateTime.now().toISODate(),
       amountOfBlocks: 1,
+      isJeugd: false,
     },
   });
   const {
@@ -31,7 +33,7 @@ export default function CreateWedstrijd() {
   } = methods;
 
   const onSubmit = useCallback(
-    async (values: BasicWedstrijdInfo) => {
+    async (values: CreateWedstrijdForm) => {
       mutate(values);
     },
     [mutate]
@@ -43,27 +45,37 @@ export default function CreateWedstrijd() {
       <p>Op deze pagina kan je een nieuwe wedstrijd maken. </p>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5">
-          <InputController<BasicWedstrijdInfo>
+          <InputController<CreateWedstrijdForm>
             label="Naam van de wedstrijd"
             path="name"
             control={control}
           />
-          <DatePicker<BasicWedstrijdInfo>
+          <DatePicker<CreateWedstrijdForm>
             path="date"
             control={control}
             label="Datum wedstrijd"
           />
-          <TextAreaController<BasicWedstrijdInfo>
+          <TextAreaController<CreateWedstrijdForm>
             label="Omschrijving van de wedstrijd"
             path="description"
             control={control}
           />
-          <InputController<BasicWedstrijdInfo>
+          <InputController<CreateWedstrijdForm>
             label="Aantal blokken"
             path="amountOfBlocks"
             control={control}
             type="number"
           />
+          <div className="mt-2">
+            <h4 className="font-bold mb-1">Is dit een jeugdwedstrijd?</h4>
+            <RadioGroupController<CreateWedstrijdForm, boolean>
+              path="isJeugd"
+              items={[
+                { label: 'Ja', value: true },
+                { label: 'Nee', value: false },
+              ]}
+            />
+          </div>
           <Button
             name="Opslaan"
             color="primary"

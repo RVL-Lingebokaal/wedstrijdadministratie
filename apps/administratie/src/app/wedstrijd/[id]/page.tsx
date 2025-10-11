@@ -17,10 +17,10 @@ export default async function Homepage({
       <h1 className="text-white text-6xl font-bold">{wedstrijd.name}</h1>
       <WedstrijdHomeElements
         data={{
-          teamsSize: teams.length + 1,
+          teamsSize: teams.length,
           participantsSize: participants.size,
           clubsSize: clubs.size,
-          date: wedstrijd.date,
+          date: wedstrijd.settings.general.date,
         }}
       />
       <div className="mt-12">

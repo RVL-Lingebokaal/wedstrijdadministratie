@@ -13,7 +13,7 @@ export function Page({
   className: string;
 }) {
   const pathname = usePathname();
-  const wedstrijdRegex = /(wedstrijd\/\w{1,5}\d{4})[^\/]/;
+  const wedstrijdRegex = /^\/(wedstrijd\/\w{1,5}\d{4})$/;
   const showDiagonalLine = pathname === '/' || wedstrijdRegex.test(pathname);
 
   return (

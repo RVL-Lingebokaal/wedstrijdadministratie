@@ -2,6 +2,7 @@ import { Gender, genders } from './team';
 import { z } from 'zod';
 
 export const ageTypes = [
+  '12',
   '14',
   '16',
   '18',
@@ -72,7 +73,8 @@ export interface AgeForm {
 }
 
 export const ageTranslations: Record<string, string> = {
-  '14': '0 t/m 14',
+  '12': '0 t/m 12',
+  '14': '13 t/m 14',
   '16': '15 t/m 16',
   '18': '17 t/m 18',
   '-': '0 t/m 26',
@@ -102,6 +104,7 @@ export interface Settings {
 export interface SettingData {
   date: string;
   missingNumbers: number[];
+  isJeugd?: boolean;
 }
 
 interface TranslateClassProps {
@@ -139,5 +142,6 @@ export type SaveSettingsSchema = z.infer<typeof saveSettingsSchema>;
 export const saveGeneralSettingsSchema = z.object({
   date: z.string().optional(),
   missingNumbers: z.array(z.number().min(1)).optional(),
+  isJeugd: z.boolean().optional(),
 });
 export type SaveGeneralSettings = z.infer<typeof saveGeneralSettingsSchema>;

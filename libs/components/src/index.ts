@@ -32,3 +32,4 @@ export * from './lib/organisms/results/overview';
 //Atoms
 export * from './lib/atoms/radio-group/radioGroup';
 export * from './lib/molecules/wedstrijd-home-elements/wedstrijdHomeElements';
+export * from './lib/atoms/radio-group/radioGroupController';

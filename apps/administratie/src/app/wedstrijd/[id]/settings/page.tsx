@@ -59,6 +59,7 @@ export default function SettingsPage({
           initialData={{
             date: generalData.date,
             missingNumbers: generalData.missingNumbers ?? [],
+            isJeugd: generalData.isJeugd ?? false,
           }}
         />
       )}

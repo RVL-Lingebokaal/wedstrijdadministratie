@@ -57,7 +57,7 @@ export function Header() {
 function getPathName(pathname: string, target: string) {
   const parts = pathname.split('/').filter((part) => part !== '');
 
-  if (parts.length < 2) return `/${target}`;
+  if (parts.length < 2) return `${target}`;
 
   return `/${parts[0]}/${parts[1]}/${target}`;
 }

@@ -3,9 +3,8 @@ import firestore from './firebase/firebase';
 import { DateTime } from 'luxon';
 import {
   AgeItem,
-  BasicWedstrijdInfo,
   BoatItem,
-  isWedstrijd,
+  CreateWedstrijdForm,
   SaveGeneralSettings,
   SaveSettingsSchema,
   Wedstrijd,
@@ -17,30 +16,24 @@ import { Collections } from '../types/databaseCollections';
 export class WedstrijdService {
   private wedstrijden: Map<string, Wedstrijd> = new Map();
 
-  async upsertWedstrijd(wedstrijd: BasicWedstrijdInfo | Wedstrijd) {
-    if (!isWedstrijd(wedstrijd)) {
-      const newId = `${wedstrijd.name.toLowerCase().substring(0, 5)}${
-        DateTime.fromISO(wedstrijd.date).year
-      }`;
-      const newWedstrijd = {
-        ...wedstrijd,
-        id: newId,
-        settings: { general: { missingNumbers: [] } },
-      };
-      const docRef = doc(firestore, Collections.WEDSTRIJD, newId);
-      await setDoc(docRef, {
-        ...wedstrijd,
-        settings: { general: { missingNumbers: [] } },
-      });
+  async upsertWedstrijd(wedstrijd: CreateWedstrijdForm) {
+    const { date, isJeugd, ...rest } = wedstrijd;
+    const newId = `${wedstrijd.name.toLowerCase().substring(0, 5)}${
+      DateTime.fromISO(date).year
+    }`;
+    const newWedstrijd = {
+      ...rest,
+      id: newId,
+      settings: { general: { missingNumbers: [], isJeugd, date } },
+    };
+    const docRef = doc(firestore, Collections.WEDSTRIJD, newId);
+    await setDoc(docRef, {
+      ...rest,
+      settings: { general: { missingNumbers: [], isJeugd, date } },
+    });
 
-      this.wedstrijden.set(newId, newWedstrijd);
-      return newWedstrijd;
-    } else {
-      const db = doc(firestore, Collections.WEDSTRIJD, wedstrijd.id);
-      await setDoc(db, { ...wedstrijd }, { merge: true });
-      this.wedstrijden.set(wedstrijd.id, wedstrijd);
-      return wedstrijd;
-    }
+    this.wedstrijden.set(newId, newWedstrijd);
+    return newWedstrijd;
   }
 
   async getWedstrijden() {
@@ -78,7 +71,7 @@ export class WedstrijdService {
     const settings = await settingsService.getSettings();
 
     return {
-      general: { ...wedstrijd.settings.general, date: wedstrijd.date },
+      general: wedstrijd.settings.general,
       boats: mergeBoatSettings(settings.boats, wedstrijd.settings.boats),
       ages: mergeAgeSettings(settings.ages, wedstrijd.settings.ages),
       classes: wedstrijd.settings.classes,
@@ -108,6 +101,8 @@ export class WedstrijdService {
       general: {
         missingNumbers:
           data.missingNumbers ?? wedstrijd.settings.general?.missingNumbers,
+        date: data.date ?? wedstrijd.settings.general?.date,
+        isJeugd: data.isJeugd ?? wedstrijd.settings.general?.isJeugd,
       },
     };
 
@@ -115,14 +110,12 @@ export class WedstrijdService {
       docRef,
       {
         settings: generalSettingsToSave,
-        date: data.date ?? wedstrijd.date,
       },
       { merge: true }
     );
 
     this.wedstrijden.set(wedstrijd.id, {
       ...wedstrijd,
-      date: data.date ?? wedstrijd.date,
       settings: {
         ...wedstrijd.settings,
         general: generalSettingsToSave.general,

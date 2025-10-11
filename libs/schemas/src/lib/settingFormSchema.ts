@@ -10,5 +10,6 @@ export const settingFormSchema = z.object({
     )
     .min(0),
   currentNumber: z.number().optional(),
+  isJeugd: z.boolean().optional(),
 });
 export type SettingForm = z.infer<typeof settingFormSchema>;

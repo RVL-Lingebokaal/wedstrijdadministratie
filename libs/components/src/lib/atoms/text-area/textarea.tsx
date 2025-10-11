@@ -26,7 +26,7 @@ export const TextArea = forwardRef(
   ) => {
     return (
       <div className={twMerge('mt-2', classNames)}>
-        <label className="font-bold">Label</label>
+        <label className="font-bold">{label}</label>
         <textarea
           className={`${
             borderColor[hasError ? 'error' : 'regular']

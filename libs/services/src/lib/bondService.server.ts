@@ -310,6 +310,8 @@ export class BondService {
       case 'o4*':
       case 'm4*':
       case 'v4*':
+      case 'j4*':
+      case 'mj4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: '4*' };
         }

@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
 import { wedstrijdService } from '@services';
-import { basicWedstrijdInfoSchema } from '@models';
+import { createWedstrijdFormSchema } from '@models';
 
 export async function POST(req: NextRequest) {
-  const args = basicWedstrijdInfoSchema.safeParse(await req.json());
+  const args = createWedstrijdFormSchema.safeParse(await req.json());
+
   if (!args.success) {
     return Response.json(
       { message: 'Invalid request', errors: args.error },

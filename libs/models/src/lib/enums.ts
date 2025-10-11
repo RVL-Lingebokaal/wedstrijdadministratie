@@ -17,18 +17,10 @@ export const administrationTabsTranslated: {
   { value: 'downloads', name: 'Downloads' },
 ];
 
-export const settingsTabs = [
-  'type',
-  'leeftijd',
-  'ploeg',
-  'instellingen',
-  'gebruikers',
-] as const;
+export const settingsTabs = ['type', 'leeftijd', 'instellingen'] as const;
 export type SettingsTabs = (typeof settingsTabs)[number];
 export const settingsTabsTranslated: { value: SettingsTabs; name: string }[] = [
   { value: 'type', name: 'Correctiefactoren' },
   { value: 'leeftijd', name: 'Leeftijden' },
-  { value: 'ploeg', name: 'Ploegen' },
   { value: 'instellingen', name: 'Instellingen' },
-  { value: 'gebruikers', name: 'Gebruikers' },
 ];
