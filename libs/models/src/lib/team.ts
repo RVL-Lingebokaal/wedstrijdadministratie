@@ -7,10 +7,10 @@ export const genders = ['male', 'mix', 'female', 'open'] as const;
 export type Gender = (typeof genders)[number];
 
 export interface TeamTimes {
-  startTimeA?: string;
-  startTimeB?: string;
-  finishTimeA?: string;
-  finishTimeB?: string;
+  startTimeA?: string | null;
+  startTimeB?: string | null;
+  finishTimeA?: string | null;
+  finishTimeB?: string | null;
 }
 
 export interface TeamResult {
@@ -78,15 +78,15 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
 export function getTimeResult(isA: boolean, isStart: boolean, time?: string) {
   if (isStart) {
     if (isA) {
-      return { startTimeA: time };
+      return { startTimeA: time ?? null };
     } else {
-      return { startTimeB: time };
+      return { startTimeB: time ?? null };
     }
   } else {
     if (isA) {
-      return { finishTimeA: time };
+      return { finishTimeA: time ?? null };
     } else {
-      return { finishTimeB: time };
+      return { finishTimeB: time ?? null };
     }
   }
 }

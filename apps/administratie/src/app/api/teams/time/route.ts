@@ -80,7 +80,8 @@ export async function POST(req: NextRequest) {
     const timeResult = await timeService.addTime(
       args.time,
       args.isA,
-      args.isStart
+      args.isStart,
+      wedstrijdId
     );
 
     return NextResponse.json({ timeId: timeResult.id });

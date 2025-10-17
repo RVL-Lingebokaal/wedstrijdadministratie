@@ -56,12 +56,21 @@ export class TimeService {
 
   async saveTime(wedstrijdId: string, time: SaveStartNumberTime) {
     const team = await teamService.getTeam(time.teamId, wedstrijdId);
+
+    if (!team) {
+      throw new Error('Team not found');
+    }
+
     const docRef = doc(firestore, Collections.PLOEG, time.teamId);
     const timeObject = {
-      ...team?.result,
+      ...team.result,
       ...getTimeResult(time.isA, time.isStart, time.time),
     };
     await setDoc(docRef, { result: timeObject }, { merge: true });
+    await teamService.saveTeam({
+      ...team,
+      result: getTimeResult(time.isA, time.isStart, time.time),
+    });
 
     return await deleteDoc(doc(firestore, Collections.TIME, time.id));
   }
@@ -79,28 +88,35 @@ export class TimeService {
     const team = await teamService.getTeam(teamId, wedstrijdId);
 
     if (!team) {
-      return;
+      throw new Error('Team not found');
     }
 
     const time = getSpecificTimeResultFromTeam(isA, isStart, team);
 
     if (!time) {
-      return;
+      throw new Error('No time found to restore');
     }
 
     await teamService.removeTimeFromTeam(teamId, isA, isStart, wedstrijdId);
-    return await setDoc(doc(firestore, Collections.TIME), {
+    return await addDoc(collection(firestore, Collections.TIME), {
       time,
       isA: isA,
       isStart: isStart,
+      wedstrijdId,
     });
   }
 
-  async addTime(time: string, isA: boolean, isStart: boolean) {
+  async addTime(
+    time: string,
+    isA: boolean,
+    isStart: boolean,
+    wedstrijdId: string
+  ) {
     return await addDoc(collection(firestore, Collections.TIME), {
       time,
       isA,
       isStart,
+      wedstrijdId,
     });
   }
 }

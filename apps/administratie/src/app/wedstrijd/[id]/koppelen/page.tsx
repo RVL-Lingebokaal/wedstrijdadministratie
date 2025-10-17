@@ -24,7 +24,7 @@ export default function KoppelenPage({
     return teamData.filter(
       (team) => team.block === blockNumber && !team.result
     );
-  }, [sessie]);
+  }, [sessie, JSON.stringify(teamData)]);
 
   if (teamIsLoading) {
     return <LoadingSpinner />;
