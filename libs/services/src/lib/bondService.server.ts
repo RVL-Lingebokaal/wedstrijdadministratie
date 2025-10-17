@@ -26,6 +26,7 @@ import {
 import { Stream } from 'stream';
 import { addBlock } from '@utils';
 import { settingsService } from './settingsService.server';
+import { wedstrijdService } from './wedstrijdService.server';
 
 const PARTICIPANT_KEYS = ['Slag', '2', '3', '4', '5', '6', '7', 'Boeg'];
 
@@ -34,6 +35,12 @@ export class BondService {
     wedstrijdId: string,
     stream: Stream
   ): Promise<{ teams: Team[]; participants: Participant[]; boats: Boat[] }> {
+    const wedstrijd = await wedstrijdService.getWedstrijdById(wedstrijdId);
+
+    if (!wedstrijd) {
+      throw new Error(`Could not find wedstrijd with id: ${wedstrijdId}`);
+    }
+
     const teams = new Set<Team>();
     const participantMap = new Map<string, Participant>();
     const boats = new Map<string, Boat>();
@@ -79,7 +86,8 @@ export class BondService {
       const { gender, boatType } = this.getBoatType(
         record[TEAM_COMPETITION_CODE],
         participants.length,
-        Boolean(helm)
+        Boolean(helm),
+        wedstrijd.settings.general.isJeugd
       );
       const ageClass = getAgeClassTeam({ participants, ages: settings.ages });
 
@@ -217,16 +225,25 @@ export class BondService {
   private getBoatType(
     type: string,
     amountOfParticipants: number,
-    helm: boolean
+    helm: boolean,
+    isJeugd?: boolean
   ): { boatType: BoatType; gender: Gender } {
     const typeWithoutSpaces = type.replaceAll(' ', '').toLowerCase();
-    const gender = this.getGender(typeWithoutSpaces);
+    const gender = this.getGender(typeWithoutSpaces, isJeugd);
 
     switch (typeWithoutSpaces) {
       case 'h1x':
       case 'd1x':
       case 'm1x':
       case 'v1x':
+      case 'j121x':
+      case 'j141x':
+      case 'j161x':
+      case 'j181x':
+      case 'm121x':
+      case 'm141x':
+      case 'm161x':
+      case 'm181x':
         if (amountOfParticipants === 1 && !helm) {
           return { gender, boatType: '1x' };
         }
@@ -241,6 +258,18 @@ export class BondService {
       case 'oc4+':
       case 'mc4+':
       case 'vc4+':
+      case 'j12c4+':
+      case 'j14c4+':
+      case 'j16c4+':
+      case 'j18c4+':
+      case 'm12c4+':
+      case 'm14c4+':
+      case 'm16c4+':
+      case 'm18c4+':
+      case 'mix12c4+':
+      case 'mix14c4+':
+      case 'mix16c4+':
+      case 'mix18c4+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: 'C4+' };
         }
@@ -255,6 +284,18 @@ export class BondService {
       case 'oc4x':
       case 'mc4x':
       case 'vc4x':
+      case 'j12c4x':
+      case 'j14c4x':
+      case 'j16c4x':
+      case 'j18c4x':
+      case 'm12c4x':
+      case 'm14c4x':
+      case 'm16c4x':
+      case 'm18c4x':
+      case 'mix12c4x':
+      case 'mix14c4x':
+      case 'mix16c4x':
+      case 'mix18c4x':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: 'C4*' };
         }
@@ -269,6 +310,18 @@ export class BondService {
       case 'oc4*':
       case 'mc4*':
       case 'vc4*':
+      case 'j12c4*':
+      case 'j14c4*':
+      case 'j16c4*':
+      case 'j18c4*':
+      case 'm12c4*':
+      case 'm14c4*':
+      case 'm16c4*':
+      case 'm18c4*':
+      case 'mix12c4*':
+      case 'mix14c4*':
+      case 'mix16c4*':
+      case 'mix18c4*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: 'C4*' };
         }
@@ -282,6 +335,18 @@ export class BondService {
       case 'h2x':
       case 'm2x':
       case 'v2x':
+      case 'j122x':
+      case 'j142x':
+      case 'j162x':
+      case 'j182x':
+      case 'm122x':
+      case 'm142x':
+      case 'm162x':
+      case 'm182x':
+      case 'mix122x':
+      case 'mix142x':
+      case 'mix162x':
+      case 'mix182x':
         if (amountOfParticipants === 2 && !helm) {
           return { gender, boatType: '2x' };
         }
@@ -296,6 +361,18 @@ export class BondService {
       case 'o4+':
       case 'm4+':
       case 'v4+':
+      case 'j124+':
+      case 'j144+':
+      case 'j164+':
+      case 'j184+':
+      case 'm124+':
+      case 'm144+':
+      case 'm164+':
+      case 'm184+':
+      case 'mix124+':
+      case 'mix144+':
+      case 'mix164+':
+      case 'mix184+':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: '4+' };
         }
@@ -310,8 +387,18 @@ export class BondService {
       case 'o4*':
       case 'm4*':
       case 'v4*':
-      case 'j4*':
-      case 'mj4*':
+      case 'j124*':
+      case 'j144*':
+      case 'j164*':
+      case 'j184*':
+      case 'm124*':
+      case 'm144*':
+      case 'm164*':
+      case 'm184*':
+      case 'mix124*':
+      case 'mix144*':
+      case 'mix164*':
+      case 'mix184*':
         if (amountOfParticipants === 4 && helm) {
           return { gender, boatType: '4*' };
         }
@@ -328,6 +415,18 @@ export class BondService {
       case 'o8+':
       case 'm8+':
       case 'v8+':
+      case 'j128+':
+      case 'j148+':
+      case 'j168+':
+      case 'j188+':
+      case 'm128+':
+      case 'm148+':
+      case 'm168+':
+      case 'm188+':
+      case 'mix128+':
+      case 'mix148+':
+      case 'mix168+':
+      case 'mix188+':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: '8+' };
         }
@@ -342,6 +441,18 @@ export class BondService {
       case 'o8*':
       case 'v8*':
       case 'm8*':
+      case 'j128*':
+      case 'j148*':
+      case 'j168*':
+      case 'j188*':
+      case 'm128*':
+      case 'm148*':
+      case 'm168*':
+      case 'm188*':
+      case 'mix128*':
+      case 'mix148*':
+      case 'mix168*':
+      case 'mix188*':
         if (amountOfParticipants === 8 && helm) {
           return { gender, boatType: '8*' };
         }
@@ -355,10 +466,13 @@ export class BondService {
     }
   }
 
-  private getGender(type: string): Gender {
-    const isFemale = type.includes('d') || type.includes('v');
+  private getGender(type: string, isJeugd?: boolean): Gender {
     const isMix = type.includes('mix');
     const isOpen = type.includes('o');
+    const isFemale = isJeugd
+      ? type.includes('m')
+      : type.includes('d') || type.includes('v');
+
     if (isMix) return 'mix';
     if (isFemale) return 'female';
     if (isOpen) return 'open';

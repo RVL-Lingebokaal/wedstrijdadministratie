@@ -27,7 +27,8 @@ export default async function ResultsPage({
     wedstrijdSettings.classes ?? [],
     wedstrijdSettings.ages,
     wedstrijdSettings.boats,
-    result
+    result,
+    wedstrijdSettings.general.isJeugd ?? false
   );
 
   return (

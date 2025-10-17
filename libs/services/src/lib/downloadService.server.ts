@@ -159,6 +159,7 @@ export class DownloadService {
             gender,
             boatType,
             className: classes.get(ageClass) ?? '',
+            isJeugdWedstrijd: settings.general.isJeugd ?? false,
           });
           worksheet.addRow({
             vereniging: club,
@@ -234,6 +235,7 @@ export class DownloadService {
             gender,
             boatType,
             className: classes.get(ageClass) ?? '',
+            isJeugdWedstrijd: settings.general.isJeugd ?? false,
           });
           worksheet.addRow({
             vereniging: club,

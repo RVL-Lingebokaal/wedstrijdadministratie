@@ -1,4 +1,4 @@
-import { Gender, genders } from './team';
+import { Gender, genders, translateGenderToShort } from './team';
 import { z } from 'zod';
 
 export const ageTypes = [
@@ -111,21 +111,16 @@ interface TranslateClassProps {
   gender: Gender;
   boatType: BoatType;
   className: string;
+  isJeugdWedstrijd: boolean;
 }
 
 export function translateClass({
   gender,
   boatType,
   className,
+  isJeugdWedstrijd,
 }: TranslateClassProps) {
-  const translatedGender =
-    gender === 'female'
-      ? 'D'
-      : gender === 'male'
-      ? 'H'
-      : gender === 'mix'
-      ? 'Mix'
-      : 'Open';
+  const translatedGender = translateGenderToShort(gender, isJeugdWedstrijd);
   return `${translatedGender}${boatType}${className}`;
 }
 
@@ -145,3 +140,27 @@ export const saveGeneralSettingsSchema = z.object({
   isJeugd: z.boolean().optional(),
 });
 export type SaveGeneralSettings = z.infer<typeof saveGeneralSettingsSchema>;
+
+interface GetClassItemProps {
+  age: AgeType;
+  boatType: BoatType;
+  gender: Gender;
+  isJeugdWedstrijd: boolean;
+}
+
+export function getClassItem({
+  age,
+  boatType,
+  gender,
+  isJeugdWedstrijd,
+}: GetClassItemProps): ClassItem {
+  const translatedGender = translateGenderToShort(gender, isJeugdWedstrijd);
+  const name = `${translatedGender}${age} ${boatType}`;
+
+  return {
+    ages: [age],
+    boatType,
+    gender,
+    name,
+  };
+}

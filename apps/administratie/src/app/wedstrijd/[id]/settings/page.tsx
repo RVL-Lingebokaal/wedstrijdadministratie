@@ -4,6 +4,7 @@ import { AgesForm, BoatsForm, SettingsForm } from '@components';
 import { LoadingSpinner, Tabs } from '@components/server';
 import {
   AgeItem,
+  ageTranslations,
   ageTypes,
   BoatItem,
   boatTypes,
@@ -78,7 +79,7 @@ const getDefaultvaluesBoats = (): BoatItem[] => {
 const getDefaultvaluesAges = (): AgeItem[] => {
   return ageTypes.map((key) => ({
     type: key,
-    age: key,
+    age: ageTranslations[key],
     correctionFemale: 1,
     correctionMale: 1,
     strategy: 'gemiddeld',

@@ -32,8 +32,15 @@ export function StartNumbersGrid({
       missingNumbers: generalSettingsData?.missingNumbers ?? [],
     };
     return hasTeamsWithoutStartNumber
-      ? getTeamsForStartNumbers({ ...props, saveData: mutate })
-      : sortTeamsWithStartNumber(props);
+      ? getTeamsForStartNumbers({
+          ...props,
+          saveData: mutate,
+          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
+        })
+      : sortTeamsWithStartNumber({
+          ...props,
+          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
+        });
   }, [teamData, settingsData, hasTeamsWithoutStartNumber]);
 
   return (

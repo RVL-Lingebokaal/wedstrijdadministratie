@@ -16,6 +16,7 @@ interface GetTeamsForStartNumbersProps {
   classes: ClassItem[];
   missingNumbers: number[];
   saveData: (val: UseUpdateStartNumberTeamArgs) => void;
+  isJeugdWedstrijd: boolean;
 }
 
 export function getTeamsForStartNumbers({
@@ -23,6 +24,7 @@ export function getTeamsForStartNumbers({
   classes,
   missingNumbers,
   saveData,
+  isJeugdWedstrijd,
 }: GetTeamsForStartNumbersProps) {
   const rows: Item[][] = [];
   if (!teams) return rows;
@@ -63,6 +65,7 @@ export function getTeamsForStartNumbers({
         classMap,
         missingNumbersSet,
         toBeSavedItems: toBeSaved,
+        isJeugdWedstrijd,
       });
       rows.push(...sortedRows);
       startNr = startNumber;
@@ -77,6 +80,7 @@ export function getTeamsForStartNumbers({
     missingNumbersSet,
     isLastOne: true,
     toBeSavedItems: toBeSaved,
+    isJeugdWedstrijd,
   });
 
   rows.push(...sortedRows);
@@ -89,12 +93,14 @@ interface SortTeamsWithStartNumberProps {
   teams?: Team[];
   classes: ClassItem[];
   missingNumbers: number[];
+  isJeugdWedstrijd: boolean;
 }
 
 export function sortTeamsWithStartNumber({
   teams,
   classes,
   missingNumbers,
+  isJeugdWedstrijd,
 }: SortTeamsWithStartNumberProps) {
   if (!teams || teams.length === 0) return [];
 
@@ -134,6 +140,7 @@ export function sortTeamsWithStartNumber({
           gender: team.gender,
           boatType: team.boatType,
           className,
+          isJeugdWedstrijd,
         }),
       },
       { node: team.name },
@@ -185,6 +192,7 @@ interface GetSortedRowItemsProps {
   missingNumbersSet: Set<number>;
   isLastOne?: boolean;
   toBeSavedItems: UseUpdateStartNumberTeam[];
+  isJeugdWedstrijd: boolean;
 }
 
 function getSortedRowItems({
@@ -194,6 +202,7 @@ function getSortedRowItems({
   missingNumbersSet,
   isLastOne,
   toBeSavedItems,
+  isJeugdWedstrijd,
 }: GetSortedRowItemsProps) {
   let startNumber = initialStartNumber;
   const sortedTeams = teams.sort((a, b) => a.place - b.place);
@@ -208,6 +217,7 @@ function getSortedRowItems({
           gender: team.gender,
           boatType: team.boatType,
           className,
+          isJeugdWedstrijd,
         }),
       },
       { node: team.name },

@@ -141,3 +141,19 @@ export interface PostTimeProps extends Time {
   isA?: boolean;
   isStart?: boolean;
 }
+
+export function translateGenderToShort(
+  gender: Gender,
+  isJeugdWedstrijd: boolean
+) {
+  switch (gender) {
+    case 'male':
+      return isJeugdWedstrijd ? 'J' : 'H';
+    case 'female':
+      return isJeugdWedstrijd ? 'M' : 'D';
+    case 'mix':
+      return 'Mix';
+    default:
+      return 'Open';
+  }
+}

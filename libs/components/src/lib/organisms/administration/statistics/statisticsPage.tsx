@@ -1,4 +1,9 @@
-import { useGetClassMap, useGetSettings, useGetTeams } from '@hooks';
+import {
+  useGetClassMap,
+  useGetGeneralSettings,
+  useGetSettings,
+  useGetTeams,
+} from '@hooks';
 import { LoadingSpinner } from '@components/server';
 import {
   BoatType,
@@ -15,6 +20,8 @@ export function StatisticsPage({ wedstrijdId }: WedstrijdIdProps) {
   const { data: settingsData, isLoading: settingsIsLoading } =
     useGetSettings(wedstrijdId);
   const classMap = useGetClassMap(settingsData);
+  const { data: generalSettingsData, isLoading: generalSettingsIsLoading } =
+    useGetGeneralSettings(wedstrijdId);
 
   const { totalAmount, medals } = useMemo(() => {
     if (!teamData || !settingsData) return { totalAmount: 0, medals: [] };
@@ -37,6 +44,7 @@ export function StatisticsPage({ wedstrijdId }: WedstrijdIdProps) {
           gender,
           boatType,
           className: ageClassItems.name,
+          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
         });
         const amount = (acc.get(keyClass)?.amount ?? 0) + 1;
         const totalPeople = participants.length + (helm ? 1 : 0);
@@ -76,9 +84,9 @@ export function StatisticsPage({ wedstrijdId }: WedstrijdIdProps) {
         genders.indexOf(a.gender) - genders.indexOf(b.gender)
     );
     return { medals, totalAmount };
-  }, [teamData, classMap]);
+  }, [teamData, classMap, generalSettingsData]);
 
-  if (teamIsLoading || settingsIsLoading) {
+  if (teamIsLoading || settingsIsLoading || generalSettingsIsLoading) {
     return <LoadingSpinner />;
   }
 

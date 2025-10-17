@@ -64,7 +64,8 @@ export function getConvertedResults(
   classItems: ClassItem[],
   ages: AgeItem[],
   boatItems: BoatItem[],
-  results?: GetTeamResult[]
+  results?: GetTeamResult[],
+  isJeugdWedstrijd = false
 ) {
   if (!results) {
     return {
@@ -89,6 +90,7 @@ export function getConvertedResults(
             gender: g,
             boatType,
             className,
+            isJeugdWedstrijd,
           });
           doneSet.set(className, translatedClass);
           headers.push(translatedClass);
