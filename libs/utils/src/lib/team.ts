@@ -17,7 +17,7 @@ export interface Item {
   isInput?: boolean;
 }
 
-export function convertTimeToObject(time?: string) {
+export function convertTimeToObject(time?: string | null) {
   if (!time) {
     return {
       dateTime: undefined,
