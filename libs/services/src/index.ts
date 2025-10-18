@@ -7,3 +7,5 @@ export * from './lib/timeService.server';
 export * from './lib/downloadService.server';
 export * from './lib/wedstrijdService.server';
 export * from './types/databaseCollections';
+
+export * from './lib/utils/counts';

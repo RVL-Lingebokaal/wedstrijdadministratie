@@ -1,5 +1,5 @@
 import { UploadButton, UploadData } from '@components';
-import { getCounts } from '../../../api/counts/route';
+import { getCounts } from '@services';
 
 export default async function UploadPage({
   params: { id },
