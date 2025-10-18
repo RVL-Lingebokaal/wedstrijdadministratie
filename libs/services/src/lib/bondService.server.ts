@@ -87,8 +87,7 @@ export class BondService {
       const { gender, boatType } = this.getBoatType(
         record[TEAM_COMPETITION_CODE],
         participants.length,
-        Boolean(helm),
-        wedstrijd.settings.general.isJeugd
+        Boolean(helm)
       );
       const ageClass = getAgeClassTeam({ participants, ages: settings.ages });
 
@@ -226,21 +225,20 @@ export class BondService {
   private getBoatType(
     type: string,
     amountOfParticipants: number,
-    helm: boolean,
-    isJeugd?: boolean
+    helm: boolean
   ): { boatType: BoatType; gender: Gender } {
     const typeWithoutSpaces = type.replaceAll(' ', '').toLowerCase();
-    const gender = this.getGender(typeWithoutSpaces, isJeugd);
+    const gender = this.getGender(typeWithoutSpaces);
 
     switch (typeWithoutSpaces) {
       case 'h1x':
       case 'd1x':
       case 'm1x':
       case 'v1x':
-      case 'j121x':
-      case 'j141x':
-      case 'j161x':
-      case 'j181x':
+      case 'v121x':
+      case 'v141x':
+      case 'v161x':
+      case 'v181x':
       case 'm121x':
       case 'm141x':
       case 'm161x':
@@ -259,10 +257,10 @@ export class BondService {
       case 'oc4+':
       case 'mc4+':
       case 'vc4+':
-      case 'j12c4+':
-      case 'j14c4+':
-      case 'j16c4+':
-      case 'j18c4+':
+      case 'v12c4+':
+      case 'v14c4+':
+      case 'v16c4+':
+      case 'v18c4+':
       case 'm12c4+':
       case 'm14c4+':
       case 'm16c4+':
@@ -285,10 +283,10 @@ export class BondService {
       case 'oc4x':
       case 'mc4x':
       case 'vc4x':
-      case 'j12c4x':
-      case 'j14c4x':
-      case 'j16c4x':
-      case 'j18c4x':
+      case 'v12c4x':
+      case 'v14c4x':
+      case 'v16c4x':
+      case 'v18c4x':
       case 'm12c4x':
       case 'm14c4x':
       case 'm16c4x':
@@ -311,10 +309,10 @@ export class BondService {
       case 'oc4*':
       case 'mc4*':
       case 'vc4*':
-      case 'j12c4*':
-      case 'j14c4*':
-      case 'j16c4*':
-      case 'j18c4*':
+      case 'v12c4*':
+      case 'v14c4*':
+      case 'v16c4*':
+      case 'v18c4*':
       case 'm12c4*':
       case 'm14c4*':
       case 'm16c4*':
@@ -336,10 +334,10 @@ export class BondService {
       case 'h2x':
       case 'm2x':
       case 'v2x':
-      case 'j122x':
-      case 'j142x':
-      case 'j162x':
-      case 'j182x':
+      case 'v122x':
+      case 'v142x':
+      case 'v162x':
+      case 'v182x':
       case 'm122x':
       case 'm142x':
       case 'm162x':
@@ -362,10 +360,10 @@ export class BondService {
       case 'o4+':
       case 'm4+':
       case 'v4+':
-      case 'j124+':
-      case 'j144+':
-      case 'j164+':
-      case 'j184+':
+      case 'v124+':
+      case 'v144+':
+      case 'v164+':
+      case 'v184+':
       case 'm124+':
       case 'm144+':
       case 'm164+':
@@ -388,10 +386,10 @@ export class BondService {
       case 'o4*':
       case 'm4*':
       case 'v4*':
-      case 'j124*':
-      case 'j144*':
-      case 'j164*':
-      case 'j184*':
+      case 'v124*':
+      case 'v144*':
+      case 'v164*':
+      case 'v184*':
       case 'm124*':
       case 'm144*':
       case 'm164*':
@@ -416,10 +414,10 @@ export class BondService {
       case 'o8+':
       case 'm8+':
       case 'v8+':
-      case 'j128+':
-      case 'j148+':
-      case 'j168+':
-      case 'j188+':
+      case 'v128+':
+      case 'v148+':
+      case 'v168+':
+      case 'v188+':
       case 'm128+':
       case 'm148+':
       case 'm168+':
@@ -442,10 +440,10 @@ export class BondService {
       case 'o8*':
       case 'v8*':
       case 'm8*':
-      case 'j128*':
-      case 'j148*':
-      case 'j168*':
-      case 'j188*':
+      case 'v128*':
+      case 'v148*':
+      case 'v168*':
+      case 'v188*':
       case 'm128*':
       case 'm148*':
       case 'm168*':
@@ -467,12 +465,10 @@ export class BondService {
     }
   }
 
-  private getGender(type: string, isJeugd?: boolean): Gender {
+  private getGender(type: string): Gender {
     const isMix = type.includes('mix');
     const isOpen = type.includes('o');
-    const isFemale = isJeugd
-      ? type.includes('m')
-      : type.includes('d') || type.includes('v');
+    const isFemale = type.includes('d') || type.includes('v');
 
     if (isMix) return 'mix';
     if (isFemale) return 'female';
