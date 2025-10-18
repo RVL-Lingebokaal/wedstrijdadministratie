@@ -25,7 +25,8 @@ export * from './lib/organisms/settings/age/ageForm';
 export * from './lib/organisms/settings/types/boatsForm';
 export * from './lib/organisms/team/team-add-button/teamAddButton';
 export * from './lib/organisms/team/team-update-button/teamUpdateButton';
-export * from './lib/organisms/upload-button/UploadButton';
+export * from './lib/organisms/upload/upload-button/UploadButton';
+export * from './lib/organisms/upload/upload-data/UploadData';
 export * from './lib/organisms/time/timePage';
 export * from './lib/organisms/results/overview';
 

@@ -1,12 +1,19 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
-import { getCountsResponseDtoSchema } from '@models';
+import { GetCountsResponseDto, getCountsResponseDtoSchema } from '@models';
+import { QUERY_PARAMS } from '@utils';
 
-export function useGetCounts() {
+export function useGetCounts(
+  wedstrijdId: string,
+  initialData: GetCountsResponseDto
+) {
   return useQuery(
     ['get-counts'],
     async () => {
-      const response = await fetch('/api/counts', { method: 'GET' });
+      const response = await fetch(
+        `/api/counts?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        { method: 'GET' }
+      );
 
       if (!response.ok) throw new Error('Could not get counts');
 
@@ -21,7 +28,7 @@ export function useGetCounts() {
       return parsedData.data;
     },
     {
-      keepPreviousData: true,
+      initialData,
     }
   );
 }

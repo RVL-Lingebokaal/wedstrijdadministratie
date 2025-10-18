@@ -149,6 +149,8 @@ function mergeBoatSettings(
 ) {
   if (!wedstrijdBoats) return generalBoats;
 
+  if (!generalBoats) return wedstrijdBoats;
+
   return [
     ...wedstrijdBoats,
     ...generalBoats.filter(() => !wedstrijdBoats.some((wb) => wb.type)),
@@ -157,6 +159,8 @@ function mergeBoatSettings(
 
 function mergeAgeSettings(generalAges: AgeItem[], wedstrijdAges?: AgeItem[]) {
   if (!wedstrijdAges) return generalAges;
+
+  if (!generalAges) return wedstrijdAges;
 
   return [
     ...wedstrijdAges,

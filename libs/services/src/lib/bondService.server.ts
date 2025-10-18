@@ -25,7 +25,6 @@ import {
 } from './constants';
 import { Stream } from 'stream';
 import { addBlock } from '@utils';
-import { settingsService } from './settingsService.server';
 import { wedstrijdService } from './wedstrijdService.server';
 
 const PARTICIPANT_KEYS = ['Slag', '2', '3', '4', '5', '6', '7', 'Boeg'];
@@ -44,7 +43,9 @@ export class BondService {
     const teams = new Set<Team>();
     const participantMap = new Map<string, Participant>();
     const boats = new Map<string, Boat>();
-    const settings = await settingsService.getSettings();
+    const settings = await wedstrijdService.getSettingsFromWedstrijd(
+      wedstrijdId
+    );
 
     const parser = parse({ delimiter: ',', trim: true, columns: true });
     const records = stream.pipe(parser);

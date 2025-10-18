@@ -1,17 +1,15 @@
-import { UploadButton } from '@components';
-import { participantService, teamService } from '@services';
+import { UploadButton, UploadData } from '@components';
+import { getCounts } from '../../../api/counts/route';
 
 export default async function UploadPage({
   params: { id },
 }: ParamsWithWedstrijdId) {
-  const teams = await teamService.getTeams(id);
-  const participants = await participantService.getParticipants(id);
-
+  const result = await getCounts(id);
   return (
     <div>
       <div className="mb-5">
         <h1 className="text-2xl font-bold text-primary mb-2">Upload</h1>
-        <p>{`Er zijn op dit moment ${teams.length} teams en ${participants.size} deelnemers ingeschreven.`}</p>
+        <UploadData initialDataCounts={result} wedstrijdId={id} />
         <p className="mt-5 w-3/5">
           Upload hier het csv bestand van de bond. Alle data van teams,
           deelnemers en sessie indelingen zal worden verwijderd. De instellingen
