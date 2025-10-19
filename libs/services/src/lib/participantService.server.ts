@@ -60,14 +60,25 @@ export class ParticipantService {
     }
 
     await batch.commit();
+    const otherParticipants = Array.from(this.participants.values()).filter(
+      (p) => p.wedstrijdId !== wedstrijdId
+    );
 
-    this.participants = new Map();
+    if (otherParticipants.length === 0) {
+      this.participants = new Map();
+      return;
+    }
+
+    this.participants = otherParticipants.reduce((acc, participant) => {
+      acc.set(participant.id, participant);
+      return acc;
+    }, new Map<string, Participant>());
   }
 
   async getParticipants(wedstrijdId: string, needsRefetch = false) {
     if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, Collections.DEELNEMER);
-      const q = query(dbInstance, where('wedstrijdId', '==', wedstrijdId));
+      const q = query(dbInstance);
       const data = await getDocs(q);
 
       this.participants = data.docs.reduce((acc, doc) => {
@@ -82,7 +93,14 @@ export class ParticipantService {
         });
       }, new Map<string, Participant>());
     }
-    return this.participants;
+    const participants = Array.from(this.participants.values()).filter(
+      (p) => p.wedstrijdId === wedstrijdId
+    );
+
+    return participants.reduce((acc, participant) => {
+      acc.set(participant.id, participant);
+      return acc;
+    }, new Map<string, Participant>());
   }
 
   async createParticipant({
@@ -128,7 +146,7 @@ export class ParticipantService {
     participant = { ...participant, ...args };
     this.participants = this.participants.set(participant.id, participant);
 
-    const docRef = doc(firestore, 'deelnemer', participant.id);
+    const docRef = doc(firestore, Collections.DEELNEMER, participant.id);
     await setDoc(
       docRef,
       { ...participant, blocks: stringifySet(participant.blocks) },

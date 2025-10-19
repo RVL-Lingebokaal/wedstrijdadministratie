@@ -46,13 +46,25 @@ export class BoatService {
     });
     await batch.commit();
 
-    this.boats = new Map();
+    const otherBoats = Array.from(this.boats.values()).filter(
+      (boat) => boat.wedstrijdId !== wedstrijdId
+    );
+
+    if (otherBoats.length === 0) {
+      this.boats = new Map();
+      return;
+    }
+
+    this.boats = otherBoats.reduce(
+      (acc, boat) => acc.set(boat.id, boat),
+      new Map<string, Boat>()
+    );
   }
 
   async getBoats(wedstrijdId: string) {
     if (this.boats.size === 0) {
       const dbInstance = collection(firestore, Collections.BOOT);
-      const q = query(dbInstance, where('wedstrijdId', '==', wedstrijdId));
+      const q = query(dbInstance);
       const data = await getDocs(q);
 
       this.boats = data.docs.reduce(
@@ -67,7 +79,15 @@ export class BoatService {
         new Map<string, Boat>()
       );
     }
-    return this.boats;
+
+    const boats = Array.from(this.boats.values()).filter(
+      (boat) => boat.wedstrijdId === wedstrijdId
+    );
+
+    return boats.reduce(
+      (acc, boat) => acc.set(boat.id, boat),
+      new Map<string, Boat>()
+    );
   }
 
   async updateBoat(args: Omit<Boat, 'id'>, id?: string) {

@@ -76,12 +76,24 @@ export class TeamService {
     });
     await batch.commit();
 
-    this.teams = new Map();
+    const otherTeams = Array.from(this.teams.values()).filter(
+      (team) => team.wedstrijdId !== wedstrijdId
+    );
+
+    if (otherTeams.length === 0) {
+      this.teams = new Map();
+      return;
+    }
+
+    this.teams = otherTeams.reduce(
+      (acc, team) => acc.set(team.id, team),
+      new Map<string, Team>()
+    );
   }
 
   async getTeams(wedstrijd: string) {
     if (this.teams.size === 0) {
-      const dbInstance = collection(firestore, 'ploeg');
+      const dbInstance = collection(firestore, Collections.PLOEG);
       const data = await getDocs(dbInstance);
 
       const boats = await boatService.getBoats(wedstrijd);
@@ -183,7 +195,7 @@ export class TeamService {
     }
 
     const newResult = { ...team.result, ...getTimeResult(isA, isStart) };
-    const docRef = doc(firestore, 'ploeg', teamId);
+    const docRef = doc(firestore, Collections.PLOEG, teamId);
 
     return updateDoc(docRef, { result: newResult });
   }
