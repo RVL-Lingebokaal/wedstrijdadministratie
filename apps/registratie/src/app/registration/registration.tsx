@@ -16,9 +16,9 @@ type RegistrationRouteProp = RouteProp<RootStackParamList, 'registration'>;
 
 export function Registration({ route }: { route: RegistrationRouteProp }) {
   const clock = new ntpSync({});
-  const [isStart, setIsStart] = useState(false);
-  const [isA, setIsA] = useState(false);
-  const [currentTime, setCurrentTime] = useState<number>(clock.getTime());
+  const [isStart, setIsStart] = useState(true);
+  const [isA, setIsA] = useState(true);
+  const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const { wedstrijdId } = route.params;
 
   const volumeChanger = useCallback(
@@ -41,7 +41,6 @@ export function Registration({ route }: { route: RegistrationRouteProp }) {
       volumeListener.remove();
     };
   }, [isA, isStart]);
-  const d = new Date();
 
   return (
     <Page title="Tijdsregistratie">
@@ -57,15 +56,11 @@ export function Registration({ route }: { route: RegistrationRouteProp }) {
             backgroundColor: colors.white,
           }}
         >
-          <LabelText
-            text={
-              currentTime
-                ? `De tijd ${getTimeString(
-                    currentTime
-                  )} is geregistreerd ${currentTime} ${d.getTime()}`
-                : 'Er is nog geen tijd geregistreerd'
-            }
-          />
+          {currentTime && (
+            <LabelText
+              text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
+            />
+          )}
         </View>
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
         <MultipleInputsContainer>
