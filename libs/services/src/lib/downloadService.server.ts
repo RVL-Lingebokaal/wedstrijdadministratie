@@ -106,6 +106,74 @@ export class DownloadService {
     return await workbook.xlsx.writeBuffer();
   }
 
+  async getResultatenOverzicht(wedstrijdId: string) {
+    const teams = await teamService.getTeams(wedstrijdId);
+    const settings = await wedstrijdService.getSettingsFromWedstrijd(
+      wedstrijdId
+    );
+    const classes = this.getSettingsMapClasses(settings.classes ?? []);
+
+    // Create a new Excel workbook
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Sheet 1');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'Blok', key: 'blok', width: 10 },
+      { header: 'Startnr', key: 'startnr', width: 10 },
+      { header: 'Klasse', key: 'klasse', width: 25 },
+      { header: 'Vereniging', key: 'vereniging', width: 30 },
+      { header: 'Bootnaam', key: 'bootnaam', width: 30 },
+      { header: 'Stuur', key: 'stuur', width: 25 },
+      { header: 'Roeier 1', key: 'roeier1', width: 25 },
+      { header: 'Roeier 2', key: 'roeier2', width: 25 },
+      { header: 'Roeier 3', key: 'roeier3', width: 25 },
+      { header: 'Roeier 4', key: 'roeier4', width: 25 },
+      { header: 'Roeier 5', key: 'roeier5', width: 25 },
+      { header: 'Roeier 6', key: 'roeier6', width: 25 },
+      { header: 'Roeier 7', key: 'roeier7', width: 25 },
+      { header: 'Roeier 8', key: 'roeier8', width: 25 },
+    ];
+
+    Array.from(teams.values())
+      .sort((a, b) => (a.startNumber ?? 0) - (b.startNumber ?? 0))
+      .forEach(
+        ({
+          club,
+          startNumber,
+          boat,
+          block,
+          gender,
+          boatType,
+          ageClass,
+          helm,
+          participants,
+        }) => {
+          const translatedClass = translateClass({
+            gender,
+            boatType,
+            className: classes.get(ageClass) ?? '',
+            isJeugdWedstrijd: settings.general.isJeugd ?? false,
+          });
+          const roeiers = participants?.reduce((obj, p, index) => {
+            obj[`roeier${index + 1}`] = p.name;
+            return obj;
+          }, {} as Record<string, string>);
+          worksheet.addRow({
+            blok: block,
+            startnr: startNumber,
+            klasse: translatedClass,
+            vereniging: club,
+            bootnaam: boat?.name,
+            stuur: helm?.name ?? '',
+            ...roeiers,
+          });
+        }
+      );
+    // Write workbook to buffer
+    return await workbook.xlsx.writeBuffer();
+  }
+
   private async getRugnummer(
     sortFunc: (a: Team, b: Team) => number,
     hasWhiteSpaceStartNr: boolean,

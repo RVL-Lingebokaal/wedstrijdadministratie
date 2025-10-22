@@ -24,6 +24,10 @@ export function DownloadButtonAll({ wedstrijdId }: WedstrijdIdProps) {
     url: `/api/downloads/bootcontrole?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
     fileName: 'bootcontrole.xlsx',
   });
+  const downloadAlleRoeiers = useDownload({
+    url: `/api/downloads/alleroeiers?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+    fileName: 'alleroeiers.xlsx',
+  });
 
   const downloadButtons = [
     {
@@ -40,6 +44,10 @@ export function DownloadButtonAll({ wedstrijdId }: WedstrijdIdProps) {
       name: 'Rugnummer per verenigingsnaam',
     },
     { click: downloadBootControle, name: 'Bootcontrole' },
+    {
+      click: downloadAlleRoeiers,
+      name: 'Alle roeiers',
+    },
   ];
 
   return (
