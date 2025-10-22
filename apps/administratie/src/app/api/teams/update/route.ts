@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { UpdateTeamArgs } from '@hooks';
 import { boatService, participantService, teamService } from '@services';
-import { Participant } from '@models';
+import { getBoatId, Participant } from '@models';
 import { QUERY_PARAMS } from '@utils';
 
 export async function POST(req: NextRequest) {
@@ -24,10 +24,22 @@ export async function POST(req: NextRequest) {
   }
   const participants = await participantService.getParticipants(wedstrijdId);
   const boats = await boatService.getBoats(wedstrijdId);
+  let boat = boats.get(args.boat);
+
+  if (args.boat && !boat) {
+    boat = {
+      name: args.boat,
+      club: team.club,
+      blocks: new Set([args.preferredBlock]),
+      id: getBoatId(args.boat, team.club),
+      wedstrijdId,
+    };
+    await boatService.saveBoats([boat]);
+  }
   team = {
     ...team,
     ...args,
-    boat: boats.get(args.boat) ?? undefined,
+    boat: boat ?? null,
     helm: participants.get(args.helm?.id ?? '') ?? null,
     participants:
       args.participants?.map((p) => ({

@@ -76,6 +76,7 @@ export function TeamForm({
           label="Voorkeursblok"
           topClassNames="grow"
           items={[{ id: 1 }, { id: 2 }, { id: 3 }]}
+          disabled={isUpdate}
         />
         <SelectController
           path="gender"

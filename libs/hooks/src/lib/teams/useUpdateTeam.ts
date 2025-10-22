@@ -14,7 +14,7 @@ export function useUpdateTeam({ wedstrijdId }: WedstrijdIdProps) {
     ['update-team'],
     async (args: UpdateTeamArgs) => {
       const response = await fetch(
-        `api/teams/update?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        `/api/teams/update?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
         {
           method: 'POST',
           body: JSON.stringify(args),
