@@ -1,14 +1,7 @@
 import { SettingsService } from './settingsService.server';
 import fireStore from 'firebase/firestore';
 import { mockSettings } from './tests/mocks';
-import {
-  AgeStrategy,
-  AgeType,
-  BoatItem,
-  BoatType,
-  ClassItem,
-} from '../../../models/src/lib/settings';
-import { Gender } from '../../../models/src/lib/team';
+import { BoatItem, ClassItem } from '../../../models/src/lib/settings';
 
 jest.mock('firebase/firestore', () => ({
   getFirestore: jest.fn(),

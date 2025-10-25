@@ -5,13 +5,11 @@ import {
   doc,
   getDocs,
   query,
-  setDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
 import firestore from './firebase/firebase';
 import { stringifySet } from '@utils';
-import { TeamAddFormParticipant } from '@schemas';
 import { Collections } from '../types/databaseCollections';
 
 export class ParticipantService {
@@ -139,22 +137,22 @@ export class ParticipantService {
     return participant;
   }
 
-  async updateParticipant(
-    participant: Participant,
-    args: TeamAddFormParticipant
-  ) {
-    participant = { ...participant, ...args };
-    this.participants = this.participants.set(participant.id, participant);
-
-    const docRef = doc(firestore, Collections.DEELNEMER, participant.id);
-    await setDoc(
-      docRef,
-      { ...participant, blocks: stringifySet(participant.blocks) },
-      { merge: true }
-    );
-
-    return participant;
-  }
+  // async updateParticipant(
+  //   participant: Participant,
+  //   args: TeamAddFormParticipant
+  // ) {
+  //   participant = { ...participant, ...args };
+  //   this.participants = this.participants.set(participant.id, participant);
+  //
+  //   const docRef = doc(firestore, Collections.DEELNEMER, participant.id);
+  //   await setDoc(
+  //     docRef,
+  //     { ...participant, blocks: stringifySet(participant.blocks) },
+  //     { merge: true }
+  //   );
+  //
+  //   return participant;
+  // }
 }
 
 let participantService: ParticipantService;

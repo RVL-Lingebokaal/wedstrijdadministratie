@@ -151,23 +151,23 @@ describe('participantService', () => {
     expect(mockAddDoc).toHaveBeenCalledTimes(0);
   });
 
-  it('updates a participant', async () => {
-    const mockSetDocs = jest.spyOn(fireStore, 'setDoc');
-
-    mockWriteBatch.mockReturnValue({ commit: jest.fn(), set: jest.fn() });
-
-    const participant = await participantService.updateParticipant(
-      mockParticipant,
-      {
-        club: 'club2',
-        name: 'name2',
-        birthYear: 1900,
-      }
-    );
-
-    expect(mockSetDocs).toHaveBeenCalledTimes(1);
-    expect(participant.club).toEqual('club2');
-    expect(participant.name).toEqual('name2');
-    expect(participant.birthYear).toEqual(1900);
-  });
+  // it('updates a participant', async () => {
+  //   const mockSetDocs = jest.spyOn(fireStore, 'setDoc');
+  //
+  //   mockWriteBatch.mockReturnValue({ commit: jest.fn(), set: jest.fn() });
+  //
+  //   const participant = await participantService.updateParticipant(
+  //     mockParticipant,
+  //     {
+  //       club: 'club2',
+  //       name: 'name2',
+  //       birthYear: 1900,
+  //     }
+  //   );
+  //
+  //   expect(mockSetDocs).toHaveBeenCalledTimes(1);
+  //   expect(participant.club).toEqual('club2');
+  //   expect(participant.name).toEqual('name2');
+  //   expect(participant.birthYear).toEqual(1900);
+  // });
 });
