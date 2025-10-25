@@ -1,7 +1,12 @@
 import { NextRequest } from 'next/server';
 import { UpdateTeamArgs } from '@hooks';
-import { boatService, participantService, teamService } from '@services';
-import { getBoatId, Participant } from '@models';
+import {
+  boatService,
+  participantService,
+  teamService,
+  wedstrijdService,
+} from '@services';
+import { getAgeClassTeam, getBoatId, Participant } from '@models';
 import { QUERY_PARAMS } from '@utils';
 
 export async function POST(req: NextRequest) {
@@ -11,7 +16,7 @@ export async function POST(req: NextRequest) {
   if (!wedstrijdId) {
     return new Response('wedstrijdId is required', { status: 400 });
   }
-
+  const settings = await wedstrijdService.getSettingsFromWedstrijd(wedstrijdId);
   const args = (await req.json()) as UpdateTeamArgs;
   let team = args.teamId
     ? await teamService.getTeam(args.teamId, wedstrijdId)
@@ -22,9 +27,60 @@ export async function POST(req: NextRequest) {
       status: 500,
     });
   }
-  const participants = await participantService.getParticipants(wedstrijdId);
+  let participantsMap = await participantService.getParticipants(wedstrijdId);
   const boats = await boatService.getBoats(wedstrijdId);
   let boat = boats.get(args.boat);
+  const currentParticipants = [...participantsMap.values()];
+  const newParticipants = args.participants.reduce((parts, p, index) => {
+    if ((p.id && !participantsMap.has(p.id)) || !p.id) {
+      const findOne = currentParticipants.find(
+        (cp) => cp.name === p.name && cp.birthYear.toString() === p.birthYear
+      );
+      if (!findOne) {
+        const newPart: Participant = {
+          id: '',
+          name: p.name,
+          birthYear: parseInt(p.birthYear),
+          wedstrijdId,
+          club: p.club,
+          blocks: new Set([args.preferredBlock]),
+        };
+        parts.push(newPart);
+      } else {
+        args.participants[index] = { ...p, id: findOne.id };
+      }
+    }
+    return parts;
+  }, [] as Participant[]);
+
+  if (
+    args.helm &&
+    (!args.helm.id || (args.helm.id && !participantsMap.has(args.helm.id)))
+  ) {
+    const findHelm = currentParticipants.find(
+      (cp) =>
+        cp.name === args.helm?.name &&
+        cp.birthYear.toString() === args.helm?.birthYear
+    );
+    if (!findHelm) {
+      const newHelm: Participant = {
+        id: '',
+        name: args.helm.name,
+        birthYear: parseInt(args.helm.birthYear),
+        wedstrijdId,
+        club: args.helm.club,
+        blocks: new Set([args.preferredBlock]),
+      };
+      newParticipants.push(newHelm);
+    } else {
+      args.helm = { ...args.helm, id: findHelm.id };
+    }
+  }
+
+  if (newParticipants.length > 0) {
+    await participantService.saveParticipants(newParticipants);
+    participantsMap = await participantService.getParticipants(wedstrijdId);
+  }
 
   if (args.boat && !boat) {
     boat = {
@@ -36,16 +92,18 @@ export async function POST(req: NextRequest) {
     };
     await boatService.saveBoats([boat]);
   }
+  const participants =
+    args.participants?.map((p) => ({
+      ...p,
+      ...(participantsMap.get(p.id ?? '') as Participant),
+    })) ?? team.participants;
   team = {
     ...team,
     ...args,
     boat: boat ?? null,
-    helm: participants.get(args.helm?.id ?? '') ?? null,
-    participants:
-      args.participants?.map((p) => ({
-        ...p,
-        ...(participants.get(p.id ?? '') as Participant),
-      })) ?? team.participants,
+    helm: participantsMap.get(args.helm?.id ?? '') ?? null,
+    participants,
+    ageClass: getAgeClassTeam({ ages: settings.ages, participants }),
   };
   await teamService.saveTeam(team);
 

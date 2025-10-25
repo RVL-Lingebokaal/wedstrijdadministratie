@@ -14,8 +14,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // Create a new Excel workbook
-    let buffer: null | Buffer;
-    buffer = await downloadService.getRoeiersOverzicht(wedstrijdId);
+    const buffer = await downloadService.getResultatenOverzicht(wedstrijdId);
 
     // Set response headers
     return new NextResponse(buffer, {
