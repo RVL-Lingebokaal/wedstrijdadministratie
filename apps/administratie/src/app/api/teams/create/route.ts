@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         ...args.helm,
         wedstrijdId,
         blocks: new Set([preferredBlock]),
+        birthYear: parseInt(args.helm.birthYear),
       })
     : null;
   const participants = [];
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
       ...p,
       wedstrijdId,
       blocks: new Set([preferredBlock]),
+      birthYear: parseInt(p.birthYear),
     });
     participants.push(participant);
   }
