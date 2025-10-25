@@ -26,11 +26,19 @@ export function TeamUpdateButton({
     [teams]
   );
   const onClick = useCallback(() => setShowModal(true), []);
-  const { getValues, control, handleSubmit, watch, reset, setValue } =
-    useForm<TeamAddForm>({
-      defaultValues: getTeamFormValues(),
-      resolver: zodResolver(addTeamSchema),
-    });
+  const {
+    getValues,
+    control,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<TeamAddForm>({
+    defaultValues: getTeamFormValues(),
+    resolver: zodResolver(addTeamSchema),
+  });
+  console.log(errors);
 
   const onClickSubmit = useCallback(
     async (val: TeamAddForm) => {

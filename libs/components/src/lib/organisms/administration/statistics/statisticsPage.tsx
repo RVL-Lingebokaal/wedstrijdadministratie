@@ -10,7 +10,6 @@ import {
   boatTypes,
   Gender,
   genders,
-  translateClass,
   WedstrijdIdProps,
 } from '@models';
 import { useMemo } from 'react';
@@ -40,17 +39,16 @@ export function StatisticsPage({ wedstrijdId }: WedstrijdIdProps) {
           return acc;
         }
 
-        const keyClass = translateClass({
-          gender,
-          boatType,
-          className: ageClassItems.name,
-          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
-        });
-        const amount = (acc.get(keyClass)?.amount ?? 0) + 1;
+        const amount = (acc.get(ageClassItems.name)?.amount ?? 0) + 1;
         const totalPeople = participants.length + (helm ? 1 : 0);
         const price = boatMap.get(boatType) ?? '0';
         totalAmount = totalAmount + Number.parseInt(price as string);
-        return acc.set(keyClass, { amount, totalPeople, boatType, gender });
+        return acc.set(ageClassItems.name, {
+          amount,
+          totalPeople,
+          boatType,
+          gender,
+        });
       },
       new Map<
         string,

@@ -2,6 +2,14 @@ import { teamService, wedstrijdService } from '@services';
 // @ts-ignore
 import { Workbook } from 'exceljs';
 import { AgeType, ClassItem, Team, translateClass } from '@models';
+import {
+  convertTimeToObject,
+  getClassMap,
+  getCorrectionAgeSexMap,
+  getCorrectionBoatMap,
+  getDifference,
+} from '@utils';
+import { DateTime } from 'luxon';
 
 export class DownloadService {
   async getBetalingenByStartNumber(wedstrijdId: string) {
@@ -106,7 +114,7 @@ export class DownloadService {
     return await workbook.xlsx.writeBuffer();
   }
 
-  async getResultatenOverzicht(wedstrijdId: string) {
+  async getRoeiersOverzicht(wedstrijdId: string) {
     const teams = await teamService.getTeams(wedstrijdId);
     const settings = await wedstrijdService.getSettingsFromWedstrijd(
       wedstrijdId
@@ -138,23 +146,7 @@ export class DownloadService {
     Array.from(teams.values())
       .sort((a, b) => (a.startNumber ?? 0) - (b.startNumber ?? 0))
       .forEach(
-        ({
-          club,
-          startNumber,
-          boat,
-          block,
-          gender,
-          boatType,
-          ageClass,
-          helm,
-          participants,
-        }) => {
-          const translatedClass = translateClass({
-            gender,
-            boatType,
-            className: classes.get(ageClass) ?? '',
-            isJeugdWedstrijd: settings.general.isJeugd ?? false,
-          });
+        ({ club, startNumber, boat, block, ageClass, helm, participants }) => {
           const roeiers = participants?.reduce((obj, p, index) => {
             obj[`roeier${index + 1}`] = p.name;
             return obj;
@@ -162,7 +154,7 @@ export class DownloadService {
           worksheet.addRow({
             blok: block,
             startnr: startNumber,
-            klasse: translatedClass,
+            klasse: classes.get(ageClass) ?? '',
             vereniging: club,
             bootnaam: boat?.name,
             stuur: helm?.name ?? '',
@@ -170,6 +162,124 @@ export class DownloadService {
           });
         }
       );
+    // Write workbook to buffer
+    return await workbook.xlsx.writeBuffer();
+  }
+
+  async getResultatenOverzicht(wedstrijdId: string) {
+    const teams = await teamService.getTeams(wedstrijdId);
+    const results = await teamService.getResults(wedstrijdId);
+    const settings = await wedstrijdService.getSettingsFromWedstrijd(
+      wedstrijdId
+    );
+
+    const classMap = getClassMap(settings.classes ?? []);
+    const correctionAgeSexMap = getCorrectionAgeSexMap(settings.ages);
+    const correctionBoatMap = getCorrectionBoatMap(settings.boats);
+
+    // Create a new Excel workbook
+    const workbook = new Workbook();
+    const worksheetCorrected = workbook.addWorksheet('Gecorrigeerd');
+    const worksheetOriginal = workbook.addWorksheet('Ongecorrigeerd');
+
+    // Define columns for corrected worksheet
+    worksheetCorrected.columns = [
+      { header: 'Startnr', key: 'startNr', width: 30 },
+      { header: 'Veld', key: 'veld', width: 30 },
+      { header: 'Ploeg', key: 'ploeg', width: 30 },
+      { header: 'Slag', key: 'slag', width: 30 },
+      { header: 'Cat', key: 'categorie', width: 20 },
+      { header: 'Gevaren tijd', key: 'tijd', width: 15 },
+      { header: 'Gecorrigeerd', key: 'correctie', width: 15 },
+      { header: 'Plaats', key: 'plaats', width: 20 },
+    ];
+
+    // Define columns for original worksheet
+    worksheetOriginal.columns = [
+      { header: 'Startnr', key: 'startNr', width: 30 },
+      { header: 'Veld', key: 'veld', width: 30 },
+      { header: 'Ploeg', key: 'ploeg', width: 30 },
+      { header: 'Slag', key: 'slag', width: 30 },
+      { header: 'Cat', key: 'categorie', width: 20 },
+      { header: 'Gevaren tijd', key: 'tijd', width: 15 },
+      { header: 'Plaats', key: 'plaats', width: 20 },
+      { header: 'Blok', key: 'block', width: 20 },
+    ];
+
+    const uncorrectedByClass = new Map<string, any[]>();
+    const correctedRows = [] as any;
+
+    results.forEach(
+      ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
+        const key = `${ageClass}${gender}${boatType}`;
+        const className = classMap.get(key) ?? '';
+        const unCorrectedRow = uncorrectedByClass.get(className) || [];
+
+        const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
+        const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
+        const start = convertTimeToObject(startTimeMillis);
+        const finish = convertTimeToObject(finishTimeMillis);
+        let correction = null;
+
+        if (startTimeMillis && finishTimeMillis) {
+          const difference =
+            Number.parseInt(finishTimeMillis) -
+            Number.parseInt(startTimeMillis);
+          const correctionAgeSex =
+            correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
+          const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
+          const totalCorrection = correctionAgeSex * correctionBoat;
+
+          correction = difference * totalCorrection;
+        }
+
+        correctedRows.push({
+          startNr,
+          veld: className,
+          ploeg: name,
+          slag: slag?.name,
+          categorie: ageClass,
+          tijd:
+            start.dateTime && finish.dateTime
+              ? getDifference(start.dateTime, finish.dateTime)
+              : '-',
+          correctie: correction ?? '-',
+        });
+        unCorrectedRow.push({
+          startNr,
+          veld: className,
+          ploeg: name,
+          slag: slag?.name,
+          categorie: ageClass,
+          tijd:
+            start.dateTime && finish.dateTime
+              ? getDifference(start.dateTime, finish.dateTime)
+              : '-',
+          block,
+        });
+        uncorrectedByClass.set(className, unCorrectedRow);
+      }
+    );
+
+    const sortedCorrectedRows = correctedRows.sort((a: any, b: any) =>
+      this.sortTimes(a.correctie, b.correctie)
+    );
+    sortedCorrectedRows.forEach((row: any, index: number) => {
+      worksheetCorrected.addRow({ ...row, plaats: index + 1 });
+    });
+    uncorrectedByClass.forEach((rows) => {
+      if (rows.length > 0) {
+        worksheetOriginal.addRow({ veld: rows[0].veld });
+        const sortedUncorrectedRows = rows.sort((a: any, b: any) =>
+          this.sortTimes(a.tijd, b.tijd)
+        );
+        sortedUncorrectedRows.forEach((row: any, index: number) => {
+          worksheetOriginal.addRow({ ...row, plaats: index + 1 });
+        });
+        worksheetOriginal.addRow({});
+      }
+    });
+
     // Write workbook to buffer
     return await workbook.xlsx.writeBuffer();
   }
@@ -332,6 +442,16 @@ export class DownloadService {
       });
       return map;
     }, new Map<AgeType, string>());
+  }
+
+  private sortTimes(a: string, b: string) {
+    if (a && b && a !== '-' && b !== '-') {
+      return DateTime.fromISO(a).toMillis() - DateTime.fromISO(b).toMillis();
+    }
+    if (a === '-') {
+      return 1;
+    }
+    return -1;
   }
 }
 

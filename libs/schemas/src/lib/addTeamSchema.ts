@@ -4,7 +4,7 @@ import { z } from 'zod';
 const participantSchema = z.object({
   name: z.string(),
   club: z.string(),
-  birthYear: z.number(),
+  birthYear: z.string().min(4).max(4),
   id: z.string().optional(),
 });
 

@@ -4,6 +4,7 @@ export const administrationTabs = [
   'startNumbers',
   'statistics',
   'downloads',
+  'corrections',
 ] as const;
 export type AdministrationTabs = (typeof administrationTabs)[number];
 export const administrationTabsTranslated: {

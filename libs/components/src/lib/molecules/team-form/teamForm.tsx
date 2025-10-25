@@ -66,7 +66,7 @@ export function TeamForm({
           disabled={isUpdate}
           onSelect={(val) =>
             checkNeedsHelm(val as BoatType) && !isUpdate
-              ? setValue('helm', { club: '', birthYear: 1900, name: '' })
+              ? setValue('helm', { club: '', birthYear: '1900', name: '' })
               : undefined
           }
         />
@@ -102,16 +102,19 @@ export function TeamForm({
             path="helm.name"
             control={control}
             label="Naam stuur"
+            onChange={() => setValue('helm.id', undefined)}
           />
           <InputController
             path="helm.club"
             control={control}
             label="Vereniging stuur"
+            onChange={() => setValue('helm.id', undefined)}
           />
           <InputController
             path="helm.birthYear"
             control={control}
             label="Geboortejaar stuur"
+            onChange={() => setValue('helm.id', undefined)}
           />
         </div>
       )}
@@ -124,7 +127,7 @@ export function TeamForm({
           }
           onClick={() => {
             setShowAddParticipant(true);
-            append({ name: '', club, birthYear: 1900 });
+            append({ name: '', club, birthYear: '1900' });
             setError(null);
           }}
           classNames="my-3"
@@ -144,6 +147,9 @@ export function TeamForm({
                 <InputController<TeamAddForm>
                   path={`participants.${index}.name`}
                   control={control}
+                  onChange={() =>
+                    setValue(`participants.${index}.id`, undefined)
+                  }
                 />
               ) : (
                 <>
@@ -160,6 +166,7 @@ export function TeamForm({
               <InputController<TeamAddForm>
                 path={`participants.${index}.club`}
                 control={control}
+                onChange={() => setValue(`participants.${index}.id`, undefined)}
               />
             ) : (
               <div>{field.club}</div>
@@ -168,6 +175,7 @@ export function TeamForm({
               <InputController<TeamAddForm>
                 path={`participants.${index}.birthYear`}
                 control={control}
+                onChange={() => setValue(`participants.${index}.id`, undefined)}
               />
             ) : (
               <div>{field.birthYear}</div>

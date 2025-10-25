@@ -10,6 +10,7 @@ interface InputControllerProps<T extends FieldValues> {
   disabled?: boolean;
   classNames?: string;
   type?: HTMLInputTypeAttribute;
+  onChange?: (value: string) => void;
 }
 
 export function InputController<T extends FieldValues>({
@@ -19,6 +20,7 @@ export function InputController<T extends FieldValues>({
   disabled,
   classNames,
   type,
+  onChange,
 }: InputControllerProps<T>) {
   return (
     <Controller
@@ -26,12 +28,16 @@ export function InputController<T extends FieldValues>({
       control={control}
       render={({ field, fieldState }) => (
         <Input
+          {...field}
           disabled={disabled}
           label={label}
           hasError={fieldState.invalid}
           classNames={classNames}
           type={type}
-          {...field}
+          onChange={(e) => {
+            field.onChange(e);
+            onChange?.(e.target.value);
+          }}
         />
       )}
     />

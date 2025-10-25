@@ -7,7 +7,7 @@ import { TeamAddForm } from '@schemas';
 interface ParticipantForm {
   name: string;
   club: string;
-  birthYear: number;
+  birthYear: string;
 }
 
 interface AddParticipantFormProps {

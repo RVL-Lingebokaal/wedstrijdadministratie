@@ -28,6 +28,10 @@ export function DownloadButtonAll({ wedstrijdId }: WedstrijdIdProps) {
     url: `/api/downloads/alleroeiers?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
     fileName: 'alleroeiers.xlsx',
   });
+  const downloadResults = useDownload({
+    url: `/api/downloads/results?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+    fileName: 'results.xlsx',
+  });
 
   const downloadButtons = [
     {
@@ -47,6 +51,10 @@ export function DownloadButtonAll({ wedstrijdId }: WedstrijdIdProps) {
     {
       click: downloadAlleRoeiers,
       name: 'Alle roeiers',
+    },
+    {
+      click: downloadResults,
+      name: 'Resultaten overzicht',
     },
   ];
 

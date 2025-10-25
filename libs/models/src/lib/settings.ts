@@ -121,7 +121,7 @@ export function translateClass({
   isJeugdWedstrijd,
 }: TranslateClassProps) {
   const translatedGender = translateGenderToShort(gender, isJeugdWedstrijd);
-  return `${translatedGender}${boatType}${className}`;
+  return className;
 }
 
 export const saveSettingsSchema = z.object({

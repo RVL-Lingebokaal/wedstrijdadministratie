@@ -29,5 +29,5 @@ export function getAgeType({ participant, ages }: GetAgeTypesProps) {
 }
 
 export function getParticipantForm({ name, birthYear, club, id }: Participant) {
-  return { id, name, birthYear, club };
+  return { id, name, birthYear: birthYear.toString(), club };
 }

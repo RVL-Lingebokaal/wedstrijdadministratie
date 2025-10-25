@@ -19,8 +19,6 @@ export function SessionPage({ wedstrijdId }: WedstrijdIdProps) {
     return <LoadingSpinner />;
   }
 
-  // console.log
-
   return (
     <>
       <div className="flex">
