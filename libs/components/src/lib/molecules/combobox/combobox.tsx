@@ -60,7 +60,7 @@ export function Combobox({
           anchor="bottom"
           transition
           className={twMerge(
-            'w-[var(--input-width)] rounded-xl border border-white/5 bg-white/25 p-1 [--anchor-gap:var(--spacing-1)] empty:invisible',
+            'w-[var(--input-width)] border rounded-xl border-white/5 bg-white p-1 [--anchor-gap:var(--spacing-1)] empty:invisible',
             'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
           )}
         >
@@ -68,7 +68,7 @@ export function Combobox({
             <ComboboxOption
               key={item.value}
               value={item}
-              className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none bg-white/50 data-[focus]:bg-white/75"
+              className="group flex cursor-default items-center gap-2 py-1.5 px-3 select-none bg-white data-[focus]:bg-primary/10"
             >
               <FaCheck className="invisible size-4 fill-primary group-data-[selected]:visible" />
               <div className="text-sm/6 text-primary ">{item.label}</div>
