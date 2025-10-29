@@ -48,7 +48,7 @@ export function TimePage({ teams, isStart, isA, wedstrijdId }: TimePageProps) {
         label: number,
         value: number,
       })),
-    [teams]
+    [JSON.stringify(teams), isA, isStart]
   );
 
   useInitiateUpdates({

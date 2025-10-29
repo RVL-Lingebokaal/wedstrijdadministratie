@@ -21,10 +21,8 @@ export default function KoppelenPage({
     }
     const blockNumber = parseInt(sessie.replace('sessie', ''));
 
-    return teamData.filter(
-      (team) => team.block === blockNumber && !team.result
-    );
-  }, [sessie, JSON.stringify(teamData)]);
+    return teamData.filter((team) => team.block === blockNumber);
+  }, [sessie, JSON.stringify(teamData), isA, isStart]);
 
   if (teamIsLoading) {
     return <LoadingSpinner />;
