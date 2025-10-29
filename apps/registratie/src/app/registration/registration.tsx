@@ -45,23 +45,23 @@ export function Registration({ route }: { route: RegistrationRouteProp }) {
   return (
     <Page title="Tijdsregistratie">
       <ScrollView style={{ display: 'flex', gap: 20 }}>
-        <View
-          style={{
-            marginBottom: 10,
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 4,
-            borderStyle: 'dashed',
-            borderColor: colors.primary,
-            backgroundColor: colors.white,
-          }}
-        >
-          {currentTime && (
+        {currentTime && (
+          <View
+            style={{
+              marginBottom: 10,
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 4,
+              borderStyle: 'dashed',
+              borderColor: colors.primary,
+              backgroundColor: colors.white,
+            }}
+          >
             <LabelText
               text={`De tijd ${getTimeString(currentTime)} is geregistreerd`}
             />
-          )}
-        </View>
+          </View>
+        )}
         <MainText text="Geef hieronder aan of je bij de finish of de start staat." />
         <MultipleInputsContainer>
           <CustomCheckbox

@@ -58,7 +58,7 @@ export function Home({ navigation }: NavigationProps<'home'>) {
                   wedstrijdId: selectedWedstrijd,
                 })
               }
-              disabled={!selectedWedstrijd}
+              disabled={selectedWedstrijd == ''}
             />
           </>
         )}

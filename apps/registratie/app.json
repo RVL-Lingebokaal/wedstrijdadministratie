@@ -2,7 +2,7 @@
   "expo": {
     "name": "Registratie",
     "slug": "registratie",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/splash-icon.png",
     "splash": {
@@ -25,7 +25,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.vermaas.developers.registratie",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/images/splash-icon.png",
@@ -49,7 +49,15 @@
           },
           "imageWidth": 200
         }
-      ]
+      ],
+      ["expo-build-properties",
+      {
+        "android": {
+          "compileSdkVersion": 35,
+          "targetSdkVersion": 35,
+          "buildToolsVersion": "35.0.0"
+        }
+      }]
     ]
   }
 }
