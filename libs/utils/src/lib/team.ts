@@ -5,11 +5,13 @@ import {
   boatTypes,
   ClassItem,
   genders,
+  translateClass,
 } from '@models';
 import { DateTime, Duration } from 'luxon';
 import { GetTeamResult } from '@hooks';
 import { getClassMap } from './age';
 import { ReactNode } from 'react';
+import { getCorrectedTime } from '../../../components/src/lib/utils/timeUtils';
 
 export interface Item {
   node: string | ReactNode;
@@ -77,7 +79,7 @@ export function getConvertedResults(
   const correctionAgeSexMap = getCorrectionAgeSexMap(ages);
   const correctionBoatMap = getCorrectionBoatMap(boatItems);
   const headers: string[] = [];
-  const doneSet = new Set<string>();
+  const doneSet = new Map<string, string>();
 
   boatTypes.forEach((boatType) => {
     ageTypes.forEach((age) => {
@@ -85,7 +87,14 @@ export function getConvertedResults(
         const key = `${age}${g}${boatType}`;
         const className = classMap.get(key);
         if (className && !doneSet.has(className)) {
-          headers.push(className);
+          const translatedClass = translateClass({
+            gender: g,
+            boatType,
+            className,
+            isJeugdWedstrijd,
+          });
+          doneSet.set(className, translatedClass);
+          headers.push(translatedClass);
         }
       });
     });
@@ -98,24 +107,17 @@ export function getConvertedResults(
     ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
       const key = `${ageClass}${gender}${boatType}`;
       const className = classMap.get(key) ?? '';
-      const rows = rowsMap.get(className) ?? [];
+      const translatedClassName = doneSet.get(className) ?? '';
+      const rows = rowsMap.get(translatedClassName) ?? [];
 
-      const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
-      const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
-      const start = convertTimeToObject(startTimeMillis);
-      const finish = convertTimeToObject(finishTimeMillis);
-      let correction = null;
-
-      if (startTimeMillis && finishTimeMillis) {
-        const difference =
-          Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
-        const correctionAgeSex =
-          correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
-        const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
-        const totalCorrection = correctionAgeSex * correctionBoat;
-
-        correction = difference * totalCorrection;
-      }
+      let { correction, start, finish } = getCorrectedTime({
+        result,
+        boatType,
+        ageClass,
+        correctionBoatMap,
+        correctionAgeSexMap,
+        gender,
+      });
 
       const row = [
         { node: startNr },
@@ -132,7 +134,7 @@ export function getConvertedResults(
       ];
 
       rows.push(row);
-      rowsMap.set(className, rows);
+      rowsMap.set(translatedClassName, rows);
       correctedRows.push([
         { node: startNr },
         { node: className },

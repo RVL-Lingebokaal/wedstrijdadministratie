@@ -10,6 +10,7 @@ import {
   getDifference,
 } from '@utils';
 import { DateTime } from 'luxon';
+import { getCorrectedTime } from '../../../components/src/lib/utils/timeUtils';
 
 export class DownloadService {
   async getBetalingenByStartNumber(wedstrijdId: string) {
@@ -146,7 +147,23 @@ export class DownloadService {
     Array.from(teams.values())
       .sort((a, b) => (a.startNumber ?? 0) - (b.startNumber ?? 0))
       .forEach(
-        ({ club, startNumber, boat, block, ageClass, helm, participants }) => {
+        ({
+          club,
+          startNumber,
+          boat,
+          block,
+          ageClass,
+          helm,
+          participants,
+          boatType,
+          gender,
+        }) => {
+          const translatedClass = translateClass({
+            gender,
+            boatType,
+            className: classes.get(ageClass) ?? '',
+            isJeugdWedstrijd: settings.general.isJeugd ?? false,
+          });
           const roeiers = participants?.reduce((obj, p, index) => {
             obj[`roeier${index + 1}`] = p.name;
             return obj;
@@ -154,7 +171,7 @@ export class DownloadService {
           worksheet.addRow({
             blok: block,
             startnr: startNumber,
-            klasse: classes.get(ageClass) ?? '',
+            klasse: translatedClass,
             vereniging: club,
             bootnaam: boat?.name,
             stuur: helm?.name ?? '',
@@ -167,7 +184,6 @@ export class DownloadService {
   }
 
   async getResultatenOverzicht(wedstrijdId: string) {
-    const teams = await teamService.getTeams(wedstrijdId);
     const results = await teamService.getResults(wedstrijdId);
     const settings = await wedstrijdService.getSettingsFromWedstrijd(
       wedstrijdId
@@ -215,23 +231,14 @@ export class DownloadService {
         const className = classMap.get(key) ?? '';
         const unCorrectedRow = uncorrectedByClass.get(className) || [];
 
-        const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
-        const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
-        const start = convertTimeToObject(startTimeMillis);
-        const finish = convertTimeToObject(finishTimeMillis);
-        let correction = null;
-
-        if (startTimeMillis && finishTimeMillis) {
-          const difference =
-            Number.parseInt(finishTimeMillis) -
-            Number.parseInt(startTimeMillis);
-          const correctionAgeSex =
-            correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
-          const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
-          const totalCorrection = correctionAgeSex * correctionBoat;
-
-          correction = difference * totalCorrection;
-        }
+        const { start, finish, correction } = getCorrectedTime({
+          result,
+          gender,
+          boatType,
+          ageClass,
+          correctionBoatMap,
+          correctionAgeSexMap,
+        });
 
         correctedRows.push({
           startNr,
@@ -243,7 +250,8 @@ export class DownloadService {
             start.dateTime && finish.dateTime
               ? getDifference(start.dateTime, finish.dateTime)
               : '-',
-          correctie: correction ?? '-',
+          correctie:
+            convertTimeToObject(correction?.toString()).localeString ?? '-',
         });
         unCorrectedRow.push({
           startNr,

@@ -1,11 +1,15 @@
 import {
+  BoatType,
+  Gender,
   getTimeKey,
   SaveStartNumberTime,
   StartNumberTime,
   Team,
+  TeamTimes,
   Time,
 } from '@models';
 import { Dispatch, SetStateAction } from 'react';
+import { convertTimeToObject } from '@utils';
 
 export function getNewTimes(prevTimes: Time[], newTimes: Time[]) {
   let result: Time[] = [];
@@ -97,4 +101,41 @@ export function onClickKoppel({
   });
 
   setSelected('');
+}
+
+interface GetCorrectedTimeProps {
+  result?: TeamTimes;
+  correctionAgeSexMap: Map<string, number>;
+  correctionBoatMap: Map<string, number>;
+  ageClass: string;
+  boatType: BoatType;
+  gender: Gender;
+}
+
+export function getCorrectedTime({
+  result,
+  correctionBoatMap,
+  correctionAgeSexMap,
+  boatType,
+  ageClass,
+  gender,
+}: GetCorrectedTimeProps) {
+  const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
+  const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
+  const start = convertTimeToObject(startTimeMillis);
+  const finish = convertTimeToObject(finishTimeMillis);
+  let correction = 0;
+
+  if (startTimeMillis && finishTimeMillis) {
+    const difference =
+      Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
+    const correctionAgeSex =
+      correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
+    const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
+    const totalCorrection = correctionAgeSex * correctionBoat;
+
+    correction = difference * totalCorrection;
+  }
+
+  return { correction, start, finish };
 }

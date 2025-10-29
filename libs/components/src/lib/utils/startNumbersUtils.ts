@@ -4,6 +4,7 @@ import {
   ClassItem,
   genders,
   Team,
+  translateClass,
   UseUpdateStartNumberTeam,
   UseUpdateStartNumberTeamArgs,
 } from '@models';
@@ -134,7 +135,14 @@ export function sortTeamsWithStartNumber({
     const teamItems = [
       { node: team.startNumber?.toString() ?? '' },
       { node: team.block?.toString() ?? '' },
-      { node: className },
+      {
+        node: translateClass({
+          gender: team.gender,
+          boatType: team.boatType,
+          className,
+          isJeugdWedstrijd,
+        }),
+      },
       { node: team.name },
       { node: team.participants[0].name ?? '' },
       { node: team.boat?.name ?? '' },
@@ -204,7 +212,14 @@ function getSortedRowItems({
     const teamItems = [
       { node: startNumber.toString() },
       { node: team.block?.toString() ?? '' },
-      { node: className },
+      {
+        node: translateClass({
+          gender: team.gender,
+          boatType: team.boatType,
+          className,
+          isJeugdWedstrijd,
+        }),
+      },
       { node: team.name },
       { node: team.participants[0].name ?? '' },
       { node: team.boat?.name ?? '' },
