@@ -21,10 +21,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    team.block = args.destBlock;
     team.startNumber = undefined;
 
-    await teamService.saveTeam(team);
+    await teamService.saveTeamBlock(team.id, args.destBlock);
   } catch (error: any) {
     let errorMessage;
     switch (error.name) {

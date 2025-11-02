@@ -23,3 +23,6 @@ export * from './lib/times/useDuplicateTime';
 export * from './lib/times/useRestoreTime';
 export * from './lib/useDownload';
 export * from './lib/wedstrijd/useCreateWedstrijd';
+export * from './lib/teams/useGetResultsForTeams';
+export * from './lib/teams/useUpdateTimeChoiceTeam';
+export * from './lib/teams/useCheckTeamBlocks';

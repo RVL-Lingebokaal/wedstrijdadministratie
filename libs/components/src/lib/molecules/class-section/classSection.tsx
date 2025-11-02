@@ -129,6 +129,7 @@ export function ClassSection({
                 group={group}
                 classes={classes}
                 refetch={refetch}
+                wedstrijdId={wedstrijdId}
               />
             )}
           </div>

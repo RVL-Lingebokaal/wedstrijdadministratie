@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import {
   AgeItem,
   BoatItem,
+  ClassItem,
   CreateWedstrijdForm,
   SaveGeneralSettings,
   SaveSettingsSchema,
@@ -76,6 +77,21 @@ export class WedstrijdService {
       ages: mergeAgeSettings(settings.ages, wedstrijd.settings.ages),
       classes: wedstrijd.settings.classes,
     };
+  }
+
+  async removeClassItem(id: string, { name, boatType, gender }: ClassItem) {
+    const wedstrijd = await this.getWedstrijdById(id);
+
+    if (!wedstrijd.settings.classes) return;
+
+    const index = wedstrijd.settings.classes.findIndex(
+      (c) => c.gender === gender && c.boatType === boatType && c.name === name
+    );
+    wedstrijd.settings.classes.splice(index, 1);
+    await this.saveSettingsToWedstrijd(id, {
+      type: 'classes',
+      itemsToSave: wedstrijd.settings.classes,
+    });
   }
 
   async saveSettingsToWedstrijd(id: string, data: SaveSettingsSchema) {

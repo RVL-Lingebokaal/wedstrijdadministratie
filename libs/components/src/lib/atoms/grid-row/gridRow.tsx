@@ -11,9 +11,15 @@ interface GridRowProps {
   items: Item[];
   lastRow?: boolean;
   classNames?: string;
+  classNameItems?: string;
 }
 
-export function GridRow({ items, lastRow, classNames }: GridRowProps) {
+export function GridRow({
+  items,
+  lastRow,
+  classNames,
+  classNameItems,
+}: GridRowProps) {
   return (
     <div
       className={twMerge([`grid ${colsOptions[items.length]} m-1`, classNames])}
@@ -21,9 +27,12 @@ export function GridRow({ items, lastRow, classNames }: GridRowProps) {
       {items.map(({ node, isInput }, index) => (
         <div
           key={index}
-          className={`bg-white ${isInput ? 'py-1.5' : 'py-3'} px-4 ${
-            lastRow ? getRoundedClass(index, items.length, true) : ''
-          }`}
+          className={twMerge(
+            'bg-white px-4',
+            isInput ? 'py-1.5' : 'py-3',
+            lastRow ? getRoundedClass(index, items.length, true) : '',
+            classNameItems
+          )}
         >
           {node}
         </div>

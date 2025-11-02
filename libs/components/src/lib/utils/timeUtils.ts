@@ -122,13 +122,14 @@ export function getCorrectedTime({
 }: GetCorrectedTimeProps) {
   const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
   const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
-  const start = convertTimeToObject(startTimeMillis);
-  const finish = convertTimeToObject(finishTimeMillis);
+  const start = convertTimeToObject(startTimeMillis?.toString());
+  const finish = convertTimeToObject(finishTimeMillis?.toString());
   let correction = 0;
 
   if (startTimeMillis && finishTimeMillis) {
     const difference =
-      Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
+      Number.parseInt(finishTimeMillis.toString()) -
+      Number.parseInt(startTimeMillis.toString());
     const correctionAgeSex =
       correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
     const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
@@ -138,4 +139,24 @@ export function getCorrectedTime({
   }
 
   return { correction, start, finish };
+}
+
+export function getDifferenceResult(times?: TeamTimes) {
+  let finishDifference: null | number = null;
+  let startDifference: null | number = null;
+
+  if (!times) {
+    return { finishDifference, startDifference };
+  }
+  const { startTimeA, startTimeB, finishTimeA, finishTimeB } = times;
+  if (startTimeA && startTimeB) {
+    const startDiff = startTimeB - startTimeA;
+    startDifference = Math.abs(startDiff);
+  }
+  if (finishTimeA && finishTimeB) {
+    const finishDiff = finishTimeB - finishTimeA;
+    finishDifference = Math.abs(finishDiff);
+  }
+
+  return { finishDifference, startDifference };
 }

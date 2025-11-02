@@ -25,10 +25,11 @@ export function useUploadFile(wedstrijdId: string) {
       return { success: true, count: jsonResponse.count };
     },
     {
-      onSuccess: () =>
-        queryClient.invalidateQueries({
-          queryKey: ['get-counts', 'get-teams'],
-        }),
+      onSuccess: async () =>
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['get-counts'] }),
+          queryClient.invalidateQueries({ queryKey: ['get-teams'] }),
+        ]),
     }
   );
 }

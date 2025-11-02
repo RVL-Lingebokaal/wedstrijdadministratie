@@ -7,7 +7,9 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react';
-import { Item } from '@utils';
+import { getConvertedResults } from '@utils';
+import { useGetResultsForTeams } from '@hooks';
+import { ClassItem, WedstrijdIdProps } from '@models';
 
 const headerItemsUncorrected = [
   'Slag',
@@ -35,18 +37,23 @@ export const resultsTabsWithTranslations: {
   { value: 'corrected', name: 'Gecorrigeerd' },
 ];
 
-interface OverviewResultsProps {
-  headers: string[];
-  rowsMap: Map<string, Item[][]>;
-  correctedRows: Item[][];
+interface OverviewResultsProps extends WedstrijdIdProps {
+  classItems: ClassItem[];
+  isJeugdWedstrijd?: boolean;
 }
 
 export function OverviewResults({
-  headers,
-  rowsMap,
-  correctedRows,
+  isJeugdWedstrijd,
+  classItems,
+  wedstrijdId,
 }: OverviewResultsProps) {
   const [tab, setTab] = useState<ResultsTabs>('uncorrected');
+  const { data } = useGetResultsForTeams(wedstrijdId);
+  const { rowsMap, headers, correctedRows } = getConvertedResults(
+    classItems,
+    data?.teamsResult ?? [],
+    isJeugdWedstrijd
+  );
 
   return (
     <div className="flex w-full ">

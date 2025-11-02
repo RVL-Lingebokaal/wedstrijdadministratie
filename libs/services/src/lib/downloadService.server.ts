@@ -130,20 +130,13 @@ export class DownloadService {
     worksheet.columns = [
       { header: 'Blok', key: 'blok', width: 10 },
       { header: 'Startnr', key: 'startnr', width: 10 },
-      { header: 'Klasse', key: 'klasse', width: 25 },
-      { header: 'Vereniging', key: 'vereniging', width: 30 },
+      { header: 'Veld', key: 'klasse', width: 25 },
+      { header: 'Ploegnaam', key: 'ploegnaam', width: 30 },
+      { header: 'Slag', key: 'slag', width: 25 },
       { header: 'Bootnaam', key: 'bootnaam', width: 30 },
-      { header: 'Stuur', key: 'stuur', width: 25 },
-      { header: 'Roeier 1', key: 'roeier1', width: 25 },
-      { header: 'Roeier 2', key: 'roeier2', width: 25 },
-      { header: 'Roeier 3', key: 'roeier3', width: 25 },
-      { header: 'Roeier 4', key: 'roeier4', width: 25 },
-      { header: 'Roeier 5', key: 'roeier5', width: 25 },
-      { header: 'Roeier 6', key: 'roeier6', width: 25 },
-      { header: 'Roeier 7', key: 'roeier7', width: 25 },
-      { header: 'Roeier 8', key: 'roeier8', width: 25 },
     ];
 
+    let currentClass = '';
     Array.from(teams.values())
       .sort((a, b) => (a.startNumber ?? 0) - (b.startNumber ?? 0))
       .forEach(
@@ -153,10 +146,10 @@ export class DownloadService {
           boat,
           block,
           ageClass,
-          helm,
           participants,
           boatType,
           gender,
+          name,
         }) => {
           const translatedClass = translateClass({
             gender,
@@ -164,19 +157,25 @@ export class DownloadService {
             className: classes.get(ageClass) ?? '',
             isJeugdWedstrijd: settings.general.isJeugd ?? false,
           });
-          const roeiers = participants?.reduce((obj, p, index) => {
-            obj[`roeier${index + 1}`] = p.name;
-            return obj;
-          }, {} as Record<string, string>);
+
+          if (currentClass !== translatedClass) {
+            worksheet.addRow({});
+          }
+
+          const ploegnaam = boatType === '1x' ? club : name;
+          const slag = participants[0].name;
+
           worksheet.addRow({
             blok: block,
             startnr: startNumber,
             klasse: translatedClass,
             vereniging: club,
             bootnaam: boat?.name,
-            stuur: helm?.name ?? '',
-            ...roeiers,
+            slag,
+            ploegnaam,
           });
+
+          currentClass = translatedClass;
         }
       );
     // Write workbook to buffer

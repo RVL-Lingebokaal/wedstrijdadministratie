@@ -20,6 +20,7 @@ export * from './lib/organisms/administration/session/sessionPage';
 export * from './lib/organisms/administration/startNumbers/startNumbersPage';
 export * from './lib/organisms/administration/statistics/statisticsPage';
 export * from './lib/organisms/administration/downloads/downloadsPage';
+export * from './lib/organisms/administration/corrections/correctionsPage';
 export * from './lib/organisms/settings/settings/settingsForm';
 export * from './lib/organisms/settings/age/ageForm';
 export * from './lib/organisms/settings/types/boatsForm';

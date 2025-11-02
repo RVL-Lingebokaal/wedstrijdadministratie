@@ -1,17 +1,18 @@
 import { getAgeParticipant, getAgeType, Participant } from './participant';
 import { Boat } from './boat';
-import { AgeItem, AgeType, BoatType } from './settings';
+import { AgeItem, AgeType, ageTypes, BoatType, Gender } from './settings';
 import { calculateAgeType } from '@utils';
+import { z } from 'zod';
 
-export const genders = ['male', 'mix', 'female', 'open'] as const;
-export type Gender = (typeof genders)[number];
-
-export interface TeamTimes {
-  startTimeA?: string | null;
-  startTimeB?: string | null;
-  finishTimeA?: string | null;
-  finishTimeB?: string | null;
-}
+export const teamTimesSchema = z.object({
+  startTimeA: z.number().nullable().optional(),
+  startTimeB: z.number().nullable().optional(),
+  finishTimeA: z.number().nullable().optional(),
+  finishTimeB: z.number().nullable().optional(),
+  useStartA: z.boolean().optional(),
+  useFinishA: z.boolean().optional(),
+});
+export type TeamTimes = z.infer<typeof teamTimesSchema>;
 
 export interface TeamResult {
   name: string;
@@ -157,3 +158,29 @@ export function translateGenderToShort(
       return 'Open';
   }
 }
+
+export const getResultsForTeamsSchema = z.object({
+  teamsResult: z.array(
+    z.object({
+      id: z.string(),
+      startNr: z.number(),
+      name: z.string(),
+      slag: z.string().nullable(),
+      difference: z.string().nullable(),
+      ageClass: z.enum(ageTypes),
+      block: z.number().nullable(),
+      className: z.string(),
+      correction: z.string().nullable(),
+      result: teamTimesSchema.optional(),
+    })
+  ),
+});
+export type GetResultsForTeamsResponseDto = z.infer<
+  typeof getResultsForTeamsSchema
+>;
+export const postResultsForTeamSchema = z.object({
+  id: z.string(),
+  useStartA: z.boolean(),
+  useFinishA: z.boolean(),
+});
+export type PostResultsForTeamDto = z.infer<typeof postResultsForTeamSchema>;

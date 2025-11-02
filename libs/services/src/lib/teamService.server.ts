@@ -62,6 +62,49 @@ export class TeamService {
     this.teams.set(team.id, team);
   }
 
+  async saveTeamBlock(teamId: string, newBlock: number) {
+    const team = this.teams.get(teamId);
+    const oldBlock = team?.block || team?.preferredBlock;
+
+    if (!team || !oldBlock) {
+      throw new Error('Team not found');
+    }
+
+    const participantsBlocks = team.participants.reduce((acc, participant) => {
+      Array.from(participant.blocks.values()).forEach((block) =>
+        acc.add(block)
+      );
+      return acc;
+    }, new Set<number>());
+
+    if (participantsBlocks.has(newBlock)) {
+      throw new Error('PARTICIPANT_BLOCK');
+    }
+
+    if (team.helm && team.helm.blocks.has(newBlock)) {
+      throw new Error('HELM_BLOCK');
+    }
+
+    if (team.boat && team.boat.blocks.has(newBlock)) {
+      throw new Error('BOAT_BLOCK');
+    }
+
+    team.participants.map(({ blocks }) => {
+      blocks.delete(oldBlock);
+      blocks.add(newBlock);
+    });
+    if (team.helm) {
+      team.helm.blocks.delete(oldBlock);
+      team.helm.blocks.add(newBlock);
+    }
+
+    team.boat?.blocks.delete(oldBlock);
+    team.boat?.blocks.add(newBlock);
+    team.block = newBlock;
+
+    await this.saveTeam(team);
+  }
+
   async removeAllTeams(wedstrijdId: string) {
     if (this.teams.size === 0) {
       return;
@@ -121,7 +164,6 @@ export class TeamService {
             ? (participants.get(docData['helm']) as Participant)
             : null,
           place: parseInt(docData['place']),
-          result: docData['result'],
           startNumber: docData['startNumber'],
           block: docData['block'],
           wedstrijdId: docData['wedstrijdId'],

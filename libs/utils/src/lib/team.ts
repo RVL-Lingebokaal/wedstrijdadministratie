@@ -5,13 +5,12 @@ import {
   boatTypes,
   ClassItem,
   genders,
+  GetResultsForTeamsResponseDto,
   translateClass,
 } from '@models';
-import { DateTime, Duration } from 'luxon';
-import { GetTeamResult } from '@hooks';
+import { DateTime } from 'luxon';
 import { getClassMap } from './age';
 import { ReactNode } from 'react';
-import { getCorrectedTime } from '../../../components/src/lib/utils/timeUtils';
 
 export interface Item {
   node: string | ReactNode;
@@ -63,9 +62,7 @@ export function getCorrectionBoatMap(boatItems: BoatItem[]) {
 
 export function getConvertedResults(
   classItems: ClassItem[],
-  ages: AgeItem[],
-  boatItems: BoatItem[],
-  results?: GetTeamResult[],
+  results: GetResultsForTeamsResponseDto['teamsResult'],
   isJeugdWedstrijd = false
 ) {
   if (!results) {
@@ -76,8 +73,6 @@ export function getConvertedResults(
     };
   }
   const classMap = getClassMap(classItems);
-  const correctionAgeSexMap = getCorrectionAgeSexMap(ages);
-  const correctionBoatMap = getCorrectionBoatMap(boatItems);
   const headers: string[] = [];
   const doneSet = new Map<string, string>();
 
@@ -104,31 +99,24 @@ export function getConvertedResults(
   const correctedRows = [] as Item[][];
 
   results.forEach(
-    ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
-      const key = `${ageClass}${gender}${boatType}`;
-      const className = classMap.get(key) ?? '';
+    ({
+      name,
+      correction,
+      difference,
+      className,
+      ageClass,
+      startNr,
+      slag,
+      block,
+    }) => {
       const translatedClassName = doneSet.get(className) ?? '';
       const rows = rowsMap.get(translatedClassName) ?? [];
-
-      let { correction, start, finish } = getCorrectedTime({
-        result,
-        boatType,
-        ageClass,
-        correctionBoatMap,
-        correctionAgeSexMap,
-        gender,
-      });
 
       const row = [
         { node: startNr },
         { node: name },
-        { node: slag?.name },
-        {
-          node:
-            start.dateTime && finish.dateTime
-              ? getDifference(start.dateTime, finish.dateTime)
-              : '-',
-        },
+        { node: slag },
+        { node: difference ?? '-' },
         { node: ageClass },
         { node: block },
       ];
@@ -140,17 +128,8 @@ export function getConvertedResults(
         { node: className },
         { node: name },
         { node: ageClass },
-        {
-          node:
-            start.dateTime && finish.dateTime
-              ? getDifference(start.dateTime, finish.dateTime)
-              : '-',
-        },
-        {
-          node: correction
-            ? Duration.fromMillis(correction).toFormat("hh:mm:ss.SSS'")
-            : '',
-        },
+        { node: difference ?? '-' },
+        { node: correction ?? '-' },
       ]);
     }
   );
@@ -162,7 +141,7 @@ export function getConvertedResults(
     rowsMap.set(key, sortedRows);
   });
   const sortedCorrectedRows = correctedRows.sort((a, b) => {
-    return sortTimes(a[4].node as string, b[4].node as string);
+    return sortTimes(a[5].node as string, b[5].node as string);
   });
   return { rowsMap, headers, correctedRows: sortedCorrectedRows };
 }

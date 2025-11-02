@@ -5,6 +5,7 @@ import { AdministrationTabs, administrationTabsTranslated } from '@models';
 import { LoadingSpinner, Tabs } from '@components/server';
 import {
   ClassPage,
+  CorrectionsPage,
   DownloadsPage,
   SessionPage,
   StartNumbersPage,
@@ -40,6 +41,7 @@ export default function Administration({
         {tab === 'startNumbers' && <StartNumbersPage wedstrijdId={id} />}
         {tab === 'statistics' && <StatisticsPage wedstrijdId={id} />}
         {tab === 'downloads' && <DownloadsPage wedstrijdId={id} />}
+        {tab === 'corrections' && <CorrectionsPage wedstrijdId={id} />}
       </div>
     </div>
   );

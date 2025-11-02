@@ -73,7 +73,7 @@ export class BoatService {
             id: doc.id,
             name: doc.data()['name'],
             club: doc.data()['club'],
-            blocks: JSON.parse(doc.data()['blocks']),
+            blocks: new Set(JSON.parse(doc.data()['blocks'])),
             wedstrijdId: doc.data()['wedstrijdId'],
           }),
         new Map<string, Boat>()

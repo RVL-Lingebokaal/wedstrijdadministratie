@@ -183,9 +183,7 @@ export class BondService {
       ),
       id,
       club: record[`VKODE ${path}`],
-      blocks: record[TEAM_PREFFERED_BLOCK]
-        ? new Set([parseInt(record[TEAM_PREFFERED_BLOCK])])
-        : new Set(),
+      blocks: new Set(),
       wedstrijdId,
     };
     const { participant, newBlock } = this.addBlockParticipant(
@@ -481,7 +479,11 @@ export class BondService {
     participant: Participant
   ): { participant: Participant; newBlock: number } {
     if (participant.blocks.has(block)) {
-      return this.addBlockParticipant(block + 1, participant);
+      let newBlock = block + 1;
+      if (newBlock > 3) {
+        newBlock = 1;
+      }
+      return this.addBlockParticipant(newBlock, participant);
     }
 
     participant.blocks.add(block);

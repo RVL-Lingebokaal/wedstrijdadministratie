@@ -2,9 +2,9 @@
 import { Button, ConfirmModal } from '@components/server';
 import { useRemoveClassItem } from '@hooks';
 import { useCallback, useState } from 'react';
-import { ClassItem } from '@models';
+import { ClassItem, WedstrijdIdProps } from '@models';
 
-interface RemoveGroupingButtonProps {
+interface RemoveGroupingButtonProps extends WedstrijdIdProps {
   group: ClassItem;
   classes: ClassItem[];
   refetch: () => void;
@@ -14,8 +14,9 @@ export function RemoveGroupingButton({
   group,
   classes,
   refetch,
+  wedstrijdId,
 }: RemoveGroupingButtonProps) {
-  const { mutate } = useRemoveClassItem();
+  const { mutate } = useRemoveClassItem(wedstrijdId);
   const [showModal, setShowModal] = useState(false);
 
   const onClick = useCallback(() => setShowModal(true), []);

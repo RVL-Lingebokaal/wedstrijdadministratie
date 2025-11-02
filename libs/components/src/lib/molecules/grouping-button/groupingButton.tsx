@@ -27,7 +27,7 @@ export function GroupingButton({
     if (selectedIndexes.size === 1) isCorrect = true;
     if (selectedIndexes.size > 1) {
       const indexesArray = Array.from(selectedIndexes.values());
-      const sortedArray = indexesArray.sort();
+      const sortedArray = indexesArray.sort((a, b) => (a > b ? 1 : -1));
       isCorrect = sortedArray.every((val, index) =>
         index === 0 ? true : val === sortedArray[index - 1] + 1
       );

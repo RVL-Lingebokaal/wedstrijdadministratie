@@ -1,4 +1,4 @@
-import { allAgesAreProcessed, getConvertedResults } from '@utils';
+import { allAgesAreProcessed } from '@utils';
 import { OverviewResults } from '@components';
 import { teamService, wedstrijdService } from '@services';
 
@@ -6,7 +6,6 @@ export default async function ResultsPage({
   params: { id },
 }: ParamsWithWedstrijdId) {
   const teams = await teamService.getTeams(id);
-  const result = await teamService.getResults(id);
   const wedstrijdSettings = await wedstrijdService.getSettingsFromWedstrijd(id);
 
   const { processed } = allAgesAreProcessed(
@@ -23,19 +22,11 @@ export default async function ResultsPage({
     );
   }
 
-  const { rowsMap, headers, correctedRows } = getConvertedResults(
-    wedstrijdSettings.classes ?? [],
-    wedstrijdSettings.ages,
-    wedstrijdSettings.boats,
-    result,
-    wedstrijdSettings.general.isJeugd ?? false
-  );
-
   return (
     <OverviewResults
-      correctedRows={correctedRows}
-      rowsMap={rowsMap}
-      headers={headers}
+      isJeugdWedstrijd={wedstrijdSettings.general?.isJeugd ?? false}
+      wedstrijdId={id}
+      classItems={wedstrijdSettings.classes ?? []}
     />
   );
 }
