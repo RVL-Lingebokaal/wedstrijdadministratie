@@ -78,7 +78,18 @@ export async function POST(req: NextRequest) {
   }
 
   if (newParticipants.length > 0) {
-    await participantService.saveParticipants(newParticipants);
+    const parts = await Promise.all(
+      newParticipants.map((p) =>
+        participantService.createParticipant({
+          name: p.name,
+          birthYear: p.birthYear.toString(),
+          club: p.club,
+          block: args.preferredBlock,
+          wedstrijdId,
+        })
+      )
+    );
+    console.log(parts);
     participantsMap = await participantService.getParticipants(wedstrijdId);
   }
 

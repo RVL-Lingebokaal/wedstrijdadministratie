@@ -1,16 +1,19 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { PostResultsForTeamDto, WedstrijdIdProps } from '@models';
+import { PostResultsForChangeEntireBlockDto, WedstrijdIdProps } from '@models';
 import { QUERY_PARAMS } from '@utils';
+import toast from 'react-hot-toast';
 
-export function useUpdateTimeChoice({ wedstrijdId }: WedstrijdIdProps) {
+export function useUpdateTimeChoiceForEntireBlock({
+  wedstrijdId,
+}: WedstrijdIdProps) {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ['update-team-time-choice'],
-    async (args: PostResultsForTeamDto) => {
+    ['update-team-time-choice-entire-block'],
+    async (args: PostResultsForChangeEntireBlockDto) => {
       const response = await fetch(
-        `/api/teams/time/choice?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
+        `/api/teams/time/choice/block?${QUERY_PARAMS.wedstrijdId}=${wedstrijdId}`,
         {
           method: 'POST',
           body: JSON.stringify(args),
@@ -27,6 +30,7 @@ export function useUpdateTimeChoice({ wedstrijdId }: WedstrijdIdProps) {
         await queryClient.invalidateQueries({
           queryKey: ['get-results-teams'],
         });
+        toast.success('De wijzigingen voor de tijd keuze zijn opgeslagen');
       },
     }
   );

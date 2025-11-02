@@ -1,10 +1,9 @@
-import { Boat, getBoatId } from '@models';
+import { Boat } from '@models';
 import {
   collection,
   doc,
   getDocs,
   query,
-  setDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -62,6 +61,19 @@ export class BoatService {
   }
 
   async getBoats(wedstrijdId: string) {
+    const boats = await this.getAllBoats();
+
+    const filteredBoats = Array.from(boats.values()).filter(
+      (boat) => boat.wedstrijdId === wedstrijdId
+    );
+
+    return filteredBoats.reduce(
+      (acc, boat) => acc.set(boat.id, boat),
+      new Map<string, Boat>()
+    );
+  }
+
+  async getAllBoats() {
     if (this.boats.size === 0) {
       const dbInstance = collection(firestore, Collections.BOOT);
       const q = query(dbInstance);
@@ -79,36 +91,26 @@ export class BoatService {
         new Map<string, Boat>()
       );
     }
-
-    const boats = Array.from(this.boats.values()).filter(
-      (boat) => boat.wedstrijdId === wedstrijdId
-    );
-
-    return boats.reduce(
-      (acc, boat) => acc.set(boat.id, boat),
-      new Map<string, Boat>()
-    );
+    return this.boats;
   }
 
-  async updateBoat(args: Omit<Boat, 'id'>, id?: string) {
-    let boat = id ? this.boats.get(id) : undefined;
-    if (!boat) {
-      boat = {
-        ...args,
-        id: getBoatId(args.name, args.club),
-      };
+  getBoatWithNewBlock(boat: Boat, block: number, oldBlock?: number) {
+    if (boat.blocks.has(block)) {
+      throw new Error('PARTICIPANT_BLOCK');
     }
 
-    this.boats.set(boat.id, boat);
+    if (oldBlock) {
+      boat.blocks.delete(oldBlock);
+    }
 
-    const docRef = doc(firestore, 'boot', boat.id);
-    await setDoc(
-      docRef,
-      { ...args, blocks: stringifySet(args.blocks) },
-      { merge: true }
-    );
+    boat.blocks.add(block);
 
     return boat;
+  }
+
+  async getBoatById(boatId: string, wedstrijdId: string) {
+    const boats = await this.getBoats(wedstrijdId);
+    return boats.get(boatId);
   }
 }
 

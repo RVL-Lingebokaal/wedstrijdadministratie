@@ -1,20 +1,26 @@
 import { FaExclamationTriangle } from 'react-icons/fa';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { Checkbox } from '../../../molecules/checkbox/checkbox';
 import { useUpdateTimeChoice } from '@hooks';
 
 interface CorrectionsTimeTextProps {
-  warning?: boolean;
+  showWarning?: boolean;
   text?: string | null;
+  showUsingThis?: boolean;
 }
 
 export function CorrectionsTimeText({
-  warning,
+  showWarning,
   text,
+  showUsingThis,
 }: CorrectionsTimeTextProps) {
-  return (
-    <span className={warning ? 'text-orange-600' : ''}>{text ?? '-'}</span>
-  );
+  const textColor = showWarning
+    ? 'text-orange-600'
+    : showUsingThis
+    ? 'text-green-600 font-bold'
+    : '';
+
+  return <span className={textColor}>{text ?? '-'}</span>;
 }
 
 interface CorrectionDifferenceIconProps {
@@ -44,40 +50,65 @@ export function CorrectionDifferenceIcon({
 interface CorrectionActionsProps {
   id: string;
   wedstrijdId: string;
+  useStartAInitial?: boolean;
+  useFinishAInitial?: boolean;
+  hasWarning?: boolean;
+  processedInitial?: boolean;
 }
 
-export function CorrectionActions({ id, wedstrijdId }: CorrectionActionsProps) {
+export function CorrectionActions({
+  id,
+  wedstrijdId,
+  useStartAInitial,
+  useFinishAInitial,
+  processedInitial,
+  hasWarning,
+}: CorrectionActionsProps) {
   const { mutate } = useUpdateTimeChoice({ wedstrijdId });
-  const [useStartA, setUseStartA] = useState(true);
-  const [useFinishA, setUseFinishA] = useState(true);
 
   const onChangeStart = useCallback(
     (value: boolean) => {
-      setUseStartA(value);
-      mutate({ id, useStartA: value, useFinishA });
+      mutate({ id, useStartA: value, useFinishA: useFinishAInitial !== false });
     },
-    [id, useFinishA]
+    [id, useFinishAInitial]
   );
   const onChangeFinish = useCallback(
     (value: boolean) => {
-      setUseFinishA(value);
-      mutate({ id, useStartA, useFinishA: value });
+      mutate({ id, useStartA: useStartAInitial !== false, useFinishA: value });
     },
-    [id, useStartA]
+    [id, useStartAInitial]
+  );
+  const onChangeProcessed = useCallback(
+    (value: boolean) => {
+      mutate({
+        id,
+        useStartA: useStartAInitial !== false,
+        useFinishA: useFinishAInitial !== false,
+        processed: value,
+      });
+    },
+    [id, useFinishAInitial, useStartAInitial]
   );
 
   return (
     <div>
       <Checkbox
         label="Start A"
-        enabled={useStartA}
+        enabled={useStartAInitial !== false}
         setEnabled={onChangeStart}
       />
       <Checkbox
         label="Finish A"
-        enabled={useFinishA}
+        enabled={useFinishAInitial !== false}
         setEnabled={onChangeFinish}
       />
+      {(hasWarning || processedInitial !== undefined) && (
+        <Checkbox
+          enabled={processedInitial !== false}
+          setEnabled={onChangeProcessed}
+          label="Verwerkt"
+        />
+      )}
     </div>
   );
 }

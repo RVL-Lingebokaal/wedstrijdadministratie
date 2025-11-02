@@ -19,7 +19,7 @@ export const addTeamSchema = z.object({
   gender: z.enum(genders),
 });
 
-type ParticipantSchema = z.infer<typeof participantSchema>;
+export type ParticipantSchema = z.infer<typeof participantSchema>;
 
 export interface TeamAddFormParticipant extends ParticipantSchema {
   id?: string;

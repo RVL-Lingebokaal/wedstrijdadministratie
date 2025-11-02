@@ -11,6 +11,7 @@ export const teamTimesSchema = z.object({
   finishTimeB: z.number().nullable().optional(),
   useStartA: z.boolean().optional(),
   useFinishA: z.boolean().optional(),
+  processed: z.boolean().optional(),
 });
 export type TeamTimes = z.infer<typeof teamTimesSchema>;
 
@@ -182,5 +183,15 @@ export const postResultsForTeamSchema = z.object({
   id: z.string(),
   useStartA: z.boolean(),
   useFinishA: z.boolean(),
+  processed: z.boolean().optional(),
 });
 export type PostResultsForTeamDto = z.infer<typeof postResultsForTeamSchema>;
+
+export const postResultsForChangeEntireBlockSchema = z.object({
+  isA: z.boolean(),
+  isStart: z.boolean(),
+  block: z.number(),
+});
+export type PostResultsForChangeEntireBlockDto = z.infer<
+  typeof postResultsForChangeEntireBlockSchema
+>;

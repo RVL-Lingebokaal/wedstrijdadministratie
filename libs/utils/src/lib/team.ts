@@ -6,6 +6,7 @@ import {
   ClassItem,
   genders,
   GetResultsForTeamsResponseDto,
+  TeamTimes,
   translateClass,
 } from '@models';
 import { DateTime } from 'luxon';
@@ -17,15 +18,42 @@ export interface Item {
   isInput?: boolean;
 }
 
-export function convertTimeToObject(time?: string | null) {
+export function getTimeFromResult(times?: TeamTimes) {
+  if (!times) {
+    return { finishTimeMillis: undefined, startTimeMillis: undefined };
+  }
+  const {
+    startTimeB,
+    startTimeA,
+    finishTimeB,
+    finishTimeA,
+    useFinishA,
+    useStartA,
+  } = times;
+  const startTimeMillis =
+    useStartA && startTimeA
+      ? startTimeA
+      : useStartA === false && startTimeB
+      ? startTimeB
+      : startTimeA ?? startTimeB;
+  const finishTimeMillis =
+    useFinishA && finishTimeA
+      ? finishTimeA
+      : useFinishA === false && finishTimeB
+      ? finishTimeB
+      : finishTimeA ?? finishTimeB;
+  return { finishTimeMillis, startTimeMillis };
+}
+
+export function convertTimeToObject(time?: number | null) {
   if (!time) {
     return {
       dateTime: undefined,
-      localeString: '',
+      localeString: null,
     };
   }
 
-  const dateTime = DateTime.fromMillis(Number.parseInt(time));
+  const dateTime = DateTime.fromMillis(time);
   const localeString = dateTime.toISOTime({
     includeOffset: false,
   });

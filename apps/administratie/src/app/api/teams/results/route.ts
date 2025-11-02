@@ -6,10 +6,10 @@ import {
   getCorrectionAgeSexMap,
   getCorrectionBoatMap,
   getDifference,
+  getTimeFromResult,
   QUERY_PARAMS,
 } from '@utils';
 import { Duration } from 'luxon';
-import { postResultsForTeamSchema } from '@models';
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -38,8 +38,7 @@ export async function GET(req: NextRequest) {
       block,
       id,
     }) => {
-      const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
-      const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
+      const { finishTimeMillis, startTimeMillis } = getTimeFromResult(result);
       const start = convertTimeToObject(startTimeMillis);
       const finish = convertTimeToObject(finishTimeMillis);
       let correction = 0;
@@ -47,8 +46,7 @@ export async function GET(req: NextRequest) {
       const className = classMap.get(key) ?? '';
 
       if (startTimeMillis && finishTimeMillis) {
-        const difference =
-          Number.parseInt(finishTimeMillis) - Number.parseInt(startTimeMillis);
+        const difference = finishTimeMillis - startTimeMillis;
         const correctionAgeSex =
           correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
         const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
@@ -79,36 +77,4 @@ export async function GET(req: NextRequest) {
   );
 
   return NextResponse.json({ teamsResult });
-}
-
-export async function POST(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const wedstrijdId = searchParams.get(QUERY_PARAMS.wedstrijdId);
-
-  if (!wedstrijdId) {
-    return new Response('wedstrijdId is required', { status: 400 });
-  }
-
-  const args = postResultsForTeamSchema.safeParse(await req.json());
-
-  if (!args.success) {
-    return NextResponse.json(
-      { error: 'Invalid request', details: args.error },
-      { status: 400 }
-    );
-  }
-
-  const {
-    data: { id, useStartA, useFinishA },
-  } = args;
-  const team = await teamService.getTeam(id, wedstrijdId);
-
-  if (!team) {
-    return NextResponse.json({ error: 'Team not found' }, { status: 404 });
-  }
-
-  team.result = { ...team.result, useStartA, useFinishA };
-  await teamService.saveTeam(team);
-
-  return NextResponse.json({ success: true });
 }

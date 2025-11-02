@@ -1,6 +1,8 @@
 import {
   getSpecificTimeResultFromTeam,
   getTimeResult,
+  PostResultsForChangeEntireBlockDto,
+  PostResultsForTeamDto,
   SaveStartNumberTime,
   Time,
 } from '@models';
@@ -118,6 +120,53 @@ export class TimeService {
       isStart,
       wedstrijdId,
     });
+  }
+
+  async addChoice(choice: PostResultsForTeamDto, wedstrijdId: string) {
+    const team = await teamService.getTeam(choice.id, wedstrijdId);
+
+    if (!team) {
+      throw new Error('Team not found');
+    }
+
+    const timeObject = {
+      ...team.result,
+      useStartA: choice.useStartA,
+      useFinishA: choice.useFinishA,
+      processed: choice.processed !== undefined ? choice.processed : undefined,
+    };
+    await teamService.saveTeam({
+      ...team,
+      result: timeObject,
+    });
+  }
+
+  async addChoiceEntireBlock(
+    choice: PostResultsForChangeEntireBlockDto,
+    wedstrijdId: string
+  ) {
+    const teams = await teamService.getTeams(wedstrijdId);
+    const filteredTeams = teams.filter((team) => team.block === choice.block);
+
+    const newTeams = filteredTeams.map((team) => {
+      const teamUseStartA =
+        team.result?.useStartA !== undefined ? team.result?.useStartA : true;
+      const teamUseFinishA =
+        team.result?.useFinishA !== undefined ? team.result?.useFinishA : true;
+      const useStartA = choice.isStart ? choice.isA : teamUseStartA;
+      const useFinishA = !choice.isStart ? choice.isA : teamUseFinishA;
+      const result = {
+        ...team.result,
+        useStartA,
+        useFinishA,
+      };
+      return {
+        ...team,
+        result,
+      };
+    });
+
+    await teamService.saveTeams(newTeams);
   }
 }
 

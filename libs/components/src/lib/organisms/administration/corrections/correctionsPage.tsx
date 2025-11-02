@@ -9,6 +9,7 @@ import {
   CorrectionDifferenceIcon,
   CorrectionsTimeText,
 } from './correctionsAtoms';
+import { CorrectionsUpdateChoiceForAll } from './correctionsUpdateChoiceForAll';
 
 const headers = [
   'Nr + veld',
@@ -29,11 +30,16 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
     const result = data.teamsResult.sort((a, b) => a.startNr - b.startNr);
 
     return result.map(({ startNr, result, className, name, id }) => {
+      const useStartA =
+        result?.useStartA === undefined ? true : result?.useStartA;
+      const useFinishA =
+        result?.useFinishA === undefined ? true : result?.useFinishA;
       const { finishDifference, startDifference } = getDifferenceResult(result);
-      const startTimeA = convertTimeToObject(result?.startTimeA?.toString());
-      const startTimeB = convertTimeToObject(result?.startTimeB?.toString());
-      const finishTimeA = convertTimeToObject(result?.finishTimeA?.toString());
-      const finishTimeB = convertTimeToObject(result?.finishTimeB?.toString());
+      const startTimeA = convertTimeToObject(result?.startTimeA);
+      const startTimeB = convertTimeToObject(result?.startTimeB);
+      const finishTimeA = convertTimeToObject(result?.finishTimeA);
+      const finishTimeB = convertTimeToObject(result?.finishTimeB);
+      const processed = result?.processed;
 
       let warningFinish = false;
       let warningStart = false;
@@ -43,13 +49,16 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
       if (finishDifference !== null && finishDifference > 1000) {
         warningFinish = true;
       }
+
       return [
         {
           node: (
             <CorrectionDifferenceIcon
               className={className}
               startNr={startNr}
-              warning={warningFinish || warningStart}
+              warning={
+                processed === true ? false : warningFinish || warningStart
+              }
             />
           ),
         },
@@ -58,7 +67,11 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
           node: (
             <CorrectionsTimeText
               text={startTimeA.localeString}
-              warning={warningStart}
+              showWarning={processed === true ? false : warningStart}
+              showUsingThis={Boolean(
+                (startTimeA.localeString && useStartA) ||
+                  (startTimeA && startTimeB.localeString === null)
+              )}
             />
           ),
         },
@@ -66,7 +79,11 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
           node: (
             <CorrectionsTimeText
               text={startTimeB.localeString}
-              warning={warningStart}
+              showWarning={processed === true ? false : warningStart}
+              showUsingThis={Boolean(
+                (startTimeB.localeString && !useStartA) ||
+                  (startTimeB && startTimeA.localeString === null)
+              )}
             />
           ),
         },
@@ -74,7 +91,11 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
           node: (
             <CorrectionsTimeText
               text={finishTimeA.localeString}
-              warning={warningFinish}
+              showWarning={processed == true ? false : warningFinish}
+              showUsingThis={Boolean(
+                (finishTimeA.localeString && useFinishA) ||
+                  (finishTimeA && finishTimeB.localeString === null)
+              )}
             />
           ),
         },
@@ -82,11 +103,26 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
           node: (
             <CorrectionsTimeText
               text={finishTimeB.localeString}
-              warning={warningFinish}
+              showWarning={processed == true ? false : warningFinish}
+              showUsingThis={Boolean(
+                (finishTimeB.localeString && !useFinishA) ||
+                  (finishTimeB && finishTimeA.localeString === null)
+              )}
             />
           ),
         },
-        { node: <CorrectionActions wedstrijdId={wedstrijdId} id={id} /> },
+        {
+          node: (
+            <CorrectionActions
+              wedstrijdId={wedstrijdId}
+              id={id}
+              useStartAInitial={result?.useStartA}
+              useFinishAInitial={result?.useFinishA}
+              hasWarning={warningFinish || warningStart}
+              processedInitial={result?.processed}
+            />
+          ),
+        },
       ];
     });
   }, [JSON.stringify(data)]);
@@ -97,6 +133,10 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
 
   return (
     <div>
+      <div>
+        <CorrectionsUpdateChoiceForAll wedstrijdId={wedstrijdId} />
+      </div>
+
       <GridHeader items={headers} />
       {sortedData.map((item, index) => (
         <GridRow items={item} key={index} classNameItems="content-center" />

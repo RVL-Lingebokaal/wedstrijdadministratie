@@ -70,37 +70,31 @@ export class TeamService {
       throw new Error('Team not found');
     }
 
-    const participantsBlocks = team.participants.reduce((acc, participant) => {
-      Array.from(participant.blocks.values()).forEach((block) =>
-        acc.add(block)
+    const newParticipants = team.participants.map((p) => {
+      return participantService.getParticipantWithNewBlock(
+        p,
+        newBlock,
+        oldBlock
       );
-      return acc;
-    }, new Set<number>());
-
-    if (participantsBlocks.has(newBlock)) {
-      throw new Error('PARTICIPANT_BLOCK');
-    }
+    });
 
     if (team.helm && team.helm.blocks.has(newBlock)) {
       throw new Error('HELM_BLOCK');
     }
-
-    if (team.boat && team.boat.blocks.has(newBlock)) {
-      throw new Error('BOAT_BLOCK');
+    if (team.boat) {
+      team.boat = boatService.getBoatWithNewBlock(
+        team.boat,
+        newBlock,
+        oldBlock
+      );
     }
-
-    team.participants.map(({ blocks }) => {
-      blocks.delete(oldBlock);
-      blocks.add(newBlock);
-    });
     if (team.helm) {
       team.helm.blocks.delete(oldBlock);
       team.helm.blocks.add(newBlock);
     }
 
-    team.boat?.blocks.delete(oldBlock);
-    team.boat?.blocks.add(newBlock);
     team.block = newBlock;
+    team.participants = newParticipants;
 
     await this.saveTeam(team);
   }
@@ -136,11 +130,10 @@ export class TeamService {
 
   async getTeams(wedstrijd: string) {
     if (this.teams.size === 0) {
+      const boats = await boatService.getAllBoats();
+      const participants = await participantService.getAllParticipants();
       const dbInstance = collection(firestore, Collections.PLOEG);
       const data = await getDocs(dbInstance);
-
-      const boats = await boatService.getBoats(wedstrijd);
-      const participants = await participantService.getParticipants(wedstrijd);
 
       this.teams = data.docs.reduce((acc, doc) => {
         const docData = doc.data();
@@ -167,6 +160,7 @@ export class TeamService {
           startNumber: docData['startNumber'],
           block: docData['block'],
           wedstrijdId: docData['wedstrijdId'],
+          result: docData['result'],
         };
         return acc.set(team.id, team);
       }, new Map());
@@ -208,6 +202,8 @@ export class TeamService {
       if (!team) {
         throw new Error('Missing team for this id');
       }
+
+      this.teams.set(team.id, { ...team, result: docData['result'] });
 
       return {
         id: docData['id'],

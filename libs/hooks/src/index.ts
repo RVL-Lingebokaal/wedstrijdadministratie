@@ -26,3 +26,4 @@ export * from './lib/wedstrijd/useCreateWedstrijd';
 export * from './lib/teams/useGetResultsForTeams';
 export * from './lib/teams/useUpdateTimeChoiceTeam';
 export * from './lib/teams/useCheckTeamBlocks';
+export * from './lib/teams/useUpdateTimeChoiceForEntireBlock';

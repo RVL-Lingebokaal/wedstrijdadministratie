@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import {
   AgeItem,
   BoatItem,
+  BoatType,
   ClassItem,
   CreateWedstrijdForm,
   SaveGeneralSettings,
@@ -137,6 +138,17 @@ export class WedstrijdService {
         general: generalSettingsToSave.general,
       },
     });
+  }
+
+  async getRegistrationFee(boatType: BoatType, wedstrijdId: string) {
+    const settings = await this.getSettingsFromWedstrijd(wedstrijdId);
+    const boatItem = settings.boats.find((c) => c.type === boatType);
+
+    if (!boatItem) {
+      throw new Error('Boat type not found in settings');
+    }
+
+    return boatItem.price;
   }
 }
 

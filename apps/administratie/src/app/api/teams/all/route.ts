@@ -13,9 +13,8 @@ export async function GET(req: NextRequest) {
 
   const teams = await teamService.getTeams(wedstrijdId);
 
-  const arrayTeams = Array.from(teams.values());
   const jsonTeams: any[] = [];
-  arrayTeams.forEach((t) => {
+  teams.forEach((t) => {
     const team = {
       ...t,
       participants: t.participants.map((p: Participant) => ({

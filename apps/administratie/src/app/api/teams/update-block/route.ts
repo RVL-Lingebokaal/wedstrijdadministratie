@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
     if (errorMessage) {
       return Response.json({ errorMessage });
     }
+    console.log(error);
     return Response.json({
       errorMessage: 'Er is een probleem met het updaten van dit team.',
     });

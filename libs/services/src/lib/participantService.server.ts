@@ -5,12 +5,14 @@ import {
   doc,
   getDocs,
   query,
+  setDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
 import firestore from './firebase/firebase';
 import { stringifySet } from '@utils';
 import { Collections } from '../types/databaseCollections';
+import { ParticipantSchema } from '@schemas';
 
 export class ParticipantService {
   private participants: Map<string, Participant> = new Map();
@@ -74,6 +76,18 @@ export class ParticipantService {
   }
 
   async getParticipants(wedstrijdId: string, needsRefetch = false) {
+    const participants = await this.getAllParticipants(needsRefetch);
+    const filteredParticipants = Array.from(participants.values()).filter(
+      (p) => p.wedstrijdId === wedstrijdId
+    );
+
+    return filteredParticipants.reduce((acc, participant) => {
+      acc.set(participant.id, participant);
+      return acc;
+    }, new Map<string, Participant>());
+  }
+
+  async getAllParticipants(needsRefetch = false) {
     if (this.participants.size === 0 || needsRefetch) {
       const dbInstance = collection(firestore, Collections.DEELNEMER);
       const q = query(dbInstance);
@@ -91,48 +105,86 @@ export class ParticipantService {
         });
       }, new Map<string, Participant>());
     }
-    const participants = Array.from(this.participants.values()).filter(
-      (p) => p.wedstrijdId === wedstrijdId
-    );
 
-    return participants.reduce((acc, participant) => {
-      acc.set(participant.id, participant);
-      return acc;
-    }, new Map<string, Participant>());
+    return this.participants;
   }
 
   async createParticipant({
     name,
     club,
     birthYear,
-    blocks,
+    block,
     wedstrijdId,
-  }: Omit<Participant, 'id'>) {
+  }: ParticipantSchema & { block: number; wedstrijdId: string }) {
     const participants = Array.from(this.participants.values());
     const foundParticipant = participants.find(
       (p) =>
         name === p.name &&
         club === p.club &&
-        birthYear === p.birthYear &&
+        Number.parseInt(birthYear) === p.birthYear &&
         p.wedstrijdId === wedstrijdId
     );
 
+    let participant = {
+      name,
+      id: '',
+      club,
+      birthYear: Number.parseInt(birthYear),
+      blocks: new Set([block]),
+      wedstrijdId,
+    };
+
     if (foundParticipant) {
-      return foundParticipant;
+      participant = this.getParticipantWithNewBlock(foundParticipant, block);
+      const docRef = doc(firestore, Collections.DEELNEMER, participant.id);
+      await setDoc(
+        docRef,
+        { ...participant, blocks: stringifySet(participant.blocks) },
+        { merge: true }
+      );
+      this.participants = this.participants.set(participant.id, participant);
+      return participant;
     }
 
-    const participant = { name, id: '', club, birthYear, blocks, wedstrijdId };
-
-    const docRef = await addDoc(collection(firestore, Collections.DEELNEMER), {
-      name,
-      club,
-      birthYear,
-      blocks: stringifySet(blocks),
-      wedstrijdId,
-    });
-    participant.id = docRef.id;
+    const docRefAdd = await addDoc(
+      collection(firestore, Collections.DEELNEMER),
+      {
+        ...participant,
+        blocks: stringifySet(participant.blocks),
+      }
+    );
+    participant.id = docRefAdd.id;
 
     this.participants = this.participants.set(participant.id, participant);
+
+    const docRefUpdateId = doc(
+      firestore,
+      Collections.DEELNEMER,
+      participant.id
+    );
+    await setDoc(
+      docRefUpdateId,
+      { ...participant, blocks: stringifySet(participant.blocks) },
+      { merge: true }
+    );
+
+    return participant;
+  }
+
+  getParticipantWithNewBlock(
+    participant: Participant,
+    block: number,
+    oldBlock?: number
+  ) {
+    if (participant.blocks.has(block)) {
+      throw new Error('PARTICIPANT_BLOCK');
+    }
+
+    if (oldBlock) {
+      participant.blocks.delete(oldBlock);
+    }
+
+    participant.blocks.add(block);
 
     return participant;
   }
