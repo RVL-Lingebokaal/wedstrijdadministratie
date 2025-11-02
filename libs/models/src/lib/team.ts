@@ -76,7 +76,7 @@ export function getAgeClassTeam({ ages, participants }: GetAgeClassTeamsProps) {
   return calculateAgeType(ages, age);
 }
 
-export function getTimeResult(isA: boolean, isStart: boolean, time?: string) {
+export function getTimeResult(isA: boolean, isStart: boolean, time?: number) {
   if (isStart) {
     if (isA) {
       return { startTimeA: time ?? null };

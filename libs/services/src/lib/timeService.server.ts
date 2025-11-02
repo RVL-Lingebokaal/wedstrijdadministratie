@@ -64,12 +64,12 @@ export class TimeService {
     const docRef = doc(firestore, Collections.PLOEG, time.teamId);
     const timeObject = {
       ...team.result,
-      ...getTimeResult(time.isA, time.isStart, time.time),
+      ...getTimeResult(time.isA, time.isStart, Number.parseInt(time.time)),
     };
     await setDoc(docRef, { result: timeObject }, { merge: true });
     await teamService.saveTeam({
       ...team,
-      result: getTimeResult(time.isA, time.isStart, time.time),
+      result: getTimeResult(time.isA, time.isStart, Number.parseInt(time.time)),
     });
 
     return await deleteDoc(doc(firestore, Collections.TIME, time.id));
