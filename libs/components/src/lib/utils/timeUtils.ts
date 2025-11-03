@@ -122,8 +122,8 @@ export function getCorrectedTime({
 }: GetCorrectedTimeProps) {
   const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
   const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
-  const start = convertTimeToObject(startTimeMillis?.toString());
-  const finish = convertTimeToObject(finishTimeMillis?.toString());
+  const start = convertTimeToObject(startTimeMillis);
+  const finish = convertTimeToObject(finishTimeMillis);
   let correction = 0;
 
   if (startTimeMillis && finishTimeMillis) {
