@@ -249,8 +249,7 @@ export class DownloadService {
             start.dateTime && finish.dateTime
               ? getDifference(start.dateTime, finish.dateTime)
               : '-',
-          correctie:
-            convertTimeToObject(correction?.toString()).localeString ?? '-',
+          correctie: convertTimeToObject(correction).localeString ?? '-',
         });
         unCorrectedRow.push({
           startNr,
