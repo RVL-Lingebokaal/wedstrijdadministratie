@@ -38,6 +38,7 @@ export interface Team extends TeamResult {
   startNumber?: number;
   ageClass: AgeType;
   wedstrijdId: string;
+  unsubscribed?: boolean;
 }
 
 export function getDatabaseTeam(team: Team) {

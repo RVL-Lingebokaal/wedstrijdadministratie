@@ -26,19 +26,11 @@ export function TeamUpdateButton({
     [teams]
   );
   const onClick = useCallback(() => setShowModal(true), []);
-  const {
-    getValues,
-    control,
-    handleSubmit,
-    watch,
-    reset,
-    setValue,
-    formState: { errors },
-  } = useForm<TeamAddForm>({
-    defaultValues: getTeamFormValues(),
-    resolver: zodResolver(addTeamSchema),
-  });
-  console.log(errors);
+  const { getValues, control, handleSubmit, watch, reset, setValue } =
+    useForm<TeamAddForm>({
+      defaultValues: getTeamFormValues(),
+      resolver: zodResolver(addTeamSchema),
+    });
 
   const onClickSubmit = useCallback(
     async (val: TeamAddForm) => {
@@ -95,5 +87,6 @@ function getTeamFormValues(team?: Team): TeamAddForm {
     preferredBlock: team?.preferredBlock ?? 1,
     boatType: team?.boatType ?? '1x',
     gender: team?.gender ?? 'mix',
+    unsubscribed: team?.unsubscribed ?? false,
   };
 }

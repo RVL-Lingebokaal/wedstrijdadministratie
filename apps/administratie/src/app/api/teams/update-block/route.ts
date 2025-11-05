@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     await teamService.saveTeamBlock(team.id, args.destBlock);
   } catch (error: any) {
     let errorMessage;
-    switch (error.name) {
+    switch (error) {
       case 'PARTICIPANT_BLOCK':
         errorMessage = `Een van de deelnemers roeit of stuurt al in blok ${args.destBlock}.`;
         break;

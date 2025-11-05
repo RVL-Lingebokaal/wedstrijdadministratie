@@ -8,7 +8,6 @@ export * from './lib/teams/useGetTeams';
 export * from './lib/teams/useUpdateBlockTeam';
 export * from './lib/teams/useUpdateTeam';
 export * from './lib/teams/useUpdatePlaceTeam';
-export * from './lib/useGetResults';
 export * from './lib/counts/useGetCounts';
 export * from './lib/useGetSessionTotals';
 export * from './lib/useUploadFile';

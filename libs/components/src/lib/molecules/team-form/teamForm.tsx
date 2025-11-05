@@ -18,6 +18,7 @@ import {
 } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 import { TeamAddForm } from '@schemas';
+import { CheckboxController } from '../checkbox/checkboxController';
 
 interface TeamFormProps {
   control: Control<TeamAddForm>;
@@ -85,6 +86,13 @@ export function TeamForm({
           topClassNames="grow"
           isGender
         />
+        {isUpdate && (
+          <CheckboxController<TeamAddForm>
+            path="unsubscribed"
+            control={control}
+            label="Uitgeschreven"
+          />
+        )}
       </div>
       <div className="flex gap-x-3">
         <InputController

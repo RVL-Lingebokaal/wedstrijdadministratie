@@ -43,7 +43,7 @@ export function CorrectionsPage({ wedstrijdId }: WedstrijdIdProps) {
 
       let warningFinish = false;
       let warningStart = false;
-      if (startDifference !== null && startDifference > 100) {
+      if (startDifference !== null && startDifference > 1000) {
         warningStart = true;
       }
       if (finishDifference !== null && finishDifference > 1000) {

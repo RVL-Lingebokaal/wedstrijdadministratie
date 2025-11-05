@@ -161,6 +161,7 @@ export class TeamService {
           block: docData['block'],
           wedstrijdId: docData['wedstrijdId'],
           result: docData['result'],
+          unsubscribed: docData['unsubscribed'] || false,
         };
         return acc.set(team.id, team);
       }, new Map());

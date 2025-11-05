@@ -17,6 +17,7 @@ export const addTeamSchema = z.object({
   boatType: z.enum(boatTypes),
   helm: participantSchema.nullable(),
   gender: z.enum(genders),
+  unsubscribed: z.boolean().optional(),
 });
 
 export type ParticipantSchema = z.infer<typeof participantSchema>;

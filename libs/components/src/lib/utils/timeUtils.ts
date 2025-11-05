@@ -9,7 +9,7 @@ import {
   Time,
 } from '@models';
 import { Dispatch, SetStateAction } from 'react';
-import { convertTimeToObject } from '@utils';
+import { convertTimeToObject, getTimeFromResult } from '@utils';
 
 export function getNewTimes(prevTimes: Time[], newTimes: Time[]) {
   let result: Time[] = [];
@@ -120,8 +120,7 @@ export function getCorrectedTime({
   ageClass,
   gender,
 }: GetCorrectedTimeProps) {
-  const startTimeMillis = result?.startTimeA ?? result?.startTimeB;
-  const finishTimeMillis = result?.finishTimeA ?? result?.finishTimeB;
+  const { startTimeMillis, finishTimeMillis } = getTimeFromResult(result);
   const start = convertTimeToObject(startTimeMillis);
   const finish = convertTimeToObject(finishTimeMillis);
   let correction = 0;

@@ -96,7 +96,7 @@ export class BoatService {
 
   getBoatWithNewBlock(boat: Boat, block: number, oldBlock?: number) {
     if (boat.blocks.has(block)) {
-      throw new Error('PARTICIPANT_BLOCK');
+      throw new Error('BOAT_BLOCK');
     }
 
     if (oldBlock) {
