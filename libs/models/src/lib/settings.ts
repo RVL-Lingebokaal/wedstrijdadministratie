@@ -1,7 +1,7 @@
 import { translateGenderToShort } from './team';
 import { z } from 'zod';
 
-export const genders = ['male', 'mix', 'female', 'open'] as const;
+export const genders = ['male', 'open', 'mix', 'female'] as const;
 export type Gender = (typeof genders)[number];
 
 export const ageTypes = [
