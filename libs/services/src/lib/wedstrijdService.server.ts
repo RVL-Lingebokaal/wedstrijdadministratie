@@ -120,6 +120,9 @@ export class WedstrijdService {
           data.missingNumbers ?? wedstrijd.settings.general?.missingNumbers,
         date: data.date ?? wedstrijd.settings.general?.date,
         isJeugd: data.isJeugd ?? wedstrijd.settings.general?.isJeugd,
+        startNumbersAreFixed:
+          data.startNumbersAreFixed ??
+          wedstrijd.settings.general?.startNumbersAreFixed,
       },
     };
 

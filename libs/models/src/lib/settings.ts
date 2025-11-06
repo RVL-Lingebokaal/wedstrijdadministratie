@@ -101,6 +101,7 @@ export interface Settings {
   general: {
     date: string;
     missingNumbers: number[];
+    startNumbersAreFixed?: boolean;
   };
 }
 
@@ -108,6 +109,7 @@ export interface SettingData {
   date: string;
   missingNumbers: number[];
   isJeugd?: boolean;
+  startNumbersAreFixed?: boolean;
 }
 
 interface TranslateClassProps {
@@ -141,6 +143,7 @@ export const saveGeneralSettingsSchema = z.object({
   date: z.string().optional(),
   missingNumbers: z.array(z.number().min(1)).optional(),
   isJeugd: z.boolean().optional(),
+  startNumbersAreFixed: z.boolean().optional(),
 });
 export type SaveGeneralSettings = z.infer<typeof saveGeneralSettingsSchema>;
 

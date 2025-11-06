@@ -23,6 +23,7 @@ export const wedstrijdSchema = basicWedstrijdInfoSchema.extend({
       missingNumbers: z.number().array().optional(),
       isJeugd: z.boolean().optional(),
       date: z.string(),
+      startNumbersAreFixed: z.boolean().optional(),
     }),
     boats: z.array(boatItemForm).optional(),
     ages: z.array(ageItem).optional(),

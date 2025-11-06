@@ -1,11 +1,12 @@
 import { SettingData, Settings, Team, WedstrijdIdProps } from '@models';
 import { GridHeader, GridRow } from '@components/server';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   getTeamsForStartNumbers,
   sortTeamsWithStartNumber,
 } from '../../../utils/startNumbersUtils';
-import { useUpdateStartNumbers } from '@hooks';
+import { useSaveGeneralSettings, useUpdateStartNumbers } from '@hooks';
+import { Checkbox } from '../../../molecules/checkbox/checkbox';
 
 interface StartNumbersGridProps extends WedstrijdIdProps {
   teamData: Team[];
@@ -21,6 +22,7 @@ export function StartNumbersGrid({
   generalSettingsData,
   wedstrijdId,
 }: StartNumbersGridProps) {
+  const { mutate: setSettings } = useSaveGeneralSettings({ wedstrijdId });
   const { mutate } = useUpdateStartNumbers({ wedstrijdId });
   const hasTeamsWithoutStartNumber = teamData?.some(
     (team) => !team.startNumber
@@ -31,7 +33,8 @@ export function StartNumbersGrid({
       classes: settingsData?.classes ?? [],
       missingNumbers: generalSettingsData?.missingNumbers ?? [],
     };
-    return hasTeamsWithoutStartNumber
+    return hasTeamsWithoutStartNumber &&
+      Boolean(!generalSettingsData.startNumbersAreFixed)
       ? getTeamsForStartNumbers({
           ...props,
           saveData: mutate,
@@ -43,9 +46,27 @@ export function StartNumbersGrid({
         });
   }, [teamData, settingsData, hasTeamsWithoutStartNumber]);
 
+  const onClickCheckbox = useCallback(
+    (value: boolean) => {
+      setSettings({ startNumbersAreFixed: value });
+    },
+    [setSettings]
+  );
+
   return (
     <div className="flex w-full">
       <div className="w-full">
+        <div className="p-2">
+          <p>
+            Zodra de loting is geweest, mogen de startnummers niet meer worden
+            gewijzigd. Deze optie kan hieronder worden aangezet.
+          </p>
+          <Checkbox
+            enabled={generalSettingsData.startNumbersAreFixed ?? false}
+            setEnabled={onClickCheckbox}
+            label="De startnummer kunnen niet meer worden gewijzigd"
+          />
+        </div>
         <GridHeader items={headerItems} needsRounding classNames="mt-0" />
         {rows.map((row) => (
           <GridRow items={row} key={row[0]?.node?.toString() ?? ''} />
