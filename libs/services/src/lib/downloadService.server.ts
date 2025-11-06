@@ -90,9 +90,7 @@ export class DownloadService {
     ];
 
     Array.from(teams.values())
-      .filter(
-        ({ block, preferredBlock }) => block === heat || preferredBlock === heat
-      )
+      .filter(({ block }) => block === heat)
       .sort((a, b) => (a.startNumber ?? 0) - (b.startNumber ?? 0))
       .forEach(({ boatType, club, startNumber }) => {
         worksheet.addRow({
@@ -154,7 +152,7 @@ export class DownloadService {
           const translatedClass = translateClass({
             gender,
             boatType,
-            className: classes.get(ageClass) ?? '',
+            className: classes.get(`${ageClass}${boatType}${gender}`) ?? '',
             isJeugdWedstrijd: settings.general.isJeugd ?? false,
           });
 
@@ -442,9 +440,9 @@ export class DownloadService {
   }
 
   private getSettingsMapClasses(classItems: ClassItem[]) {
-    return classItems.reduce((map, { ages, name }) => {
+    return classItems.reduce((map, { ages, name, boatType, gender }) => {
       ages.forEach((age) => {
-        map.set(age, name);
+        map.set(`${age}${boatType}${gender}`, name);
       });
       return map;
     }, new Map<AgeType, string>());
