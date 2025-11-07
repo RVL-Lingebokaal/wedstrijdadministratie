@@ -17,11 +17,13 @@ export default function KoppelenPage({
     if (!teamData) return [];
 
     if (sessie === 'all') {
-      return teamData;
+      return teamData.filter((team) => !team.unsubscribed);
     }
     const blockNumber = parseInt(sessie.replace('sessie', ''));
 
-    return teamData.filter((team) => team.block === blockNumber);
+    return teamData.filter(
+      (team) => team.block === blockNumber && !team.unsubscribed
+    );
   }, [sessie, JSON.stringify(teamData), isA, isStart]);
 
   if (teamIsLoading) {
