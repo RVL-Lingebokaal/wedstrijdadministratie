@@ -1,11 +1,8 @@
 import { SettingData, Settings, Team, WedstrijdIdProps } from '@models';
 import { GridHeader, GridRow } from '@components/server';
 import { useCallback, useMemo } from 'react';
-import {
-  getTeamsForStartNumbers,
-  sortTeamsWithStartNumber,
-} from '../../../utils/startNumbersUtils';
-import { useSaveGeneralSettings, useUpdateStartNumbers } from '@hooks';
+import { sortTeamsWithStartNumber } from '../../../utils/startNumbersUtils';
+import { useSaveGeneralSettings } from '@hooks';
 import { Checkbox } from '../../../molecules/checkbox/checkbox';
 
 interface StartNumbersGridProps extends WedstrijdIdProps {
@@ -23,7 +20,7 @@ export function StartNumbersGrid({
   wedstrijdId,
 }: StartNumbersGridProps) {
   const { mutate: setSettings } = useSaveGeneralSettings({ wedstrijdId });
-  const { mutate } = useUpdateStartNumbers({ wedstrijdId });
+  // const { mutate } = useUpdateStartNumbers({ wedstrijdId });
   const hasTeamsWithoutStartNumber = teamData?.some(
     (team) => !team.startNumber
   );
@@ -33,17 +30,10 @@ export function StartNumbersGrid({
       classes: settingsData?.classes ?? [],
       missingNumbers: generalSettingsData?.missingNumbers ?? [],
     };
-    return hasTeamsWithoutStartNumber &&
-      Boolean(!generalSettingsData.startNumbersAreFixed)
-      ? getTeamsForStartNumbers({
-          ...props,
-          saveData: mutate,
-          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
-        })
-      : sortTeamsWithStartNumber({
-          ...props,
-          isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
-        });
+    return sortTeamsWithStartNumber({
+      ...props,
+      isJeugdWedstrijd: generalSettingsData?.isJeugd ?? false,
+    });
   }, [teamData, settingsData, hasTeamsWithoutStartNumber]);
 
   const onClickCheckbox = useCallback(
