@@ -102,7 +102,8 @@ export function sortTeamsWithStartNumber({
   missingNumbers,
   isJeugdWedstrijd,
 }: SortTeamsWithStartNumberProps) {
-  if (!teams || teams.length === 0) return [];
+  if (!teams || teams.length === 0)
+    return { items: [], unsubscribedTeams: new Set<number>() };
 
   const missingNumbersSet = new Set<number>(missingNumbers);
 
@@ -118,7 +119,8 @@ export function sortTeamsWithStartNumber({
   });
   const classMap = getClassMap(classes);
 
-  return sortedTeams.reduce((acc, team, index) => {
+  const unsubscribedTeams = new Set<number>();
+  const items = sortedTeams.reduce((acc, team, index) => {
     // if (index > 0) {
     //   const possibleEmptyRow = getPossibleEmptyRow(
     //     sortedTeams,
@@ -147,10 +149,14 @@ export function sortTeamsWithStartNumber({
       { node: team.participants[0].name ?? '' },
       { node: team.boat?.name ?? '' },
     ];
+    if (team.unsubscribed && team.startNumber)
+      unsubscribedTeams.add(team.startNumber);
     acc.push(teamItems);
 
     return acc;
   }, [] as Item[][]);
+
+  return { items, unsubscribedTeams };
 }
 
 function getPossibleEmptyRow(
