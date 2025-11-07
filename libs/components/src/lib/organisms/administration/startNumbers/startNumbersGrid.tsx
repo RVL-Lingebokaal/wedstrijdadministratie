@@ -24,6 +24,7 @@ export function StartNumbersGrid({
   const hasTeamsWithoutStartNumber = teamData?.some(
     (team) => !team.startNumber
   );
+  console.log({ hasTeamsWithoutStartNumber });
   const rows = useMemo(() => {
     const props = {
       teams: teamData,

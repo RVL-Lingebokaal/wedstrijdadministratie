@@ -119,16 +119,16 @@ export function sortTeamsWithStartNumber({
   const classMap = getClassMap(classes);
 
   return sortedTeams.reduce((acc, team, index) => {
-    if (index > 0) {
-      const possibleEmptyRow = getPossibleEmptyRow(
-        sortedTeams,
-        index,
-        missingNumbersSet
-      );
-      if (possibleEmptyRow) {
-        acc.push(possibleEmptyRow);
-      }
-    }
+    // if (index > 0) {
+    //   const possibleEmptyRow = getPossibleEmptyRow(
+    //     sortedTeams,
+    //     index,
+    //     missingNumbersSet
+    //   );
+    //   if (possibleEmptyRow) {
+    //     acc.push(possibleEmptyRow);
+    //   }
+    // }
 
     const classKey = `${team.ageClass}${team.gender}${team.boatType}`;
     const className = classMap.get(classKey) ?? '';
@@ -164,10 +164,10 @@ function getPossibleEmptyRow(
     previousTeam.gender !== currentTeam.gender ||
     previousTeam.boatType !== currentTeam.boatType
   ) {
-    let startNumber = (previousTeam.startNumber ?? 0) + 1;
-    startNumber = getStartNr(startNumber, missingNumbers);
+    // let startNumber = (previousTeam.startNumber ?? 0) + 1;
+    // startNumber = getStartNr(startNumber, missingNumbers);
     return [
-      { node: startNumber },
+      { node: '' },
       { node: '' },
       { node: '' },
       { node: '' },
