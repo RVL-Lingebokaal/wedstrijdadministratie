@@ -133,7 +133,7 @@ export class TimeService {
       ...team.result,
       useStartA: choice.useStartA,
       useFinishA: choice.useFinishA,
-      processed: choice.processed !== undefined ? choice.processed : undefined,
+      processed: choice.processed !== undefined ? choice.processed : false,
     };
     await teamService.saveTeam({
       ...team,
