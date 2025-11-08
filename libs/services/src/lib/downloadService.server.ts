@@ -227,13 +227,15 @@ export class DownloadService {
       ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
         const key = `${ageClass}${gender}${boatType}`;
         const className = classMap.get(key) ?? '';
-        const unCorrectedRow = uncorrectedByClass.get(key) || [];
+
         const translatedClass = translateClass({
           gender,
           boatType,
           className: classes.get(`${ageClass}${boatType}${gender}`) ?? '',
           isJeugdWedstrijd: settings.general.isJeugd ?? false,
         });
+        const unCorrectedRow = uncorrectedByClass.get(translatedClass) || [];
+        console.log({ translatedClass, className });
 
         const { start, finish, correction } = getCorrectedTime({
           result,
@@ -262,17 +264,17 @@ export class DownloadService {
           veld: translatedClass,
           ploeg: name,
           slag: slag?.name,
-          categorie: ageClass,
           tijd:
             start.dateTime && finish.dateTime
               ? getDifference(start.dateTime, finish.dateTime)
               : '-',
           block,
         });
-        uncorrectedByClass.set(key, unCorrectedRow);
+        uncorrectedByClass.set(translatedClass, unCorrectedRow);
       }
     );
 
+    console.log({ uncorrectedByClass });
     const sortedCorrectedRows = correctedRows.sort((a: any, b: any) =>
       this.sortTimes(a.correctie, b.correctie)
     );
