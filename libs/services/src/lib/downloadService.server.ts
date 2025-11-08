@@ -3,7 +3,7 @@ import { teamService, wedstrijdService } from '@services';
 import { Workbook } from 'exceljs';
 import { AgeType, ClassItem, Team, translateClass } from '@models';
 import {
-  convertTimeToObject,
+  convertTimeToObjectDifference,
   getClassMap,
   getCorrectionAgeSexMap,
   getCorrectionBoatMap,
@@ -227,7 +227,7 @@ export class DownloadService {
       ({ name, result, gender, boatType, ageClass, startNr, slag, block }) => {
         const key = `${ageClass}${gender}${boatType}`;
         const className = classMap.get(key) ?? '';
-        const unCorrectedRow = uncorrectedByClass.get(className) || [];
+        const unCorrectedRow = uncorrectedByClass.get(key) || [];
         const translatedClass = translateClass({
           gender,
           boatType,
@@ -254,7 +254,8 @@ export class DownloadService {
             start.dateTime && finish.dateTime
               ? getDifference(start.dateTime, finish.dateTime)
               : '-',
-          correctie: convertTimeToObject(correction).localeString ?? '-',
+          correctie:
+            convertTimeToObjectDifference(correction).localeString ?? '-',
         });
         unCorrectedRow.push({
           startNr,
@@ -268,7 +269,7 @@ export class DownloadService {
               : '-',
           block,
         });
-        uncorrectedByClass.set(translatedClass, unCorrectedRow);
+        uncorrectedByClass.set(key, unCorrectedRow);
       }
     );
 

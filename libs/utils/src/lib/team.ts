@@ -63,6 +63,24 @@ export function convertTimeToObject(time?: number | null) {
   };
 }
 
+export function convertTimeToObjectDifference(time?: number | null) {
+  if (!time) {
+    return {
+      dateTime: undefined,
+      localeString: null,
+    };
+  }
+
+  const dateTime = DateTime.fromMillis(time);
+  const localeString = dateTime.toUTC().toISOTime({
+    includeOffset: false,
+  });
+  return {
+    dateTime,
+    localeString,
+  };
+}
+
 export function getDifference(startTime: DateTime, finishTime: DateTime) {
   const diff = finishTime.diff(startTime, [
     'minutes',
