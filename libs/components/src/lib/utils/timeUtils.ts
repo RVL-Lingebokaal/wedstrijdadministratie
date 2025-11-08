@@ -124,14 +124,14 @@ export function getCorrectedTime({
   const start = convertTimeToObject(startTimeMillis);
   const finish = convertTimeToObject(finishTimeMillis);
   let correction = 0;
+  const key = `${ageClass}${gender === 'open' ? 'male' : gender}`;
 
   if (startTimeMillis && finishTimeMillis) {
     const difference =
       Number.parseInt(finishTimeMillis.toString()) -
       Number.parseInt(startTimeMillis.toString());
-    const correctionAgeSex =
-      correctionAgeSexMap.get(`${ageClass}${gender}`) ?? 0;
-    const correctionBoat = correctionBoatMap.get(boatType) ?? 0;
+    const correctionAgeSex = correctionAgeSexMap.get(key) ?? 1;
+    const correctionBoat = correctionBoatMap.get(boatType) ?? 1;
     const totalCorrection = correctionAgeSex * correctionBoat;
 
     correction = difference * totalCorrection;

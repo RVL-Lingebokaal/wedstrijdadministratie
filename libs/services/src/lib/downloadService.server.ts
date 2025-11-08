@@ -235,7 +235,6 @@ export class DownloadService {
           isJeugdWedstrijd: settings.general.isJeugd ?? false,
         });
         const unCorrectedRow = uncorrectedByClass.get(translatedClass) || [];
-        console.log({ translatedClass, className });
 
         const { start, finish, correction } = getCorrectedTime({
           result,
@@ -274,7 +273,6 @@ export class DownloadService {
       }
     );
 
-    console.log({ uncorrectedByClass });
     const sortedCorrectedRows = correctedRows.sort((a: any, b: any) =>
       this.sortTimes(a.correctie, b.correctie)
     );
