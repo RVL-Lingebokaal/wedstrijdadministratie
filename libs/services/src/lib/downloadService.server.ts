@@ -189,6 +189,7 @@ export class DownloadService {
     const classMap = getClassMap(settings.classes ?? []);
     const correctionAgeSexMap = getCorrectionAgeSexMap(settings.ages);
     const correctionBoatMap = getCorrectionBoatMap(settings.boats);
+    const classes = this.getSettingsMapClasses(settings.classes ?? []);
 
     // Create a new Excel workbook
     const workbook = new Workbook();
@@ -227,6 +228,12 @@ export class DownloadService {
         const key = `${ageClass}${gender}${boatType}`;
         const className = classMap.get(key) ?? '';
         const unCorrectedRow = uncorrectedByClass.get(className) || [];
+        const translatedClass = translateClass({
+          gender,
+          boatType,
+          className: classes.get(`${ageClass}${boatType}${gender}`) ?? '',
+          isJeugdWedstrijd: settings.general.isJeugd ?? false,
+        });
 
         const { start, finish, correction } = getCorrectedTime({
           result,
@@ -239,7 +246,7 @@ export class DownloadService {
 
         correctedRows.push({
           startNr,
-          veld: className,
+          veld: translatedClass,
           ploeg: name,
           slag: slag?.name,
           categorie: ageClass,
@@ -251,7 +258,7 @@ export class DownloadService {
         });
         unCorrectedRow.push({
           startNr,
-          veld: className,
+          veld: translatedClass,
           ploeg: name,
           slag: slag?.name,
           categorie: ageClass,
@@ -261,7 +268,7 @@ export class DownloadService {
               : '-',
           block,
         });
-        uncorrectedByClass.set(className, unCorrectedRow);
+        uncorrectedByClass.set(translatedClass, unCorrectedRow);
       }
     );
 

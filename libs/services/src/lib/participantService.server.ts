@@ -20,6 +20,7 @@ export class ParticipantService {
   async saveParticipants(participants: Participant[]) {
     const batch = writeBatch(firestore);
 
+    console.log({ participants });
     participants.forEach((participant) => {
       const { name, id, club, blocks, birthYear, wedstrijdId } = participant;
       const docRef = doc(firestore, 'deelnemer', id);
